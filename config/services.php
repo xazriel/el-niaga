@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    'jne' => [
+    'username' => env('JNE_USERNAME', 'TESTAPI'),
+    'api_key' => env('JNE_API_KEY', '25c898a9faea1a100859ecd9ef674548'),
+    ],
+
 ];

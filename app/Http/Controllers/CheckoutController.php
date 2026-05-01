@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\ProductVariant;
+use App\Services\JneService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -11,12 +12,18 @@ use Carbon\Carbon;
 
 class CheckoutController extends Controller
 {
+    protected $jneService;
+
+    public function __construct(JneService $jneService)
+    {
+        $this->jneService = $jneService;
+    }
+
     /**
      * Menampilkan halaman checkout.
      */
     public function index()
     {
-        // 1. CEK: Jika user punya order pending yang belum expired, paksa kembali ke waiting page
         $activeOrder = Order::where('user_id', Auth::id())
                             ->where('status', 'pending')
                             ->where('payment_deadline', '>', now())
@@ -28,16 +35,16 @@ class CheckoutController extends Controller
         }
 
         $cart = session()->get('cart', []);
-        
+
         if (empty($cart)) {
             return redirect()->route('home')->with('error', 'Keranjang belanja kosong.');
         }
 
         $totalAmount = 0;
-        foreach($cart as $variantId => $item) {
+        foreach ($cart as $variantId => $item) {
             $variant = ProductVariant::find($variantId);
             if (!$variant || $variant->stock < $item['quantity']) {
-                return redirect()->route('cart.index')->with('error', "Stok tidak mencukupi.");
+                return redirect()->route('cart.index')->with('error', 'Stok tidak mencukupi.');
             }
             $totalAmount += $item['price'] * $item['quantity'];
         }
@@ -47,36 +54,57 @@ class CheckoutController extends Controller
     }
 
     /**
-     * API: Mencari Lokasi (Data Statis/Dummy)
+     * API: Mencari Lokasi
      */
     public function searchLocation(Request $request)
-    {
-        $results = [
-            ['id' => 'LOC001', 'text' => 'Pancoran, Jakarta Selatan, DKI Jakarta'],
-            ['id' => 'LOC002', 'text' => 'Senayan, Jakarta Pusat, DKI Jakarta'],
-            ['id' => 'LOC003', 'text' => 'Cinere, Depok, Jawa Barat'],
-            ['id' => 'LOC004', 'text' => 'Cengkareng, Jakarta Barat, DKI Jakarta'],
-        ];
-        return response()->json(['results' => $results]);
-    }
+{
+    $query = $request->get('q', '');
+
+    $results = \App\Models\JneDestination::where('name', 'like', "%{$query}%")
+        ->orWhere('city', 'like', "%{$query}%")
+        ->orWhere('code', 'like', "%{$query}%")
+        ->limit(20)
+        ->get()
+        ->map(fn($d) => [
+            'id'   => $d->code,
+            'text' => $d->name,
+        ]);
+
+    return response()->json(['results' => $results]);
+}
 
     /**
-     * API: Menghitung Biaya Ongkir (Data Statis/Dummy)
+     * API: Menghitung Biaya Ongkir
      */
     public function calculateShipping(Request $request)
     {
-        return response()->json([
-            'success' => true,
-            'pricing' => [
-                ['courier_name' => 'JNE', 'courier_service_name' => 'Reguler', 'price' => 12000, 'duration' => '1-2 Days'],
-                ['courier_name' => 'J&T', 'courier_service_name' => 'EZ', 'price' => 10000, 'duration' => '2-3 Days'],
-                ['courier_name' => 'SiCepat', 'courier_service_name' => 'BEST', 'price' => 15000, 'duration' => '1 Day'],
-            ]
+        $request->validate([
+            'destination_id' => 'required',
+            'weight'         => 'required|numeric',
         ]);
+
+        $response = $this->jneService->getTariff($request->destination_id, $request->weight);
+
+        if (isset($response['price'])) {
+            return response()->json([
+                'success' => true,
+                'pricing' => collect($response['price'])->map(function ($item) {
+                    return [
+                        'courier_name'         => 'JNE',
+                        'courier_service_name' => $item['service_display'],
+                        'service_code'         => $item['service_code'],
+                        'price'                => (int) $item['price'],
+                        'duration'             => $item['etd_from'] . '-' . $item['etd_thru'] . ' ' . $item['times'],
+                    ];
+                }),
+            ]);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Tarif tidak ditemukan'], 404);
     }
 
     /**
-     * Memproses pesanan, potong stok, dan set timer 2 menit.
+     * Memproses pesanan, potong stok, buat order.
      */
     public function store(Request $request)
     {
@@ -84,9 +112,14 @@ class CheckoutController extends Controller
             'receiver_name'    => 'required|string|max:255',
             'receiver_phone'   => 'required|string|max:20',
             'receiver_address' => 'required|string',
-            'destination_id'   => 'required',
+            'destination_id'   => 'required|string',
             'shipping_cost'    => 'required|numeric',
             'courier_name'     => 'required|string',
+            'service_code'     => 'required|string',
+            // ✅ receiver_city & receiver_zip sekarang dikirim dari form
+            'receiver_city'    => 'required|string|max:100',
+            'receiver_zip'     => 'required|string|max:10',
+            'payment_method'   => 'required|string',
         ]);
 
         $cart = session()->get('cart', []);
@@ -94,10 +127,11 @@ class CheckoutController extends Controller
 
         try {
             return DB::transaction(function () use ($request, $cart) {
-                
-                $totalAmount = array_sum(array_map(fn($item) => $item['price'] * $item['quantity'], $cart));
 
-                // Buat Order dengan Deadline 2 Menit ke depan
+                $totalAmount = array_sum(
+                    array_map(fn($item) => $item['price'] * $item['quantity'], $cart)
+                );
+
                 $order = Order::create([
                     'order_number'     => 'INV-' . strtoupper(uniqid()),
                     'user_id'          => Auth::id(),
@@ -105,13 +139,17 @@ class CheckoutController extends Controller
                     'shipping_cost'    => $request->shipping_cost,
                     'grand_total'      => $totalAmount + $request->shipping_cost,
                     'status'           => 'pending',
-                    'payment_method'   => 'QRIS',
+                    'payment_method'   => $request->payment_method,
                     'receiver_name'    => $request->receiver_name,
                     'receiver_phone'   => $request->receiver_phone,
                     'receiver_address' => $request->receiver_address,
                     'destination_id'   => $request->destination_id,
                     'courier_name'     => $request->courier_name,
-                    'payment_deadline' => now()->addMinutes(2), 
+                    // ✅ Simpan data ini ke DB agar bisa dipakai saat generate AWB
+                    'service_code'     => $request->service_code,
+                    'receiver_city'    => $request->receiver_city,
+                    'receiver_zip'     => $request->receiver_zip,
+                    'payment_deadline' => now()->addMinutes(2),
                 ]);
 
                 foreach ($cart as $variantId => $details) {
@@ -141,7 +179,7 @@ class CheckoutController extends Controller
     }
 
     /**
-     * Halaman instruksi pembayaran & Cek kadaluwarsa stok.
+     * Halaman instruksi pembayaran & cek kadaluwarsa.
      */
     public function waiting($order_number)
     {
@@ -149,12 +187,10 @@ class CheckoutController extends Controller
                       ->where('user_id', Auth::id())
                       ->firstOrFail();
 
-        // Jika user memaksa buka halaman waiting tapi status sudah success/cancelled
         if ($order->status !== 'pending') {
             return redirect()->route('home');
         }
 
-        // Jika waktu habis saat halaman diakses, kembalikan stok
         if (now()->gt($order->payment_deadline)) {
             $this->restoreStockAndCancel($order);
             return redirect()->route('home')->with('error', 'Waktu pembayaran telah habis.');
@@ -164,12 +200,14 @@ class CheckoutController extends Controller
     }
 
     /**
-     * Simulasi Pembayaran Berhasil.
+     * Simulasi Pembayaran Berhasil & Generate AWB JNE.
      */
     public function simulatePay($id)
     {
-        $order = Order::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
-        
+        $order = Order::where('id', $id)
+                      ->where('user_id', Auth::id())
+                      ->firstOrFail();
+
         if (now()->gt($order->payment_deadline)) {
             $this->restoreStockAndCancel($order);
             return redirect()->route('home')->with('error', 'Maaf, waktu pembayaran sudah habis.');
@@ -179,8 +217,49 @@ class CheckoutController extends Controller
             return redirect()->route('home');
         }
 
-        $order->update(['status' => 'success']);
-        return redirect()->route('home')->with('success', 'Pembayaran berhasil dikonfirmasi!');
+        // ✅ Semua data dinamis — tidak ada yang hardcode lagi
+        $jneData = [
+            'OLSHOP_BRANCH'         => 'CGK000',
+            'OLSHOP_CUST'           => '80540008',
+            'OLSHOP_ORDERID'        => $order->order_number,
+            'OLSHOP_SHIPPER_NAME'   => 'FARHANA OFFICIAL',
+            'OLSHOP_SHIPPER_ADDR1'  => 'Jl. Kebon Jeruk No. 12',
+            'OLSHOP_SHIPPER_CITY'   => 'JAKARTA',
+            'OLSHOP_SHIPPER_ZIP'    => '11530',
+            'OLSHOP_SHIPPER_PHONE'  => '08123456789',
+            'OLSHOP_RECEIVER_NAME'  => $order->receiver_name,
+            'OLSHOP_RECEIVER_ADDR1' => $order->receiver_address,
+            'OLSHOP_RECEIVER_ADDR2' => '-',
+            // ✅ Diambil dari kolom order, bukan hardcode
+            'OLSHOP_RECEIVER_CITY'  => $order->receiver_city,
+            'OLSHOP_RECEIVER_ZIP'   => $order->receiver_zip,
+            'OLSHOP_RECEIVER_PHONE' => $order->receiver_phone,
+            'OLSHOP_QTY'            => $order->items->sum('quantity'),
+            'OLSHOP_WEIGHT'         => 1,
+            'OLSHOP_GOODSDESC'      => 'Koleksi Farhana Moslem Wear',
+            'OLSHOP_GOODSVALUE'     => $order->total_amount,
+            'OLSHOP_GOODSTYPE'      => '2',
+            'OLSHOP_INS_FLAG'       => 'N',
+            'OLSHOP_ORIG'           => 'CGK10000',
+            'OLSHOP_DEST'           => $order->destination_id,
+            // ✅ Diambil dari pilihan user (REG, YES, OKE, dll)
+            'OLSHOP_SERVICE'        => $order->service_code,
+            'OLSHOP_COD_FLAG'       => 'N',
+            'OLSHOP_COD_AMOUNT'     => 0,
+        ];
+
+        $res = $this->jneService->createAirwaybill($jneData);
+
+        if (isset($res['detail'][0]) && $res['detail'][0]['status'] == 'sukses') {
+            $order->update([
+                'status'          => 'success',
+                'tracking_number' => $res['detail'][0]['cnote_no'],
+            ]);
+        } else {
+            $order->update(['status' => 'success']);
+        }
+
+        return redirect()->route('home')->with('success', 'Pembayaran berhasil dan resi JNE telah dibuat!');
     }
 
     /**
