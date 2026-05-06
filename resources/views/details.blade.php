@@ -330,8 +330,28 @@
 
         .hidden { display:none !important }
     </style>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
-<body>
+<body x-data="{ openModal: null }">
+
+    <!-- Modal Container -->
+    <template x-if="openModal">
+        <div class="fixed inset-0 z-[400] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" @click.self="openModal = null">
+            <div class="bg-white w-full max-w-[1000px] max-h-[85vh] overflow-y-auto rounded-[2rem] shadow-2xl relative text-gray-800" style="scrollbar-width: none;">
+                <button @click="openModal = null" class="absolute top-8 right-8 text-gray-400 hover:text-black z-50 bg-white/80 backdrop-blur rounded-full p-2 transition-all">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+                <div class="prose prose-sm max-w-none">
+                    <template x-if="openModal === 'contact'"><div>@include('includes.contact')</div></template>
+                    <template x-if="openModal === 'shipping'"><div>@include('includes.shipping')</div></template>
+                    <template x-if="openModal === 'howtobuy'"><div>@include('includes.how-to-buy')</div></template>
+                    <template x-if="openModal === 'faqs'"><div>@include('includes.faqs')</div></template>
+                </div>
+            </div>
+        </div>
+    </template>
 
     {{-- WhatsApp FAB --}}
     <a href="https://wa.me/628123456789?text=Halo%20Farhana,%20saya%20tertarik%20dengan%20produk%20{{ urlencode($product->name) }}"
@@ -348,9 +368,13 @@
                 </svg>
                 <span>Collection</span>
             </a>
-            <a href="{{ route('home') }}" class="brand" aria-label="Farhana Home">Farhana</a>
-            <div style="width:80px" aria-hidden="true"></div>
-        </div>
+            <div class="shrink-0 flex items-center">
+                <a href="{{ route('home') }}">
+                    <img src="{{ Storage::url('LOGO-FARHANA-NEW-TRANSPARENT.png') }}"
+                         alt="Farhana"
+                         class="h-20 w-auto object-contain">
+                </a>
+            </div>
         @if(session('success'))
             <div class="success-toast" role="alert">{{ session('success') }}</div>
         @endif
@@ -550,13 +574,51 @@
                     <p class="f-title">Tentang Farhana</p>
                     <p class="f-text">Eksklusivitas dalam balutan kesantunan. Kami menghadirkan kualitas terbaik untuk gaya Muslim modern yang elegan dan berkelas.</p>
                 </div>
-                <div>
-                    <p class="f-title">Layanan Pelanggan</p>
-                    <a href="#" class="f-link">Hubungi Kami</a>
-                    <a href="#" class="f-link">Pengiriman &amp; Pengembalian</a>
-                    <a href="#" class="f-link">Cara Berbelanja</a>
-                    <a href="#" class="f-link">FAQ</a>
+                <div x-data="{ openModal: null }">
+    <p class="f-title" style="color: #f7f7f7ff; font-weight: 800; text-transform: uppercase; letter-spacing: 0.3em; font-size: 9px; margin-bottom: 1.5rem;">
+        Layanan Pelanggan
+    </p>
+    
+    <div class="flex flex-col gap-3">
+        <button @click="openModal = 'contact'" class="f-link text-left hover:translate-x-1 transition-transform duration-300">Hubungi Kami</button>
+        <button @click="openModal = 'shipping'" class="f-link text-left hover:translate-x-1 transition-transform duration-300">Pengiriman & Pengembalian</button>
+        <button @click="openModal = 'howtobuy'" class="f-link text-left hover:translate-x-1 transition-transform duration-300">Cara Berbelanja</button>
+        <button @click="openModal = 'faqs'" class="f-link text-left hover:translate-x-1 transition-transform duration-300">FAQ</button>
+    </div>
+
+    {{-- Modal Overlay Container --}}
+    <div x-show="openModal" 
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 z-[999] flex items-center justify-center p-6 bg-black/40 backdrop-blur-sm"
+         style="display: none;">
+        
+        {{-- Modal Content Box --}}
+        <div @click.away="openModal = null" 
+             class="bg-white w-full max-w-4xl max-h-[90vh] overflow-y-auto relative rounded-[2.5rem] shadow-2xl">
+            
+            {{-- Close Button --}}
+            <button @click="openModal = null" class="absolute top-8 right-8 z-10 group">
+                <div class="p-2 rounded-full bg-gray-50 group-hover:bg-gray-100 transition-colors">
+                    <svg class="w-5 h-5 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
                 </div>
+            </button>
+
+            <div class="prose prose-sm max-w-none">
+                <template x-if="openModal === 'contact'"><div>@include('includes.contact')</div></template>
+                <template x-if="openModal === 'shipping'"><div>@include('includes.shipping')</div></template>
+                <template x-if="openModal === 'howtobuy'"><div>@include('includes.how-to-buy')</div></template>
+                <template x-if="openModal === 'faqs'"><div>@include('includes.faqs')</div></template>
+            </div>
+        </div>
+    </div>
+</div>
                 <div>
                     <p class="f-title">Ikuti Kami</p>
                     <div class="f-social">
@@ -627,37 +689,27 @@
 
     /* ─── COLOR CHANGE ─── */
     function onColorChange(color) {
-        // Sync gallery to matching color image
-        const thumb = document.querySelector(`.thumb[data-color="${color.toLowerCase().trim()}"]`);
-        if (thumb) goToImage(parseInt(thumb.dataset.index));
+    const thumb = document.querySelector(`.thumb[data-color="${color.toLowerCase().trim()}"]`);
+    if (thumb) goToImage(parseInt(thumb.dataset.index));
 
-        // Enable/disable sizes based on selected color
-        document.querySelectorAll('.sz-opt').forEach(opt => {
-            const v     = variants.find(v => v.color === color && v.size === opt.dataset.size);
-            const inp   = opt.querySelector('input');
-            const avail = v && parseInt(v.stock) > 0;
-            opt.classList.toggle('off', !avail);
-            inp.disabled = !avail;
-            if (!avail && inp.checked) { inp.checked = false; }
-            inp.disabled = false; // unlock all (we show disabled visually via .off)
-        });
+    const isPreorder = {{ $product->is_preorder ? 'true' : 'false' }};
 
-        // Re-lock truly unavailable
-        document.querySelectorAll('.sz-opt').forEach(opt => {
-            const v   = variants.find(v => v.color === color && v.size === opt.dataset.size);
-            const avail = v && parseInt(v.stock) > 0;
-            opt.classList.toggle('off', !avail);
-            const inp = opt.querySelector('input');
-            inp.disabled = !avail;
-            if (!avail && inp.checked) inp.checked = false;
-        });
+    document.querySelectorAll('.sz-opt').forEach(opt => {
+        const v     = variants.find(v => v.color === color && v.size === opt.dataset.size);
+        const inp   = opt.querySelector('input');
+        const avail = isPreorder ? !!v : (v && parseInt(v.stock) > 0);
 
-        document.getElementById('variantId').value = '';
-        hideMsg();
-        resetStockBadge();
-        resetQty();
-        onSizeChange(); // re-evaluate if size is already selected
-    }
+        opt.classList.toggle('off', !avail);
+        inp.disabled = !avail;
+        if (!avail && inp.checked) inp.checked = false;
+    });
+
+    document.getElementById('variantId').value = '';
+    hideMsg();
+    resetStockBadge();
+    resetQty();
+    onSizeChange();
+}
 
     /* ─── SIZE CHANGE ─── */
     function onSizeChange() {
@@ -737,7 +789,6 @@
 
     hideMsg();
 
-    // Aman: cek dulu element-nya ada
     const colorHint = document.getElementById('colorHint');
     const sizeHint  = document.getElementById('sizeHint');
     if (colorHint) colorHint.style.display = 'none';
@@ -754,19 +805,25 @@
         return;
     }
 
+    const isPreorder = {{ $product->is_preorder ? 'true' : 'false' }};
+
     const v = variants.find(v => (!hasColor || v.color === color.value) && v.size === size.value);
-    if (!v || parseInt(v.stock) <= 0) {
+
+    if (!v || (!isPreorder && parseInt(v.stock) <= 0)) {
         showMsg('Ukuran ini sudah habis terjual.');
         return;
     }
 
     const form = document.getElementById('cartForm');
-
-    // Hapus buy_now lama dulu sebelum append (hindari duplikat)
     const existing = form.querySelector('input[name="buy_now"]');
     if (existing) existing.remove();
 
     if (type === 'buy') {
+
+    if (!isLoggedIn) {
+            window.location.href = '{{ route('login') }}?redirect={{ urlencode(request()->fullUrl()) }}';
+            return;
+        }
         const inp = document.createElement('input');
         inp.type = 'hidden'; inp.name = 'buy_now'; inp.value = '1';
         form.appendChild(inp);

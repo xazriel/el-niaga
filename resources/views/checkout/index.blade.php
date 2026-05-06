@@ -7,62 +7,606 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
-        body { font-family: 'Inter', sans-serif; }
-        input:focus, textarea:focus, select:focus, button:focus { outline: none !important; box-shadow: none !important; }
-        input:-webkit-autofill { -webkit-text-fill-color: #1a1a1a; -webkit-box-shadow: 0 0 0px 1000px #f7f7f7 inset; transition: background-color 5000s ease-in-out 0s; }
-        .form-input-container { background-color: #f7f7f7; border: 1px solid #f0f0f0; border-radius: 8px; padding: 12px 16px; transition: all 0.3s ease; }
-        .form-input-container:focus-within { border-color: #5A5A00; background-color: #fff; }
-        .form-label-custom { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: #9ca3af; margin-bottom: 4px; display: block; font-weight: 500; }
-        .form-field-custom { width: 100%; background: transparent; border: none; padding: 0; font-size: 13px; color: #1a1a1a; outline: none; }
-        .select2-container { width: 100% !important; }
-        .select2-container--default .select2-selection--single { background-color: #f7f7f7; border: 1px solid #f0f0f0; border-radius: 8px; height: 60px; display: flex; align-items: center; transition: border-color 0.3s ease; }
-        .select2-container--default.select2-container--focus .select2-selection--single { border-color: #5A5A00 !important; }
-        .payment-radio:checked + .payment-card { border-color: #5A5A00; background-color: #fafff0; }
-        .payment-radio:checked + .payment-card .radio-circle { border-color: #5A5A00; }
-        .payment-radio:checked + .payment-card .radio-dot { opacity: 1; }
-        .courier-radio:checked + .courier-card { border-color: #5A5A00 !important; background-color: #fafff0; }
-        .custom-scrollbar::-webkit-scrollbar { width: 3px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: #f9f9f9; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e5e7eb; }
-        @keyframes shimmer { 0% { background-position: -468px 0; } 100% { background-position: 468px 0; } }
-        .skeleton { background: #f6f7f8; background-image: linear-gradient(to right, #f6f7f8 0%, #edeef1 20%, #f6f7f8 40%, #f6f7f8 100%); background-repeat: no-repeat; background-size: 800px 104px; animation: shimmer 1.5s infinite linear; }
+        :root {
+            --primary:     #2F3526;
+            --white:       #FFFFFF;
+            --black:       #000000;
+            --olive-tint:  #6B705C;
+            --light-gray:  #E9E9E9;
+            --bg:          #F5F5F3;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--black);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── Focus resets ── */
+        input:focus, textarea:focus, select:focus, button:focus {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+        input:-webkit-autofill {
+            -webkit-text-fill-color: var(--black);
+            -webkit-box-shadow: 0 0 0px 1000px #fff inset;
+            transition: background-color 5000s ease-in-out 0s;
+        }
+
+        /* ── Page load animation ── */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(18px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .fade-up { animation: fadeUp 0.55s cubic-bezier(.22,.68,0,1.2) both; }
+        .delay-1 { animation-delay: .08s; }
+        .delay-2 { animation-delay: .16s; }
+        .delay-3 { animation-delay: .24s; }
+        .delay-4 { animation-delay: .32s; }
+
+        /* ── Header ── */
+        .site-header {
+            background: var(--primary);
+            border-bottom: none;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            padding: 0 48px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .header-back {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: rgba(255,255,255,.55);
+            font-size: 10px;
+            letter-spacing: .15em;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: color .2s;
+        }
+        .header-back:hover { color: #fff; }
+        .header-logo {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: .45em;
+            text-transform: uppercase;
+            color: var(--white);
+        }
+        .header-spacer { width: 80px; }
+
+        /* ── Progress bar ── */
+        .progress-bar {
+            background: var(--primary);
+            padding: 0 48px 16px;
+        }
+        .progress-steps {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+        .progress-step {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 9px;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,.35);
+        }
+        .progress-step.active { color: rgba(255,255,255,.9); }
+        .progress-step .dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: rgba(255,255,255,.25);
+            flex-shrink: 0;
+        }
+        .progress-step.active .dot { background: var(--white); }
+        .progress-line {
+            flex: 1;
+            height: 1px;
+            background: rgba(255,255,255,.12);
+            margin: 0 12px;
+        }
+
+        /* ── Main layout ── */
+        .checkout-main {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 48px 24px 80px;
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 40px;
+            align-items: start;
+        }
+        @media (max-width: 900px) {
+            .checkout-main { grid-template-columns: 1fr; }
+            .site-header, .progress-bar { padding-left: 20px; padding-right: 20px; }
+        }
+
+        /* ── Section ── */
+        .section { margin-bottom: 36px; }
+        .section-label {
+            font-size: 9px;
+            letter-spacing: .2em;
+            text-transform: uppercase;
+            color: var(--olive-tint);
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .section-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--light-gray);
+        }
+
+        /* ── Address card ── */
+        .addr-display {
+            background: var(--white);
+            border: 1px solid var(--light-gray);
+            border-radius: 16px;
+            padding: 22px 26px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+            transition: border-color .25s, box-shadow .25s;
+        }
+        .addr-display:hover { border-color: var(--olive-tint); box-shadow: 0 4px 20px rgba(47,53,38,.06); }
+        .addr-name { font-size: 13px; font-weight: 700; color: var(--black); margin-bottom: 4px; }
+        .addr-meta { font-size: 11px; color: var(--olive-tint); line-height: 1.8; }
+        .btn-change {
+            font-size: 9px;
+            letter-spacing: .15em;
+            text-transform: uppercase;
+            color: var(--primary);
+            background: none;
+            border: 1px solid rgba(47,53,38,.3);
+            padding: 7px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all .2s;
+            font-family: inherit;
+            flex-shrink: 0;
+        }
+        .btn-change:hover { background: var(--primary); color: var(--white); border-color: var(--primary); }
+
+        /* ── Courier & Payment cards ── */
+        .option-card {
+            background: var(--white);
+            border: 1px solid var(--light-gray);
+            border-radius: 14px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: border-color .2s, box-shadow .2s, background .2s;
+            margin-bottom: 10px;
+        }
+        .option-card:hover { border-color: var(--olive-tint); box-shadow: 0 3px 14px rgba(47,53,38,.07); }
+        .option-card.selected {
+            border-color: var(--primary);
+            background: rgba(47,53,38,.03);
+            box-shadow: 0 4px 18px rgba(47,53,38,.1);
+        }
+        .option-card-left { display: flex; align-items: center; gap: 16px; }
+        .option-badge {
+            width: 42px; height: 42px;
+            background: var(--primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8px;
+            font-weight: 800;
+            letter-spacing: .06em;
+            color: var(--white);
+            flex-shrink: 0;
+        }
+        .option-badge.light {
+            background: var(--light-gray);
+            color: var(--primary);
+        }
+        .option-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .07em;
+            color: var(--black);
+            margin-bottom: 2px;
+        }
+        .option-desc { font-size: 10px; color: var(--olive-tint); }
+        .option-price { font-size: 13px; font-weight: 700; color: var(--black); margin-right: 12px; }
+
+        /* Radio custom */
+        .radio-ring {
+            width: 18px; height: 18px;
+            border-radius: 50%;
+            border: 1.5px solid var(--light-gray);
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+            transition: border-color .2s;
+        }
+        .option-card.selected .radio-ring { border-color: var(--primary); }
+        .radio-fill {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--primary);
+            opacity: 0;
+            transition: opacity .15s;
+        }
+        .option-card.selected .radio-fill { opacity: 1; }
+
+        /* ── Empty courier state ── */
+        .courier-empty {
+            border: 1.5px dashed var(--light-gray);
+            border-radius: 16px;
+            padding: 32px;
+            text-align: center;
+            font-size: 10px;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: var(--olive-tint);
+        }
+
+        /* ── Sidebar ── */
+        .sidebar {
+            position: sticky;
+            top: 88px;
+        }
+        .sidebar-card {
+            background: var(--primary);
+            border-radius: 24px;
+            padding: 32px 28px;
+            color: var(--white);
+        }
+        .sidebar-title {
+            font-size: 9px;
+            letter-spacing: .25em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,.45);
+            margin-bottom: 24px;
+            font-weight: 600;
+        }
+
+        /* Cart items */
+        .cart-item { display: flex; gap: 14px; margin-bottom: 20px; }
+        .cart-img {
+            width: 52px; height: 64px;
+            border-radius: 8px;
+            object-fit: cover;
+            flex-shrink: 0;
+            opacity: .9;
+        }
+        .cart-info { flex: 1; }
+        .cart-name {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: var(--white);
+            line-height: 1.4;
+            margin-bottom: 4px;
+        }
+        .cart-variant { font-size: 10px; color: rgba(255,255,255,.45); }
+        .cart-price {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--white);
+            margin-top: 6px;
+        }
+
+        /* Totals */
+        .totals-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 11px;
+        }
+        .totals-row span:first-child { color: rgba(255,255,255,.5); }
+        .totals-row span:last-child { color: rgba(255,255,255,.85); font-weight: 500; }
+        .totals-divider {
+            height: 1px;
+            background: rgba(255,255,255,.1);
+            margin: 16px 0;
+        }
+        .totals-grand {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+        .totals-grand-label {
+            font-size: 9px;
+            letter-spacing: .2em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,.5);
+        }
+        .totals-grand-val {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--white);
+            letter-spacing: -.02em;
+        }
+
+        /* ── CTA Button ── */
+        .btn-submit {
+            width: 100%;
+            margin-top: 28px;
+            background: var(--white);
+            color: var(--primary);
+            border: none;
+            padding: 16px;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: .25em;
+            text-transform: uppercase;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all .25s;
+        }
+        .btn-submit:hover:not(:disabled) {
+            background: var(--black);
+            color: var(--white);
+        }
+        .btn-submit:disabled {
+            opacity: .3;
+            cursor: not-allowed;
+        }
+        .btn-notice {
+            font-size: 9px;
+            color: rgba(255,255,255,.3);
+            text-align: center;
+            margin-top: 12px;
+            line-height: 1.6;
+            letter-spacing: .03em;
+        }
+
+        /* ── Scrollbar ── */
+        .custom-scrollbar::-webkit-scrollbar { width: 2px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,.15); }
+
+        /* ── Skeleton ── */
+        @keyframes shimmer {
+            0%   { background-position: -600px 0; }
+            100% { background-position: 600px 0; }
+        }
+        .skeleton {
+            background: #e8e8e6;
+            background-image: linear-gradient(to right, #e8e8e6 0%, #d8d8d5 20%, #e8e8e6 40%, #e8e8e6 100%);
+            background-repeat: no-repeat;
+            background-size: 800px 104px;
+            animation: shimmer 1.4s infinite linear;
+            border-radius: 4px;
+        }
+
+        /* ── Modal ── */
         .modal-overlay { display: none; }
         .modal-overlay.active { display: flex; }
-        .addr-item-selected { border-color: #5A5A00 !important; background-color: #fafff0; }
-        .addr-item-selected .addr-dot { opacity: 1 !important; }
-        .addr-item-selected .addr-ring { border-color: #5A5A00 !important; }
+        .modal-wrap {
+            background: var(--white);
+            width: 100%;
+            max-width: 520px;
+            border-radius: 24px;
+            overflow: hidden;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 32px 80px rgba(0,0,0,.18);
+        }
+        .modal-header {
+            background: var(--primary);
+            padding: 20px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        .modal-header-title {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .2em;
+            text-transform: uppercase;
+            color: var(--white);
+        }
+        .modal-close {
+            color: rgba(255,255,255,.5);
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: color .2s;
+            padding: 0;
+        }
+        .modal-close:hover { color: var(--white); }
+
+        /* Addr list item */
+        .addr-item {
+            border: 1px solid var(--light-gray);
+            border-radius: 14px;
+            padding: 18px 20px;
+            cursor: pointer;
+            transition: border-color .2s, background .2s, box-shadow .2s;
+            margin-bottom: 10px;
+        }
+        .addr-item:hover { border-color: var(--olive-tint); box-shadow: 0 3px 12px rgba(47,53,38,.07); }
+        .addr-item-selected {
+            border-color: var(--primary) !important;
+            background: rgba(47,53,38,.04);
+        }
+        .addr-item-selected .addr-ring { border-color: var(--primary) !important; }
+        .addr-item-selected .addr-dot  { opacity: 1 !important; }
+        .addr-ring {
+            width: 18px; height: 18px;
+            border-radius: 50%;
+            border: 1.5px solid var(--light-gray);
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+            transition: border-color .2s;
+        }
+        .addr-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--primary);
+            opacity: 0;
+            transition: opacity .15s;
+        }
+        .addr-badge {
+            font-size: 8px;
+            background: var(--primary);
+            color: var(--white);
+            padding: 2px 10px;
+            border-radius: 20px;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+        .addr-rec-name  { font-size: 12px; font-weight: 700; color: var(--black); }
+        .addr-rec-meta  { font-size: 10px; color: var(--olive-tint); margin-top: 3px; line-height: 1.6; }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--light-gray);
+            flex-shrink: 0;
+        }
+        .btn-add-addr {
+            width: 100%;
+            border: 1.5px dashed var(--light-gray);
+            background: none;
+            color: var(--olive-tint);
+            font-family: inherit;
+            font-size: 9px;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            padding: 14px;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all .2s;
+        }
+        .btn-add-addr:hover { border-color: var(--primary); color: var(--primary); }
+
+        /* Form inputs (modal) */
+        .form-group {
+            background: var(--bg);
+            border: 1px solid var(--light-gray);
+            border-radius: 12px;
+            padding: 12px 16px;
+            transition: border-color .25s;
+        }
+        .form-group:focus-within { border-color: var(--primary); background: var(--white); }
+        .form-lbl {
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: .12em;
+            color: var(--olive-tint);
+            margin-bottom: 4px;
+            display: block;
+            font-weight: 600;
+        }
+        .form-fld {
+            width: 100%;
+            background: transparent;
+            border: none;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-size: 12px;
+            color: var(--black);
+            outline: none;
+        }
+        .form-fld::placeholder { color: #bbb; }
+
+        /* Select2 inside modal */
+        .select2-container { width: 100% !important; }
+        .select2-container--default .select2-selection--single {
+            background: var(--bg);
+            border: 1px solid var(--light-gray);
+            border-radius: 12px;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-size: 12px;
+            transition: border-color .25s;
+        }
+        .select2-container--default.select2-container--focus .select2-selection--single {
+            border-color: var(--primary) !important;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 52px;
+            padding-left: 16px;
+            color: var(--black);
+            font-size: 12px;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 52px;
+        }
+
+        /* Modal body scroll */
+        .modal-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+        }
+        .modal-body.custom-scrollbar::-webkit-scrollbar { width: 2px; }
+        .modal-body.custom-scrollbar::-webkit-scrollbar-thumb { background: var(--light-gray); }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            background: #fee2e2;
+            border: 1px solid #fca5a5;
+            color: #991b1b;
+            font-size: 11px;
+            padding: 12px 24px;
+            border-radius: 50px;
+            letter-spacing: .03em;
+        }
     </style>
 </head>
-<body class="bg-[#FCFCFA] text-[#1a1a1a] antialiased">
+<body>
 
 @if(session('error'))
-<div class="fixed top-4 left-1/2 -translate-x-1/2 z-[9999] bg-red-50 border border-red-200 text-red-700 text-[11px] px-6 py-3 rounded-xl shadow-sm">
-    {{ session('error') }}
-</div>
+<div class="toast">{{ session('error') }}</div>
 @endif
 
 {{-- ══════════════════════════════════════════════════════
      MODAL: SELECT / ADD ADDRESS
 ══════════════════════════════════════════════════════ --}}
-<div id="address-modal" class="modal-overlay fixed inset-0 z-[200] bg-black/50 items-center justify-center p-4">
-    <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
+<div id="address-modal" class="modal-overlay fixed inset-0 z-[200] bg-black/60 items-center justify-center p-4">
+    <div class="modal-wrap">
 
-        {{-- Modal Header --}}
-        <div class="flex justify-between items-center px-6 py-5 border-b border-gray-50 flex-shrink-0">
-            <h3 id="modal-title" class="text-[13px] font-bold uppercase tracking-widest">Select Delivery Address</h3>
-            <button type="button" onclick="closeAddressModal()" class="text-gray-400 hover:text-black transition">
+        <div class="modal-header">
+            <span id="modal-title" class="modal-header-title">Select Delivery Address</span>
+            <button type="button" onclick="closeAddressModal()" class="modal-close">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
             </button>
         </div>
 
-        {{-- Panel 1: Daftar Alamat --}}
+        {{-- Panel 1: List --}}
         <div id="panel-list" class="flex flex-col flex-1 overflow-hidden">
-            <div class="flex-1 overflow-y-auto p-6 space-y-3 custom-scrollbar">
+            <div class="modal-body custom-scrollbar">
                 @forelse($addresses as $addr)
-                <div class="addr-item border border-gray-100 rounded-xl p-5 cursor-pointer hover:border-[#5A5A00] transition-all {{ $addr->is_default ? 'addr-item-selected' : '' }}"
+                <div class="addr-item {{ $addr->is_default ? 'addr-item-selected' : '' }}"
                     data-id="{{ $addr->id }}"
                     data-name="{{ $addr->recipient_name }}"
                     data-phone="{{ $addr->phone }}"
@@ -71,77 +615,72 @@
                     data-city="{{ $addr->city_name }}"
                     data-zip="{{ $addr->zip_code ?? $addr->postal_code }}"
                     data-label="{{ $addr->address_label ?? ($addr->city_name . ($addr->province_name ? ', '.$addr->province_name : '')) }}">
-                    <div class="flex items-start justify-between gap-3">
-                        <div class="flex-1 min-w-0">
-                            <div class="flex items-center gap-2 flex-wrap">
-                                <span class="font-bold text-[12px]">{{ $addr->recipient_name }}</span>
+                    <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:12px;">
+                        <div style="flex:1; min-width:0;">
+                            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:4px;">
+                                <span class="addr-rec-name">{{ $addr->recipient_name }}</span>
                                 @if($addr->is_default)
-                                <span class="text-[9px] bg-[#5A5A00] text-white px-2 py-0.5 rounded-full">Default</span>
+                                <span class="addr-badge">Default</span>
                                 @endif
                             </div>
-                            <p class="text-[11px] text-gray-500 mt-0.5">{{ $addr->phone }}</p>
-                            <p class="text-[11px] text-gray-500 mt-0.5 truncate">{{ $addr->address }}</p>
-                            <p class="text-[11px] text-gray-400 mt-0.5">
+                            <div class="addr-rec-meta">
+                                {{ $addr->phone }}<br>
+                                {{ $addr->address }}<br>
                                 {{ $addr->city_name }}{{ $addr->province_name ? ', '.$addr->province_name : '' }}
-                            </p>
+                            </div>
                             @if(!$addr->destination_id)
-                            <p class="text-[10px] text-amber-500 mt-1">⚠ Belum punya kode JNE — perlu dipilih ulang lokasinya.</p>
+                            <p style="font-size:10px; color:#d97706; margin-top:6px;">⚠ Lokasi belum lengkap — perlu dipilih ulang.</p>
                             @endif
                         </div>
-                        <div class="addr-ring w-5 h-5 rounded-full border-2 border-gray-200 flex items-center justify-center flex-shrink-0 mt-0.5 transition-all {{ $addr->is_default ? 'border-[#5A5A00]' : '' }}">
-                            <div class="addr-dot w-2.5 h-2.5 rounded-full bg-[#5A5A00] transition-opacity {{ $addr->is_default ? 'opacity-100' : 'opacity-0' }}"></div>
+                        <div class="addr-ring {{ $addr->is_default ? 'border-[#2F3526]' : '' }}">
+                            <div class="addr-dot {{ $addr->is_default ? '' : '' }}" style="{{ $addr->is_default ? 'opacity:1' : 'opacity:0' }}"></div>
                         </div>
                     </div>
                 </div>
                 @empty
-                <div class="py-10 text-center">
-                    <p class="text-[11px] text-gray-400">Belum ada alamat tersimpan.</p>
-                </div>
+                <div style="padding:40px; text-align:center; font-size:11px; color:var(--olive-tint);">Belum ada alamat tersimpan.</div>
                 @endforelse
             </div>
-            <div class="p-4 border-t border-gray-50 flex-shrink-0">
-                <button type="button" onclick="showNewAddressPanel()"
-                    class="w-full border-2 border-dashed border-gray-200 text-gray-400 text-[11px] py-3 rounded-xl hover:border-[#5A5A00] hover:text-[#5A5A00] transition-all uppercase tracking-widest">
-                    + Add New Address
-                </button>
+            <div class="modal-footer">
+                <button type="button" onclick="showNewAddressPanel()" class="btn-add-addr">+ Add New Address</button>
             </div>
         </div>
 
-        {{-- Panel 2: Form Alamat Baru --}}
+        {{-- Panel 2: New address --}}
         <div id="panel-new" class="hidden flex-col flex-1 overflow-hidden">
-            <div class="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar">
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="form-input-container">
-                        <label class="form-label-custom">Full Name</label>
-                        <input type="text" id="new_name" class="form-field-custom" placeholder="Nama penerima">
+            <div class="modal-body custom-scrollbar" style="display:flex; flex-direction:column; gap:14px;">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                    <div class="form-group">
+                        <label class="form-lbl">Full Name</label>
+                        <input type="text" id="new_name" class="form-fld" placeholder="Nama penerima">
                     </div>
-                    <div class="form-input-container">
-                        <label class="form-label-custom">Phone</label>
-                        <input type="text" id="new_phone" class="form-field-custom" placeholder="08xxxxxxxxxx">
+                    <div class="form-group">
+                        <label class="form-lbl">Phone</label>
+                        <input type="text" id="new_phone" class="form-fld" placeholder="08xxxxxxxxxx">
                     </div>
                 </div>
-                <div class="space-y-2">
-                    <label class="form-label-custom ml-1">Sub-district, District, City</label>
-                    <select id="new_destination" class="w-full">
+                <div>
+                    <label class="form-lbl" style="margin-bottom:8px; display:block;">Sub-district, District, City</label>
+                    <select id="new_destination" style="width:100%;">
                         <option value="">Search location...</option>
                     </select>
                 </div>
-                <div class="form-input-container !h-auto">
-                    <label class="form-label-custom">Detailed Address</label>
-                    <textarea id="new_address" rows="3" class="form-field-custom resize-none" placeholder="Jalan, nomor rumah, RT/RW, dll."></textarea>
+                <div class="form-group">
+                    <label class="form-lbl">Detailed Address</label>
+                    <textarea id="new_address" rows="3" class="form-fld" style="resize:none;" placeholder="Jalan, nomor rumah, RT/RW, dll."></textarea>
                 </div>
-                <label class="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" id="new_is_default" class="accent-[#5A5A00] w-4 h-4">
-                    <span class="text-[11px] text-gray-600">Set as default address</span>
+                <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+                    <input type="checkbox" id="new_is_default" style="accent-color:var(--primary); width:15px; height:15px;">
+                    <span style="font-size:11px; color:var(--olive-tint);">Set as default address</span>
                 </label>
             </div>
-            <div class="p-4 border-t border-gray-50 flex gap-3 flex-shrink-0">
+            <div class="modal-footer" style="display:flex; gap:10px;">
                 <button type="button" onclick="showListPanel()"
-                    class="flex-1 py-3 border border-gray-200 rounded-xl text-[11px] uppercase tracking-widest hover:bg-gray-50 transition text-gray-600">
+                    style="flex:1; padding:14px; border:1px solid var(--light-gray); border-radius:50px; font-family:inherit; font-size:9px; letter-spacing:.15em; text-transform:uppercase; cursor:pointer; background:none; color:var(--olive-tint); transition:all .2s;">
                     ← Back
                 </button>
                 <button type="button" id="btn-save-new-addr"
-                    class="flex-1 py-3 bg-[#5A5A00] text-white rounded-xl text-[11px] uppercase tracking-widest hover:bg-black transition font-bold">
+                    style="flex:2; padding:14px; background:var(--primary); color:var(--white); border:none; border-radius:50px; font-family:inherit; font-size:9px; letter-spacing:.18em; text-transform:uppercase; font-weight:800; cursor:pointer; transition:background .2s;">
                     Save Address
                 </button>
             </div>
@@ -153,16 +692,38 @@
 {{-- ══════════════════════════════════════════════════════
      HEADER
 ══════════════════════════════════════════════════════ --}}
-<header class="py-6 px-8 flex justify-between items-center bg-white border-b border-gray-50 sticky top-0 z-50">
-    <a href="{{ route('cart.index') }}" class="text-[10px] uppercase tracking-widest flex items-center gap-2 hover:opacity-60 transition">
-        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-        Back to Bag
+<header class="site-header fade-up">
+    <a href="{{ route('cart.index') }}" class="header-back">
+        <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+        Cart
     </a>
-    <div class="text-[11px] font-bold tracking-[0.5em] uppercase">Farhana</div>
-    <div class="w-10"></div>
+    <div class="header-logo">Farhana</div>
+    <div class="header-spacer"></div>
 </header>
 
-<main class="max-w-6xl mx-auto px-6 py-16">
+{{-- Progress --}}
+<div class="progress-bar fade-up delay-1">
+    <div class="progress-steps">
+        <div class="progress-step">
+            <div class="dot"></div>
+            Cart
+        </div>
+        <div class="progress-line"></div>
+        <div class="progress-step active">
+            <div class="dot"></div>
+            Checkout
+        </div>
+        <div class="progress-line"></div>
+        <div class="progress-step">
+            <div class="dot"></div>
+            Confirm
+        </div>
+    </div>
+</div>
+
+<main>
     <form action="{{ route('checkout.store') }}" method="POST" id="checkout-form">
         @csrf
 
@@ -178,139 +739,131 @@
         <input type="hidden" name="courier_name"     id="hidden_courier_name">
         <input type="hidden" name="service_code"     id="hidden_service_code">
 
-        <div class="flex flex-col lg:flex-row gap-16 items-start">
-            <div class="w-full lg:flex-1 space-y-12">
+        <div class="checkout-main">
 
-                {{-- ── SECTION 1: SHIPPING ADDRESS ── --}}
-                <section>
-                    <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-xl font-bold text-[#1a1a1a]">Shipping Address</h2>
-                        <button type="button" onclick="openAddressModal()"
-                            class="text-[10px] uppercase tracking-widest text-[#5A5A00] hover:text-black transition flex items-center gap-1 font-medium">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
-                            </svg>
-                            Change
-                        </button>
-                    </div>
+            {{-- LEFT COLUMN --}}
+            <div>
+
+                {{-- ── 01 SHIPPING ADDRESS ── --}}
+                <div class="section fade-up delay-2">
+                    <div class="section-label">01 — Shipping Address</div>
 
                     @if($defaultAddr)
-                    <div class="bg-white border border-gray-100 rounded-xl p-5 space-y-0.5">
-                        <p id="display-name" class="font-bold text-[13px]">{{ $defaultAddr->recipient_name }}</p>
-                        <p id="display-phone" class="text-[11px] text-gray-500">{{ $defaultAddr->phone }}</p>
-                        <p id="display-address" class="text-[11px] text-gray-500 mt-1">{{ $defaultAddr->address }}</p>
-                        <p id="display-location" class="text-[11px] text-gray-400">
-                            {{ $defaultAddr->address_label ?? ($defaultAddr->city_name . ($defaultAddr->province_name ? ', '.$defaultAddr->province_name : '')) }}
-                        </p>
+                    <div class="addr-display">
+                        <div>
+                            <div class="addr-name" id="display-name">{{ $defaultAddr->recipient_name }}</div>
+                            <div class="addr-meta">
+                                <span id="display-phone">{{ $defaultAddr->phone }}</span><br>
+                                <span id="display-address">{{ $defaultAddr->address }}</span><br>
+                                <span id="display-location">{{ $defaultAddr->address_label ?? ($defaultAddr->city_name . ($defaultAddr->province_name ? ', '.$defaultAddr->province_name : '')) }}</span>
+                            </div>
+                        </div>
+                        <button type="button" onclick="openAddressModal()" class="btn-change">Change</button>
                     </div>
                     @else
-                    <div class="bg-white border border-amber-100 rounded-xl p-5">
-                        <p class="text-[11px] text-amber-600 mb-4">Kamu belum punya alamat tersimpan. Klik <strong>Change</strong> untuk menambah alamat baru.</p>
-                        <div class="space-y-1">
-                            <p id="display-name" class="font-bold text-[13px]">{{ $user->name }}</p>
-                            <p id="display-phone" class="text-[11px] text-gray-500">{{ $user->phone ?? '—' }}</p>
-                            <p id="display-address" class="text-[11px] text-gray-400">Belum ada alamat</p>
-                            <p id="display-location" class="text-[11px] text-gray-400"></p>
+                    <div class="addr-display" style="border-color:#fcd34d; background:#fffbeb;">
+                        <div>
+                            <div class="addr-name" id="display-name">{{ $user->name }}</div>
+                            <div class="addr-meta">
+                                <span id="display-phone">{{ $user->phone ?? '—' }}</span><br>
+                                <span id="display-address" style="color:#d97706;">Belum ada alamat — klik Change untuk menambah.</span><br>
+                                <span id="display-location"></span>
+                            </div>
                         </div>
+                        <button type="button" onclick="openAddressModal()" class="btn-change">Change</button>
                     </div>
                     @endif
-                </section>
+                </div>
 
-                {{-- ── SECTION 2: SHIPPING METHOD ── --}}
-                <section>
-                    <h2 class="text-xl font-bold mb-6 text-[#1a1a1a]">Shipping Method</h2>
-                    <div id="courier_list" class="space-y-3">
-                        <div class="py-8 text-center border-2 border-dashed border-gray-100 rounded-xl">
-                            <p class="text-[11px] text-gray-400 uppercase tracking-widest">Select location to calculate shipping</p>
-                        </div>
+                {{-- ── 02 SHIPPING METHOD ── --}}
+                <div class="section fade-up delay-3">
+                    <div class="section-label">02 — Shipping Method</div>
+                    <div id="courier_list">
+                        <div class="courier-empty">Select location to calculate shipping</div>
                     </div>
-                </section>
+                </div>
 
-                {{-- ── SECTION 3: PAYMENT METHOD ── --}}
-                <section>
-                    <h2 class="text-xl font-bold mb-6 text-[#1a1a1a]">Payment Method</h2>
-                    <div class="space-y-3">
+                {{-- ── 03 PAYMENT METHOD ── --}}
+                <div class="section fade-up delay-4">
+                    <div class="section-label">03 — Payment Method</div>
+                    <div>
                         @php
                         $payments = [
-                            ['id' => 'bca_va',     'name' => 'BCA Virtual Account',     'desc' => 'Transfer via ATM, m-Banking, atau i-Banking BCA',     'icon' => 'BCA'],
-                            ['id' => 'bni_va',     'name' => 'BNI Virtual Account',     'desc' => 'Transfer via ATM, m-Banking, atau i-Banking BNI',     'icon' => 'BNI'],
-                            ['id' => 'bri_va',     'name' => 'BRI Virtual Account',     'desc' => 'Transfer via ATM, m-Banking, atau i-Banking BRI',     'icon' => 'BRI'],
-                            ['id' => 'mandiri_va', 'name' => 'Mandiri Virtual Account', 'desc' => 'Transfer via ATM, m-Banking, atau Livin Mandiri',     'icon' => 'MND'],
-                            ['id' => 'permata_va', 'name' => 'Permata Virtual Account', 'desc' => 'Transfer via ATM atau m-Banking Permata',             'icon' => 'PRM'],
-                            ['id' => 'gopay',      'name' => 'GoPay',                   'desc' => 'Bayar langsung lewat aplikasi Gojek atau GoPay',      'icon' => 'GP'],
-                            ['id' => 'shopeepay',  'name' => 'ShopeePay',               'desc' => 'Bayar lewat aplikasi Shopee',                         'icon' => 'SP'],
-                            ['id' => 'qris',       'name' => 'QRIS',                    'desc' => 'Scan QR dari aplikasi e-wallet atau m-banking apapun','icon' => 'QR'],
+                            ['id' => 'bca_va',     'name' => 'BCA Virtual Account',     'desc' => 'ATM / m-Banking / i-Banking BCA',     'icon' => 'BCA'],
+                            ['id' => 'bni_va',     'name' => 'BNI Virtual Account',     'desc' => 'ATM / m-Banking / i-Banking BNI',     'icon' => 'BNI'],
+                            ['id' => 'bri_va',     'name' => 'BRI Virtual Account',     'desc' => 'ATM / m-Banking / i-Banking BRI',     'icon' => 'BRI'],
+                            ['id' => 'mandiri_va', 'name' => 'Mandiri Virtual Account', 'desc' => 'ATM / m-Banking / Livin Mandiri',     'icon' => 'MND'],
+                            ['id' => 'permata_va', 'name' => 'Permata Virtual Account', 'desc' => 'ATM / m-Banking Permata',             'icon' => 'PRM'],
+                            ['id' => 'gopay',      'name' => 'GoPay',                   'desc' => 'Aplikasi Gojek atau GoPay',           'icon' => 'GP'],
+                            ['id' => 'shopeepay',  'name' => 'ShopeePay',               'desc' => 'Aplikasi Shopee',                     'icon' => 'SP'],
+                            ['id' => 'qris',       'name' => 'QRIS',                    'desc' => 'Scan QR dari e-wallet atau m-banking', 'icon' => 'QR'],
                         ];
                         @endphp
                         @foreach($payments as $pay)
-                        <label class="cursor-pointer">
+                        <label style="cursor:pointer; display:block;">
                             <input type="radio" name="payment_method" value="{{ $pay['id'] }}" class="hidden payment-radio" required>
-                            <div class="payment-card flex items-center justify-between border border-gray-100 p-5 rounded-xl bg-white transition-all hover:border-gray-200 hover:shadow-sm">
-                                <div class="flex items-center gap-4">
-                                    <div class="w-10 h-10 rounded-lg bg-gray-50 border border-gray-100 flex items-center justify-center flex-shrink-0">
-                                        <span class="text-[9px] font-bold text-gray-500">{{ $pay['icon'] }}</span>
-                                    </div>
+                            <div class="option-card payment-card">
+                                <div class="option-card-left">
+                                    <div class="option-badge light">{{ $pay['icon'] }}</div>
                                     <div>
-                                        <div class="font-bold text-[11px] uppercase tracking-wider text-gray-800">{{ $pay['name'] }}</div>
-                                        <div class="text-[10px] text-gray-400 mt-0.5">{{ $pay['desc'] }}</div>
+                                        <div class="option-title">{{ $pay['name'] }}</div>
+                                        <div class="option-desc">{{ $pay['desc'] }}</div>
                                     </div>
                                 </div>
-                                <div class="radio-circle w-5 h-5 rounded-full border border-gray-200 flex items-center justify-center transition-all flex-shrink-0">
-                                    <div class="radio-dot w-2.5 h-2.5 rounded-full bg-[#5A5A00] opacity-0 transition-opacity"></div>
+                                <div class="radio-ring">
+                                    <div class="radio-fill"></div>
                                 </div>
                             </div>
                         </label>
                         @endforeach
                     </div>
-                </section>
+                </div>
 
             </div>
 
-            {{-- ── ORDER SUMMARY SIDEBAR ── --}}
-            <aside class="w-full lg:w-[400px] sticky top-28">
-                <div class="bg-white border border-gray-100 p-8 shadow-[0_20px_40px_rgba(0,0,0,0.02)] rounded-2xl">
-                    <h3 class="text-[10px] uppercase tracking-[0.2em] font-bold text-gray-400 mb-6">Your Order</h3>
-                    <div class="space-y-5 mb-8 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+            {{-- ── SIDEBAR ── --}}
+            <aside class="sidebar fade-up delay-3">
+                <div class="sidebar-card">
+                    <div class="sidebar-title">Your Order</div>
+
+                    <div class="custom-scrollbar" style="max-height:260px; overflow-y:auto; margin-bottom:24px; padding-right:4px;">
                         @foreach($cart as $id => $item)
-                        <div class="flex gap-4">
-                            <div class="w-14 flex-shrink-0 overflow-hidden rounded-lg border border-gray-50" style="height:72px">
-                                <img src="{{ asset('storage/' . $item['image']) }}" class="w-full h-full object-cover">
-                            </div>
-                            <div class="flex-grow py-0.5">
-                                <h4 class="text-[11px] font-bold uppercase tracking-wider text-gray-800 line-clamp-1">{{ $item['name'] }}</h4>
-                                <p class="text-[10px] text-gray-400 mt-0.5">{{ $item['size'] }} / {{ $item['color'] }} · Qty {{ $item['quantity'] }}</p>
-                                <div class="flex justify-end mt-1">
-                                    <span class="text-[11px] font-bold">Rp {{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }}</span>
-                                </div>
+                        <div class="cart-item">
+                            <img src="{{ asset('storage/' . $item['image']) }}" class="cart-img" alt="{{ $item['name'] }}">
+                            <div class="cart-info">
+                                <div class="cart-name">{{ $item['name'] }}</div>
+                                <div class="cart-variant">{{ $item['size'] }} / {{ $item['color'] }} · Qty {{ $item['quantity'] }}</div>
+                                <div class="cart-price">Rp {{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }}</div>
                             </div>
                         </div>
                         @endforeach
                     </div>
-                    <div class="space-y-3 pt-6 border-t border-gray-50 text-[13px]">
-                        <div class="flex justify-between items-center text-gray-500">
-                            <span>Subtotal</span>
-                            <span>Rp {{ number_format($totalAmount, 0, ',', '.') }}</span>
-                        </div>
-                        <div class="flex justify-between items-center text-gray-500">
-                            <span>Shipping Fee</span>
-                            <span id="shipping_cost_display" class="font-medium text-gray-400 italic text-[11px]">Select shipping first</span>
-                        </div>
-                        <div class="flex justify-between items-center pt-4 border-t border-gray-50">
-                            <span class="font-bold uppercase text-[11px] tracking-wider">Total</span>
-                            <span id="grand_total_display" class="text-xl font-bold">Rp {{ number_format($totalAmount, 0, ',', '.') }}</span>
-                        </div>
+
+                    <div class="totals-divider"></div>
+
+                    <div class="totals-row" style="margin-top:16px;">
+                        <span>Subtotal</span>
+                        <span>Rp {{ number_format($totalAmount, 0, ',', '.') }}</span>
                     </div>
-                    <div class="mt-8">
-                        <button type="submit" id="btn-place-order" disabled
-                            class="w-full bg-[#5A5A00] text-white py-4 rounded-xl text-[12px] font-bold uppercase tracking-widest transition-all opacity-40 cursor-not-allowed">
-                            Complete Purchase
-                        </button>
-                        <p class="text-[9px] text-center text-gray-400 mt-3 px-4 leading-relaxed">
-                            By clicking, you agree to our Terms of Service and Privacy Policy.
-                        </p>
+                    <div class="totals-row">
+                        <span>Shipping</span>
+                        <span id="shipping_cost_display" style="font-style:italic; color:rgba(255,255,255,.35); font-size:10px;">Select method</span>
                     </div>
+
+                    <div class="totals-divider"></div>
+
+                    <div class="totals-grand">
+                        <span class="totals-grand-label">Total</span>
+                        <span class="totals-grand-val" id="grand_total_display">Rp {{ number_format($totalAmount, 0, ',', '.') }}</span>
+                    </div>
+
+                    <button type="submit" id="btn-place-order" disabled class="btn-submit">
+                        Complete Purchase
+                    </button>
+                    <p class="btn-notice">By proceeding, you agree to our Terms of Service and Privacy Policy.</p>
                 </div>
             </aside>
+
         </div>
     </form>
 </main>
@@ -319,22 +872,22 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
 $(document).ready(function () {
-    const subtotal      = {{ $totalAmount }};
-    const isProduction  = {{ app()->isProduction() ? 'true' : 'false' }};
+    const subtotal     = {{ $totalAmount }};
+    const isProduction = {{ app()->isProduction() ? 'true' : 'false' }};
     const excludedServices = isProduction
         ? ['JTR250', 'JTR<150', 'JTR<130', 'PELIKAN', 'POPBOX', 'CTCSPS', 'SPS']
         : [];
     const serviceLabels = {
-        'REG':    { label: 'Reguler',               desc: 'Estimasi 2-3 hari kerja' },
-        'YES':    { label: 'YES (Esok Sampai)',      desc: 'Estimasi 1 hari kerja' },
-        'OKE':    { label: 'OKE (Ekonomis)',         desc: 'Estimasi 3-5 hari kerja' },
-        'CTC':    { label: 'City Courier',           desc: 'Pengiriman dalam kota' },
-        'CTCYES': { label: 'City Courier YES',       desc: 'Estimasi 1 hari kerja dalam kota' },
-        'CTCOKE': { label: 'City Courier OKE',       desc: 'Ekonomis dalam kota' },
-        'JTR':    { label: 'JNE Trucking',           desc: 'Estimasi 3-4 hari kerja' },
+        'REG':    { label: 'Reguler',         desc: 'Estimasi 2–3 hari kerja' },
+        'YES':    { label: 'YES (Esok Sampai)',desc: 'Estimasi 1 hari kerja' },
+        'OKE':    { label: 'OKE (Ekonomis)',   desc: 'Estimasi 3–5 hari kerja' },
+        'CTC':    { label: 'City Courier',     desc: 'Pengiriman dalam kota' },
+        'CTCYES': { label: 'City Courier YES', desc: 'Estimasi 1 hari kerja dalam kota' },
+        'CTCOKE': { label: 'City Courier OKE', desc: 'Ekonomis dalam kota' },
+        'JTR':    { label: 'JNE Trucking',     desc: 'Estimasi 3–4 hari kerja' },
     };
 
-    // ── Init Select2 modal ────────────────────────────────
+    // ── Select2 ───────────────────────────────────────────
     function makeSelect2(selector, parentSelector) {
         const opts = {
             ajax: {
@@ -342,9 +895,7 @@ $(document).ready(function () {
                 dataType: 'json', delay: 250,
                 data: p => ({ q: p.term }),
                 processResults: data => ({
-                    results: data.results.map(i => ({
-                        id: i.id, text: i.text, city: i.city, zip_code: i.zip_code
-                    }))
+                    results: data.results.map(i => ({ id: i.id, text: i.text, city: i.city, zip_code: i.zip_code }))
                 }),
                 cache: true
             },
@@ -356,7 +907,7 @@ $(document).ready(function () {
     }
     makeSelect2('#new_destination', '#address-modal');
 
-    // ── Modal open/close ──────────────────────────────────
+    // ── Modal ─────────────────────────────────────────────
     window.openAddressModal = function () {
         showListPanel();
         $('#address-modal').addClass('active');
@@ -368,15 +919,14 @@ $(document).ready(function () {
         if ($(e.target).is('#address-modal')) closeAddressModal();
     });
 
-    // ── Panel toggle ──────────────────────────────────────
     window.showListPanel = function () {
-        $('#panel-list').removeClass('hidden').addClass('flex');
-        $('#panel-new').addClass('hidden').removeClass('flex');
+        $('#panel-list').removeClass('hidden').css('display', 'flex').addClass('flex-col overflow-hidden');
+        $('#panel-new').addClass('hidden').css('display', 'none');
         $('#modal-title').text('Select Delivery Address');
     };
     window.showNewAddressPanel = function () {
-        $('#panel-list').addClass('hidden').removeClass('flex');
-        $('#panel-new').removeClass('hidden').addClass('flex');
+        $('#panel-list').addClass('hidden').css('display', 'none');
+        $('#panel-new').removeClass('hidden').css('display', 'flex').addClass('flex-col overflow-hidden');
         $('#modal-title').text('Add New Address');
         $('#new_name, #new_phone, #new_address').val('');
         $('#new_is_default').prop('checked', false);
@@ -385,15 +935,15 @@ $(document).ready(function () {
         }
     };
 
-    // ── Pilih alamat dari list ────────────────────────────
+    // ── Select address ────────────────────────────────────
     $(document).on('click', '.addr-item', function () {
         const d = $(this).data();
         $('.addr-item').removeClass('addr-item-selected');
-        $('.addr-dot').addClass('opacity-0');
-        $('.addr-ring').removeClass('border-[#5A5A00]').addClass('border-gray-200');
+        $('.addr-dot').css('opacity', 0);
+        $('.addr-ring').css('border-color', '');
         $(this).addClass('addr-item-selected');
-        $(this).find('.addr-dot').removeClass('opacity-0');
-        $(this).find('.addr-ring').addClass('border-[#5A5A00]').removeClass('border-gray-200');
+        $(this).find('.addr-dot').css('opacity', 1);
+        $(this).find('.addr-ring').css('border-color', 'var(--primary)');
 
         $('#hidden_receiver_name').val(d.name);
         $('#hidden_receiver_phone').val(d.phone);
@@ -411,16 +961,16 @@ $(document).ready(function () {
             fetchShippingRates(d.destination);
         } else {
             $('#courier_list').html(`
-                <div class="py-6 bg-amber-50 border border-amber-100 rounded-xl text-center">
-                    <p class="text-[11px] text-amber-600">Alamat ini belum punya kode lokasi JNE.</p>
-                    <p class="text-[10px] text-amber-500 mt-1">Pilih alamat lain atau tambah alamat baru.</p>
+                <div style="background:#fffbeb; border:1.5px solid #fcd34d; border-radius:4px; padding:20px; text-align:center;">
+                    <p style="font-size:11px; color:#d97706;">Alamat ini belum punya kode lokasi JNE.</p>
+                    <p style="font-size:10px; color:#b45309; margin-top:4px;">Pilih alamat lain atau tambah alamat baru.</p>
                 </div>`);
         }
 
         setTimeout(() => closeAddressModal(), 250);
     });
 
-    // ── Simpan alamat baru ────────────────────────────────
+    // ── Save new address ──────────────────────────────────
     $('#btn-save-new-addr').on('click', function () {
         const name   = $('#new_name').val().trim();
         const phone  = $('#new_phone').val().trim();
@@ -450,9 +1000,7 @@ $(document).ready(function () {
                 is_default:     $('#new_is_default').is(':checked') ? 1 : 0,
                 from_checkout:  1,
             },
-            success: function () {
-                window.location.reload();
-            },
+            success: () => window.location.reload(),
             error: function (xhr) {
                 btn.text('Save Address').prop('disabled', false);
                 const errors = xhr.responseJSON?.errors;
@@ -461,23 +1009,23 @@ $(document).ready(function () {
         });
     });
 
-    // ── Load ongkir awal ──────────────────────────────────
+    // ── Init shipping ─────────────────────────────────────
     const initDest = $('#hidden_destination_id').val();
     if (initDest) fetchShippingRates(initDest);
 
-    // ── Fetch ongkir ──────────────────────────────────────
+    // ── Fetch shipping ────────────────────────────────────
     function fetchShippingRates(destId) {
         if (!destId) return;
 
         $('#hidden_shipping_cost, #hidden_courier_name, #hidden_service_code').val('');
-        $('#shipping_cost_display').text('Calculating...').addClass('italic text-gray-400').removeClass('text-gray-700');
+        $('#shipping_cost_display').text('Calculating...').css({ fontStyle: 'italic', color: 'rgba(255,255,255,.35)', fontSize: '10px' });
         $('#grand_total_display').text('Rp ' + subtotal.toLocaleString('id-ID'));
         checkFormValidity();
 
         $('#courier_list').html(`
-            <div class="skeleton h-20 w-full rounded-xl mb-3"></div>
-            <div class="skeleton h-20 w-full rounded-xl mb-3"></div>
-            <div class="skeleton h-20 w-full rounded-xl"></div>`);
+            <div class="skeleton" style="height:68px; margin-bottom:8px;"></div>
+            <div class="skeleton" style="height:68px; margin-bottom:8px;"></div>
+            <div class="skeleton" style="height:68px;"></div>`);
 
         $.post("{{ route('api.shipping') }}", {
             _token: "{{ csrf_token() }}",
@@ -497,25 +1045,23 @@ $(document).ready(function () {
                         const name = info ? info.label : c.courier_service_name;
                         const desc = info ? info.desc : (c.duration && c.duration !== 'null-null null' ? c.duration : 'Standard delivery');
                         html += `
-                        <label class="cursor-pointer">
+                        <label style="cursor:pointer; display:block;">
                             <input type="radio" name="shipping_option" value="${c.price}"
                                 data-courier="JNE ${c.courier_service_name}"
                                 data-service-code="${c.service_code}"
                                 class="hidden courier-radio">
-                            <div class="courier-card flex items-center justify-between border border-gray-100 p-5 rounded-xl bg-white transition-all hover:border-gray-200 hover:shadow-sm">
-                                <div class="flex items-center gap-4">
-                                    <div class="w-10 h-10 rounded-lg bg-[#f7f7f7] border border-gray-100 flex items-center justify-center flex-shrink-0">
-                                        <span class="text-[9px] font-bold text-[#5A5A00]">JNE</span>
-                                    </div>
+                            <div class="option-card courier-card">
+                                <div class="option-card-left">
+                                    <div class="option-badge" style="border-radius:10px;">JNE</div>
                                     <div>
-                                        <div class="font-bold text-[11px] uppercase tracking-wider text-gray-800">${name}</div>
-                                        <div class="text-[10px] text-gray-400 mt-0.5">${desc}</div>
+                                        <div class="option-title">${name}</div>
+                                        <div class="option-desc">${desc}</div>
                                     </div>
                                 </div>
-                                <div class="flex items-center gap-3">
-                                    <span class="text-[13px] font-bold">Rp ${c.price.toLocaleString('id-ID')}</span>
-                                    <div class="radio-circle w-5 h-5 rounded-full border border-gray-200 flex items-center justify-center transition-all flex-shrink-0">
-                                        <div class="radio-dot w-2.5 h-2.5 rounded-full bg-[#5A5A00] opacity-0 transition-opacity"></div>
+                                <div style="display:flex; align-items:center; gap:12px;">
+                                    <span class="option-price">Rp ${c.price.toLocaleString('id-ID')}</span>
+                                    <div class="radio-ring">
+                                        <div class="radio-fill"></div>
                                     </div>
                                 </div>
                             </div>
@@ -523,50 +1069,51 @@ $(document).ready(function () {
                     });
                     $('#courier_list').html(html);
                 } else {
-                    $('#courier_list').html('<div class="py-8 text-center text-[11px] text-red-400 bg-red-50 rounded-xl">Shipping unavailable for this area.</div>');
+                    $('#courier_list').html('<div class="courier-empty" style="color:#f87171; border-color:#fca5a5;">Shipping unavailable for this area.</div>');
                 }
             } else {
-                $('#courier_list').html('<div class="py-8 text-center text-[11px] text-orange-400 bg-orange-50 rounded-xl">Could not load shipping rates.</div>');
+                $('#courier_list').html('<div class="courier-empty" style="color:#fb923c; border-color:#fed7aa;">Could not load shipping rates.</div>');
             }
-            $('#shipping_cost_display').text('Select shipping first');
+            $('#shipping_cost_display').text('Select method');
         }).fail(() => {
-            $('#courier_list').html('<div class="py-8 text-center text-[11px] text-red-400 bg-red-50 rounded-xl">Connection error. Please try again.</div>');
+            $('#courier_list').html('<div class="courier-empty" style="color:#f87171; border-color:#fca5a5;">Connection error. Please try again.</div>');
         });
     }
 
-    // ── Pilih kurir ───────────────────────────────────────
+    // ── Pick courier ──────────────────────────────────────
     $(document).on('change', 'input[name="shipping_option"]', function () {
         const cost = parseInt($(this).val());
         $('#shipping_cost_display').text('Rp ' + cost.toLocaleString('id-ID'))
-            .removeClass('italic text-gray-400').addClass('text-gray-700');
+            .css({ fontStyle: 'normal', color: 'rgba(255,255,255,.85)', fontSize: '11px' });
         $('#grand_total_display').text('Rp ' + (subtotal + cost).toLocaleString('id-ID'));
         $('#hidden_shipping_cost').val(cost);
         $('#hidden_courier_name').val($(this).data('courier'));
         $('#hidden_service_code').val($(this).data('service-code'));
-        $('.courier-card').removeClass('border-[#5A5A00] bg-[#fafff0]');
-        $('.courier-card .radio-dot').addClass('opacity-0');
-        $(this).closest('label').find('.courier-card').addClass('border-[#5A5A00] bg-[#fafff0]');
-        $(this).closest('label').find('.radio-dot').removeClass('opacity-0');
+
+        $('.courier-card').removeClass('selected');
+        $('.courier-card .radio-fill').css('opacity', 0);
+        $(this).closest('label').find('.courier-card').addClass('selected');
+        $(this).closest('label').find('.radio-fill').css('opacity', 1);
         checkFormValidity();
     });
 
-    // ── Pilih payment ─────────────────────────────────────
-    $(document).on('change', 'input[name="payment_method"]', checkFormValidity);
+    // ── Pick payment ──────────────────────────────────────
+    $(document).on('change', 'input[name="payment_method"]', function () {
+        $('.payment-card').removeClass('selected');
+        $('.payment-card .radio-fill').css('opacity', 0);
+        $(this).closest('label').find('.payment-card').addClass('selected');
+        $(this).closest('label').find('.radio-fill').css('opacity', 1);
+        checkFormValidity();
+    });
 
-    // ── Cek form valid ────────────────────────────────────
+    // ── Validity ──────────────────────────────────────────
     function checkFormValidity() {
         const ok = $('#hidden_destination_id').val() !== ''
                 && $('#hidden_shipping_cost').val() !== ''
                 && $('input[name="shipping_option"]:checked').length > 0
                 && $('input[name="payment_method"]:checked').length > 0;
 
-        if (ok) {
-            $('#btn-place-order').prop('disabled', false)
-                .removeClass('opacity-40 cursor-not-allowed').addClass('opacity-100 hover:bg-black');
-        } else {
-            $('#btn-place-order').prop('disabled', true)
-                .addClass('opacity-40 cursor-not-allowed').removeClass('opacity-100 hover:bg-black');
-        }
+        $('#btn-place-order').prop('disabled', !ok);
     }
 });
 </script>

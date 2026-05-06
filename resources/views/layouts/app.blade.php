@@ -7,190 +7,399 @@
 
         <title>{{ config('app.name', 'Farhana Web') }}</title>
 
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
+        <style>
+            [x-cloak] { display: none !important; }
 
-        <style>[x-cloak] { display: none !important; }</style>
+            *, *::before, *::after {
+                font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            }
+
+            :root {
+                --primary:    #2F3526;
+                --white:      #FFFFFF;
+                --black:      #000000;
+                --olive-tint: #6B705C;
+                --light-gray: #E9E9E9;
+            }
+
+            /* ── Scrollbar ── */
+            ::-webkit-scrollbar       { width: 3px; height: 3px; }
+            ::-webkit-scrollbar-track { background: var(--light-gray); }
+            ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 99px; }
+
+            /* ── Sidebar nav link ── */
+            .nav-link {
+                display: flex;
+                align-items: center;
+                padding: 10px 16px;
+                font-size: 11px;
+                font-weight: 700;
+                letter-spacing: .15em;
+                text-transform: uppercase;
+                border-radius: 12px;
+                transition: background .2s ease, color .2s ease;
+                color: var(--olive-tint);
+                text-decoration: none;
+            }
+            .nav-link:hover {
+                background: rgba(47,53,38,.07);
+                color: var(--primary);
+            }
+            .nav-link.active {
+                background: var(--primary);
+                color: var(--white);
+            }
+
+            /* ── Modal transitions ── */
+            [x-transition\:enter] { transition-property: opacity, transform; }
+
+            /* ── Mobile drawer ── */
+            @keyframes slideInLeft {
+                from { transform: translateX(-100%); opacity: 0; }
+                to   { transform: translateX(0);     opacity: 1; }
+            }
+            .mobile-drawer-enter { animation: slideInLeft .28s cubic-bezier(.22,.68,0,1.2) both; }
+
+            /* ── Page load fade ── */
+            @keyframes fadeUp {
+                from { opacity: 0; transform: translateY(10px); }
+                to   { opacity: 1; transform: translateY(0); }
+            }
+            main > div { animation: fadeUp .4s cubic-bezier(.22,.68,0,1.2) both; }
+
+            /* ── Input underline focus ── */
+            .modal-input {
+                width: 100%;
+                border: none;
+                border-bottom: 1.5px solid var(--light-gray);
+                padding: 8px 0;
+                font-size: 13px;
+                background: transparent;
+                outline: none;
+                color: var(--black);
+                transition: border-color .2s ease;
+                font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            }
+            .modal-input:focus { border-bottom-color: var(--primary); }
+        </style>
+
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased bg-gray-50 text-gray-900" x-data="{ mobileMenuOpen: false, loginModal: false }">
-        
+
+    <body class="antialiased" style="background: var(--light-gray); color: var(--black);"
+          x-data="{ mobileMenuOpen: false, loginModal: false }">
+
         <div class="flex min-h-screen overflow-hidden">
-            
-            {{-- SIDEBAR: HANYA MUNCUL UNTUK ADMIN --}}
+
+            {{-- ── SIDEBAR: ADMIN ONLY ── --}}
             @auth
-                @if(auth()->user()->role === 'admin')
-                <aside class="w-64 bg-white border-r border-gray-200 hidden md:flex flex-col flex-shrink-0 shadow-sm font-bold">
-                    <div class="h-full flex flex-col">
-                        <div class="p-6 border-b border-gray-100 bg-white sticky top-0">
-                            <span class="text-xl font-black tracking-tighter text-black uppercase">
-                                FARHANA ADMIN
-                            </span>
-                        </div>
+                @if(auth()->user()->role === 'admin' && !request()->routeIs('admin.dashboard'))
+                <aside class="w-64 hidden md:flex flex-col flex-shrink-0"
+                       style="background: var(--primary); min-height: 100vh;">
 
-                        <nav class="flex-1 p-4 space-y-1 overflow-y-auto">
-                            <p class="text-[10px] font-bold text-gray-400 uppercase px-3 mb-2 tracking-[0.2em]">Utama</p>
-                            
-                            <a href="{{ route('admin.dashboard') }}" 
-                               class="flex items-center px-4 py-3 text-sm rounded-xl transition-all duration-200 {{ request()->routeIs('admin.dashboard') ? 'bg-black text-white shadow-lg font-bold' : 'text-gray-600 hover:bg-gray-100' }}">
-                                Dashboard
-                            </a>
+                    {{-- Logo --}}
+                    <div class="px-7 py-7 flex-shrink-0" style="border-bottom: 1px solid rgba(255,255,255,.08);">
+                        <span class="text-[13px] font-black tracking-[.35em] uppercase" style="color: var(--white);">
+                            Farhana
+                        </span>
+                        <span class="block text-[8px] tracking-[.4em] uppercase mt-0.5"
+                              style="color: rgba(255,255,255,.4);">Admin Panel</span>
+                    </div>
 
-                            <p class="text-[10px] font-bold text-gray-400 uppercase px-3 mt-6 mb-2 tracking-[0.2em]">Katalog</p>
+                    {{-- Nav --}}
+                    <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
 
-                            <a href="{{ route('categories.index') }}" 
-                               class="flex items-center px-4 py-3 text-sm rounded-xl transition-all {{ request()->routeIs('categories.*') ? 'bg-black text-white shadow-lg font-bold' : 'text-gray-600 hover:bg-gray-100' }}">
-                                Kelola Kategori
-                            </a>
+                        <p class="text-[8px] font-black uppercase tracking-[.35em] px-3 mb-3"
+                           style="color: rgba(255,255,255,.35);">Utama</p>
 
-                            <a href="{{ route('products.index') }}" 
-                               class="flex items-center px-4 py-3 text-sm rounded-xl transition-all {{ request()->routeIs('products.*') ? 'bg-black text-white shadow-lg font-bold' : 'text-gray-600 hover:bg-gray-100' }}">
-                                Kelola Produk
-                            </a>
+                        <a href="{{ route('admin.dashboard') }}"
+                           class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
+                           style="{{ request()->routeIs('admin.dashboard') ? '' : 'color: rgba(255,255,255,.6);' }}">
+                            Dashboard
+                        </a>
 
-                            <a href="{{ route('sliders.index') }}" 
-                               class="flex items-center px-4 py-3 text-sm rounded-xl transition-all {{ request()->routeIs('sliders.*') ? 'bg-black text-white shadow-lg font-bold' : 'text-gray-600 hover:bg-gray-100' }}">
-                                Kelola Banner
-                            </a>
-                        </nav>
+                        <p class="text-[8px] font-black uppercase tracking-[.35em] px-3 mt-6 mb-3"
+                           style="color: rgba(255,255,255,.35);">Katalog</p>
 
-                        <div class="p-4 border-t border-gray-100 bg-gray-50">
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <button type="submit" class="w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-red-100 rounded-xl font-bold transition-all">
-                                    Logout
-                                </button>
-                            </form>
-                        </div>
+                        <a href="{{ route('categories.index') }}"
+                           class="nav-link {{ request()->routeIs('categories.*') ? 'active' : '' }}"
+                           style="{{ request()->routeIs('categories.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
+                            Kelola Kategori
+                        </a>
+
+                        <a href="{{ route('products.index') }}"
+                           class="nav-link {{ request()->routeIs('products.*') ? 'active' : '' }}"
+                           style="{{ request()->routeIs('products.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
+                            Kelola Produk
+                        </a>
+
+                        <a href="{{ route('sliders.index') }}"
+                           class="nav-link {{ request()->routeIs('sliders.*') ? 'active' : '' }}"
+                           style="{{ request()->routeIs('sliders.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
+                            Kelola Banner
+                        </a>
+                    </nav>
+
+                    {{-- Logout --}}
+                    <div class="px-4 py-5 flex-shrink-0" style="border-top: 1px solid rgba(255,255,255,.08);">
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit"
+                                    class="w-full text-left px-4 py-3 rounded-xl text-[10px] font-bold uppercase tracking-[.2em] transition-all hover:bg-red-500/20"
+                                    style="color: rgba(255,100,100,.7);">
+                                Logout
+                            </button>
+                        </form>
                     </div>
                 </aside>
                 @endif
             @endauth
 
-            {{-- CONTENT AREA --}}
+            {{-- ── CONTENT AREA ── --}}
             <div class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
-                
-                <header class="bg-white border-b border-gray-200 sticky top-0 z-30 flex-shrink-0">
-                    <div class="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
-                        {{-- Hamburger Button --}}
-                        @auth
-                            @if(auth()->user()->role === 'admin')
-                            <button @click="mobileMenuOpen = true" class="md:hidden p-2 rounded-md text-gray-600 hover:bg-gray-100 focus:outline-none">
-                                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                                </svg>
-                            </button>
-                            @endif
-                        @endauth
 
-                        <div class="flex-1 flex justify-between items-center px-4 md:px-0">
-                            <h2 class="font-bold text-lg text-gray-800 truncate uppercase tracking-widest text-sm">
-                                @isset($header) {{ $header }} @else Farhana Official @endisset
-                            </h2>
-                            @include('layouts.navigation')
-                        </div>
-                    </div>
-                </header>
+                {{-- ── HEADER ── --}}
+               {{-- ── HEADER ── --}}
+<header class="flex-shrink-0 sticky top-0 z-30"
+        style="background: var(--white); border-bottom: 1px solid var(--light-gray);">
 
-                {{-- MAIN CONTENT --}}
-                <main class="flex-1 overflow-y-auto bg-gray-50 focus:outline-none p-4 md:p-8">
+    {{-- Hamburger admin mobile (di luar navigation agar tidak tumpang tindih) --}}
+    @auth
+        @if(auth()->user()->role === 'admin' && !request()->routeIs('admin.dashboard'))
+        <div class="absolute left-4 top-4 md:hidden z-50">
+            <button @click="mobileMenuOpen = true"
+                    class="p-2 rounded-xl transition-colors"
+                    style="color: var(--olive-tint);"
+                    onmouseover="this.style.background='var(--light-gray)'"
+                    onmouseout="this.style.background='transparent'">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            </button>
+        </div>
+        @endif
+    @endauth
+
+    @include('layouts.navigation')
+</header>
+
+                {{-- ── MAIN ── --}}
+                <main class="flex-1 overflow-y-auto focus:outline-none p-4 md:p-8"
+                      style="background: var(--light-gray);">
                     <div class="max-w-7xl mx-auto">
-                        <div class="{{ (auth()->check() && auth()->user()->role === 'admin') ? 'bg-white rounded-3xl p-6 shadow-sm border border-gray-100' : '' }} min-h-[80vh]">
+                        <div class="{{ (auth()->check() && auth()->user()->role === 'admin') ? 'rounded-3xl p-6 shadow-sm' : '' }} min-h-[80vh]"
+                             style="{{ (auth()->check() && auth()->user()->role === 'admin') ? 'background: var(--white); border: 1px solid var(--light-gray);' : '' }}">
                             {{ $slot }}
                         </div>
                     </div>
                 </main>
             </div>
 
-            {{-- MOBILE MENU: ADMIN ONLY --}}
+
+            {{-- ── MOBILE DRAWER: ADMIN ONLY ── --}}
             @auth
-                @if(auth()->user()->role === 'admin')
+                @if(auth()->user()->role === 'admin' && !request()->routeIs('admin.dashboard'))
+
+                {{-- Backdrop --}}
                 <div x-show="mobileMenuOpen" x-cloak
                      @click="mobileMenuOpen = false"
-                     class="fixed inset-0 z-40 md:hidden bg-black/50 backdrop-blur-sm"></div>
+                     x-transition:enter="transition ease-out duration-200"
+                     x-transition:enter-start="opacity-0"
+                     x-transition:enter-end="opacity-100"
+                     x-transition:leave="transition ease-in duration-150"
+                     x-transition:leave-start="opacity-100"
+                     x-transition:leave-end="opacity-0"
+                     class="fixed inset-0 z-40 md:hidden"
+                     style="background: rgba(47,53,38,.55); backdrop-filter: blur(4px);"></div>
 
+                {{-- Drawer --}}
                 <div x-show="mobileMenuOpen" x-cloak
                      x-transition:enter="transition ease-out duration-300"
-                     x-transition:enter-start="-translate-x-full"
-                     x-transition:enter-end="translate-x-0"
-                     class="fixed inset-y-0 left-0 z-50 w-72 bg-white shadow-2xl md:hidden p-6 flex flex-col">
-                    {{-- Mobile menu content (same as sidebar) --}}
-                    <nav class="flex-1 space-y-2">
-                         <a href="{{ route('admin.dashboard') }}" class="block px-4 py-3 rounded-xl font-bold bg-gray-100 text-black">Dashboard</a>
-                         <a href="{{ route('products.index') }}" class="block px-4 py-3 rounded-xl font-bold text-gray-600">Produk</a>
+                     x-transition:enter-start="-translate-x-full opacity-0"
+                     x-transition:enter-end="translate-x-0 opacity-100"
+                     x-transition:leave="transition ease-in duration-200"
+                     x-transition:leave-start="translate-x-0 opacity-100"
+                     x-transition:leave-end="-translate-x-full opacity-0"
+                     class="fixed inset-y-0 left-0 z-50 w-72 md:hidden flex flex-col shadow-2xl"
+                     style="background: var(--primary);">
+
+                    {{-- Drawer logo --}}
+                    <div class="px-7 py-7 flex items-center justify-between flex-shrink-0"
+                         style="border-bottom: 1px solid rgba(255,255,255,.08);">
+                        <div>
+                            <span class="text-[13px] font-black tracking-[.35em] uppercase" style="color: var(--white);">Farhana</span>
+                            <span class="block text-[8px] tracking-[.4em] uppercase mt-0.5" style="color: rgba(255,255,255,.4);">Admin Panel</span>
+                        </div>
+                        <button @click="mobileMenuOpen = false"
+                                class="w-8 h-8 rounded-full flex items-center justify-center text-lg"
+                                style="background: rgba(255,255,255,.1); color: var(--white);">
+                            &times;
+                        </button>
+                    </div>
+
+                    {{-- Drawer nav --}}
+                    <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
+                        <p class="text-[8px] font-black uppercase tracking-[.35em] px-3 mb-3"
+                           style="color: rgba(255,255,255,.35);">Utama</p>
+
+                        <a href="{{ route('admin.dashboard') }}"
+                           class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
+                           style="{{ request()->routeIs('admin.dashboard') ? '' : 'color: rgba(255,255,255,.6);' }}">
+                            Dashboard
+                        </a>
+
+                        <p class="text-[8px] font-black uppercase tracking-[.35em] px-3 mt-6 mb-3"
+                           style="color: rgba(255,255,255,.35);">Katalog</p>
+
+                        <a href="{{ route('categories.index') }}"
+                           class="nav-link {{ request()->routeIs('categories.*') ? 'active' : '' }}"
+                           style="{{ request()->routeIs('categories.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
+                            Kelola Kategori
+                        </a>
+                        <a href="{{ route('products.index') }}"
+                           class="nav-link {{ request()->routeIs('products.*') ? 'active' : '' }}"
+                           style="{{ request()->routeIs('products.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
+                            Kelola Produk
+                        </a>
+                        <a href="{{ route('sliders.index') }}"
+                           class="nav-link {{ request()->routeIs('sliders.*') ? 'active' : '' }}"
+                           style="{{ request()->routeIs('sliders.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
+                            Kelola Banner
+                        </a>
                     </nav>
+
+                    {{-- Drawer logout --}}
+                    <div class="px-4 py-5 flex-shrink-0" style="border-top: 1px solid rgba(255,255,255,.08);">
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit"
+                                    class="w-full text-left px-4 py-3 rounded-xl text-[10px] font-bold uppercase tracking-[.2em] transition-all hover:bg-red-500/20"
+                                    style="color: rgba(255,100,100,.7);">
+                                Logout
+                            </button>
+                        </form>
+                    </div>
                 </div>
                 @endif
             @endauth
 
-            {{-- ========================================== --}}
-            {{-- FLOATING LOGIN MODAL (GUEST ONLY) --}}
-            {{-- ========================================== --}}
+
+            {{-- ── FLOATING LOGIN MODAL (GUEST ONLY) ── --}}
             @guest
-            <div x-show="loginModal" 
-                 @open-login.window="loginModal = true" 
-                 x-cloak 
+            <div x-show="loginModal"
+                 @open-login.window="loginModal = true"
+                 x-cloak
                  class="fixed inset-0 z-[99] flex items-center justify-center p-4">
-                
-                <div x-show="loginModal" 
-                     x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+
+                {{-- Backdrop --}}
+                <div x-show="loginModal"
+                     x-transition:enter="transition ease-out duration-300"
+                     x-transition:enter-start="opacity-0"
+                     x-transition:enter-end="opacity-100"
+                     x-transition:leave="transition ease-in duration-200"
+                     x-transition:leave-start="opacity-100"
+                     x-transition:leave-end="opacity-0"
                      @click="loginModal = false"
-                     class="fixed inset-0 bg-black/60 backdrop-blur-sm"></div>
+                     class="fixed inset-0"
+                     style="background: rgba(47,53,38,.6); backdrop-filter: blur(6px);"></div>
 
-                <div x-show="loginModal" 
-                     x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
-                     class="relative bg-white w-full max-w-md p-8 md:p-12 shadow-2xl rounded-none border border-gray-100">
-                    
-                    <button @click="loginModal = false" class="absolute top-4 right-4 text-gray-400 hover:text-black transition">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                    </button>
+                {{-- Modal card --}}
+                <div x-show="loginModal"
+                     x-transition:enter="transition ease-out duration-300"
+                     x-transition:enter-start="opacity-0 scale-95 translate-y-4"
+                     x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                     x-transition:leave="transition ease-in duration-200"
+                     x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+                     x-transition:leave-end="opacity-0 scale-95 translate-y-4"
+                     class="relative w-full max-w-md rounded-3xl shadow-2xl overflow-hidden"
+                     style="background: var(--white);">
 
-                    <div class="text-center mb-8">
-                        <h2 class="text-[10px] font-black uppercase tracking-[0.4em] text-[#5A5A00] mb-2">Welcome Back</h2>
-                        <p class="text-[11px] text-gray-400 uppercase tracking-widest italic">Sign in to continue</p>
-                    </div>
+                    {{-- Top accent bar --}}
+                    <div class="h-1.5 w-full" style="background: var(--primary);"></div>
 
-                    <form method="POST" action="{{ route('login') }}" class="space-y-6">
-                        @csrf
-                        <div>
-                            <label class="text-[9px] font-bold uppercase tracking-widest text-gray-400 block mb-1">Email</label>
-                            <input type="email" name="email" required class="w-full border-gray-200 border-x-0 border-t-0 border-b p-2 text-sm focus:ring-0 focus:border-[#5A5A00] bg-transparent">
-                        </div>
-                        <div>
-                            <label class="text-[9px] font-bold uppercase tracking-widest text-gray-400 block mb-1">Password</label>
-                            <input type="password" name="password" required class="w-full border-gray-200 border-x-0 border-t-0 border-b p-2 text-sm focus:ring-0 focus:border-[#5A5A00] bg-transparent">
-                        {{-- Di dalam form modal, di bawah input password --}}
-                        @if ($errors->any())
-                            <div class="mb-4">
-                                <p class="text-[9px] uppercase tracking-widest text-red-500 font-bold">
-                                    {{ $errors->first() }}
-                                </p>
-                            </div>
-                        @endif
-                        </div>
-                        <button type="submit" class="w-full bg-black text-white py-4 text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-[#5A5A00] transition">
-                            Sign In
+                    <div class="px-10 py-10">
+
+                        {{-- Close --}}
+                        <button @click="loginModal = false"
+                                class="absolute top-6 right-6 w-8 h-8 rounded-full flex items-center justify-center text-lg transition-colors"
+                                style="background: var(--light-gray); color: var(--olive-tint);"
+                                onmouseover="this.style.background='var(--primary)'; this.style.color='var(--white)';"
+                                onmouseout="this.style.background='var(--light-gray)'; this.style.color='var(--olive-tint)';">
+                            &times;
                         </button>
-                    </form>
 
-                    <div class="mt-8 text-center pt-6 border-t border-gray-50">
-                        <p class="text-[10px] uppercase tracking-widest text-gray-400">
-                            New here? <a href="{{ route('register') }}" class="text-black font-bold border-b border-black ml-1">Create Account</a>
-                        </p>
+                        {{-- Title --}}
+                        <div class="mb-9">
+                            <p class="text-[8px] font-black uppercase tracking-[.4em] mb-1"
+                               style="color: var(--olive-tint);">Welcome Back</p>
+                            <h2 class="text-[22px] font-black uppercase tracking-[.15em]"
+                                style="color: var(--primary);">Sign In</h2>
+                            <p class="text-[10px] uppercase tracking-[.25em] mt-1"
+                               style="color: var(--olive-tint);">to your account</p>
+                        </div>
+
+                        {{-- Error --}}
+                        @if ($errors->any())
+                        <div class="mb-6 px-4 py-3 rounded-2xl"
+                             style="background: #FEF2F2; color: #B91C1C;">
+                            <p class="text-[9px] uppercase tracking-widest font-bold">{{ $errors->first() }}</p>
+                        </div>
+                        @endif
+
+                        {{-- Form --}}
+                        <form method="POST" action="{{ route('login') }}" class="space-y-7">
+                            @csrf
+
+                            <div>
+                                <label class="block text-[9px] font-bold uppercase tracking-[.2em] mb-2"
+                                       style="color: var(--olive-tint);">Email</label>
+                                <input type="email" name="email" required
+                                       class="modal-input"
+                                       placeholder="your@email.com">
+                            </div>
+
+                            <div>
+                                <label class="block text-[9px] font-bold uppercase tracking-[.2em] mb-2"
+                                       style="color: var(--olive-tint);">Password</label>
+                                <input type="password" name="password" required
+                                       class="modal-input"
+                                       placeholder="••••••••">
+                            </div>
+
+                            <button type="submit"
+                                    class="w-full rounded-full py-4 text-[10px] font-black uppercase tracking-[.3em] transition-opacity hover:opacity-80"
+                                    style="background: var(--primary); color: var(--white);">
+                                Sign In
+                            </button>
+                        </form>
+
+                        {{-- Register link --}}
+                        <div class="mt-8 pt-7 text-center" style="border-top: 1px solid var(--light-gray);">
+                            <p class="text-[10px] uppercase tracking-[.2em]" style="color: var(--olive-tint);">
+                                New here?
+                                <a href="{{ route('register') }}"
+                                   class="ml-1 font-black transition-opacity hover:opacity-60"
+                                   style="color: var(--primary); border-bottom: 1.5px solid var(--primary);">
+                                    Create Account
+                                </a>
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
             @endguest
 
         </div>
-    @if ($errors->has('email') || $errors->has('password'))
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Menggunakan dispatch agar Alpine mendeteksi dan membuka modal otomatis
-            window.dispatchEvent(new CustomEvent('open-login'));
-        });
-    </script>
-    @endif
+
+        {{-- Auto-open login modal on validation error --}}
+        @if ($errors->has('email') || $errors->has('password'))
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                window.dispatchEvent(new CustomEvent('open-login'));
+            });
+        </script>
+        @endif
 
     </body>
 </html>

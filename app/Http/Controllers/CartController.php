@@ -47,7 +47,9 @@ class CartController extends Controller
         Log::info('CART.ADD STEP 2', ['variant' => $variantId, 'stock' => $variant->stock]);
 
         // 3. Validasi stok
-        if ($variant->stock < $quantityToAdd) {
+        $isPreorder = $variant->product->is_preorder;
+
+        if (! $isPreorder && $variant->stock < $quantityToAdd) {
             return redirect()->back()->with('error', "Maaf, stok hanya tersisa {$variant->stock}.");
         }
 
@@ -70,24 +72,25 @@ class CartController extends Controller
         $cart = session()->get('cart', []);
 
         if (isset($cart[$variantId])) {
-            if ($variant->stock < ($cart[$variantId]['quantity'] + $quantityToAdd)) {
-                return redirect()->back()->with('error', 'Total di keranjang melebihi stok.');
-            }
-            $cart[$variantId]['quantity'] += $quantityToAdd;
-        } else {
-            $cart[$variantId] = [
-                'product_id' => $product->id,
-                'name'       => $product->name,
-                'variant_id' => $variant->id,
-                'quantity'   => $quantityToAdd,
-                'price'      => $product->price,
-                'size'       => $variant->size,
-                'color'      => $variant->color,
-                'image'      => $imageToDisplay,
-                'slug'       => $product->slug,
-            ];
-        }
-
+    if (! $isPreorder && $variant->stock < ($cart[$variantId]['quantity'] + $quantityToAdd)) {
+        return redirect()->back()->with('error', 'Total di keranjang melebihi stok.');
+    }
+    $cart[$variantId]['quantity'] += $quantityToAdd;
+} else {
+    $cart[$variantId] = [
+        'product_id'   => $product->id,
+        'name'         => $product->name,
+        'variant_id'   => $variant->id,
+        'quantity'     => $quantityToAdd,
+        'price'        => $product->price,
+        'size'         => $variant->size,
+        'color'        => $variant->color,
+        'image'        => $imageToDisplay,
+        'slug'         => $product->slug,
+        'is_preorder'  => $isPreorder,                              // ← tambahkan
+        'release_date' => $product->release_date?->toDateTimeString(), // ← tambahkan
+    ];
+}
         session()->put('cart', $cart);
 
         Log::info('CART.ADD STEP 3: cart saved', ['buy_now' => $request->input('buy_now')]);
@@ -138,14 +141,17 @@ class CartController extends Controller
             $variant = ProductVariant::find($id);
 
             if ($request->action == 'increase') {
-                if ($variant && $variant->stock > $cart[$id]['quantity']) {
-                    $cart[$id]['quantity']++;
-                } else {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Stok tidak mencukupi.',
-                    ], 400);
-                }
+            $isPreorder = $cart[$id]['is_preorder'] ?? false;
+
+            if ($variant && ($isPreorder || $variant->stock > $cart[$id]['quantity'])) {
+                $cart[$id]['quantity']++;
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Stok tidak mencukupi.',
+                ], 400);
+            }
+
             } elseif ($request->action == 'decrease' && $cart[$id]['quantity'] > 1) {
                 $cart[$id]['quantity']--;
             }

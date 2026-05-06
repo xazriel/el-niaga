@@ -2,198 +2,495 @@
 <html lang="id">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Cart - Farhana Official</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+    <meta name="theme-color" content="#2F3526">
+    <title>Keranjang — Farhana</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
-        body { font-family: 'Inter', sans-serif; }
-        
-        .cart-item-transition { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-        .product-img-container { width: 120px; height: 160px; }
+        :root {
+            --primary:  #2F3526;
+            --olive:    #6B705C;
+            --gray:     #E9E9E9;
+            --white:    #FFFFFF;
+            --black:    #000000;
+            --p10:      rgba(47,53,38,.10);
+            --p20:      rgba(47,53,38,.20);
+            --o60:      rgba(107,112,92,.60);
+            --w80:      rgba(255,255,255,.80);
+            --w12:      rgba(255,255,255,.12);
+            --red:      #C0392B;
+            --t:        .25s ease;
+        }
 
-        .qty-wrapper {
-            display: flex;
-            align-items: center;
-            border: 1px solid #e5e7eb;
-            background-color: #f9f9f9;
-            width: fit-content;
-        }
-        .qty-input-btn {
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0 }
+        html { scroll-behavior: smooth; -webkit-text-size-adjust: 100% }
+        body {
+            font-family: Helvetica, Arial, sans-serif;
+            background: var(--white);
+            color: var(--black);
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
             font-size: 14px;
-            font-weight: 300;
-            color: #4b5563;
-            transition: all 0.2s;
-            cursor: pointer;
-            border: none;
-            background: none;
         }
-        .qty-input-btn:hover:not(:disabled) {
-            color: #000;
-            background-color: #f3f4f6;
+        img { display: block; max-width: 100% }
+        button { font-family: inherit; border: none; background: none; cursor: pointer }
+        a { text-decoration: none; color: inherit }
+
+        /* ── NAVBAR ── */
+        .navbar {
+            position: sticky; top: 0; z-index: 100;
+            background: var(--white); border-bottom: 1px solid var(--gray);
         }
-        .qty-input-btn:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
+        .navbar-inner {
+            max-width: 1400px; margin: 0 auto; padding: 0 1.25rem;
+            height: 68px; display: flex; align-items: center; justify-content: space-between;
+            position: relative;
         }
-        .qty-value {
-            width: 40px;
-            height: 32px;
-            display: flex;
+        .back-btn {
+            display: flex; align-items: center; gap: .4rem;
+            font-size: 10px; letter-spacing: .22em; text-transform: uppercase;
+            color: var(--o60); transition: color var(--t);
+        }
+        .back-btn svg { transition: transform var(--t); flex-shrink: 0 }
+        .back-btn:hover { color: var(--primary) }
+        .back-btn:hover svg { transform: translateX(-3px) }
+        .brand {
+            font-size: 1.25rem; font-weight: 400; letter-spacing: .45em;
+            text-transform: uppercase; color: var(--primary);
+            position: absolute; left: 50%; transform: translateX(-50%);
+            white-space: nowrap;
+        }
+        .nav-right {
+            font-size: 10px; letter-spacing: .18em; text-transform: uppercase;
+            color: var(--o60); min-width: 80px; text-align: right;
+        }
+
+        /* ── PAGE ── */
+        .page { max-width: 1100px; margin: 0 auto; padding: 3rem 1.25rem 6rem }
+
+        /* ── PAGE HEADER ── */
+        .page-head {
+            display: flex; align-items: center; gap: 1.5rem; margin-bottom: 3rem;
+            padding-bottom: 1.5rem; border-bottom: 1px solid var(--gray);
+        }
+        .page-title {
+            font-size: clamp(1.1rem, 2.5vw, 1.6rem); font-weight: 300;
+            letter-spacing: .4em; text-transform: uppercase; color: var(--primary);
+            white-space: nowrap;
+        }
+        .page-head-line { flex: 1; height: 1px; background: var(--gray) }
+        .item-count {
+            font-size: 9px; letter-spacing: .25em; text-transform: uppercase;
+            color: var(--o60); white-space: nowrap;
+        }
+
+        /* ── CART TABLE ── */
+        .cart-table { width: 100% }
+        .cart-head {
+            display: grid;
+            grid-template-columns: 100px 1fr 140px 120px 80px;
+            gap: 1rem;
+            padding: 0 0 .75rem;
+            border-bottom: 1px solid var(--gray);
+            margin-bottom: 0;
+        }
+        @media (max-width: 768px) { .cart-head { display: none } }
+        .cart-head span {
+            font-size: 9px; font-weight: 700; letter-spacing: .22em;
+            text-transform: uppercase; color: var(--o60);
+        }
+        .cart-head .col-qty  { text-align: center }
+        .cart-head .col-sub  { text-align: right }
+        .cart-head .col-act  { text-align: right }
+
+        /* ── CART ROW ── */
+        .cart-row {
+            display: grid;
+            grid-template-columns: 100px 1fr 140px 120px 80px;
+            gap: 1rem;
+            padding: 1.5rem 0;
+            border-bottom: 1px solid var(--gray);
             align-items: center;
-            justify-content: center;
-            font-size: 11px;
-            font-weight: 500;
-            color: #1a1a1a;
-            user-select: none;
-            border-left: 1px solid #e5e7eb;
-            border-right: 1px solid #e5e7eb;
+            transition: opacity var(--t);
         }
-        .updating { opacity: 0.5; pointer-events: none; }
+        .cart-row.updating { opacity: .4; pointer-events: none }
+
+        @media (max-width: 768px) {
+            .cart-row {
+                grid-template-columns: 80px 1fr;
+                grid-template-rows: auto auto auto;
+                gap: .75rem;
+                padding: 1.25rem 0;
+            }
+            .col-img  { grid-row: 1 / 4; grid-column: 1 }
+            .col-info { grid-row: 1; grid-column: 2 }
+            .col-qty  { grid-row: 2; grid-column: 2 }
+            .col-sub  { grid-row: 3; grid-column: 2; justify-self: start }
+            .col-act  { display: none }
+            .mobile-remove { display: block }
+        }
+        @media (min-width: 769px) {
+            .mobile-remove { display: none }
+        }
+
+        /* Product image */
+        .prod-img {
+            width: 100px; height: 130px; overflow: hidden;
+            background: var(--gray); flex-shrink: 0;
+        }
+        @media (max-width: 768px) {
+            .prod-img { width: 80px; height: 106px }
+        }
+        .prod-img img { width: 100%; height: 100%; object-fit: cover }
+
+        /* Info */
+        .prod-name {
+            font-size: 11px; font-weight: 700; letter-spacing: .15em;
+            text-transform: uppercase; color: var(--primary); margin-bottom: .35rem;
+        }
+        .prod-meta {
+            font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+            color: var(--o60); margin-bottom: .35rem;
+        }
+        .prod-price {
+            font-size: 10px; letter-spacing: .08em; color: var(--olive);
+        }
+        .preorder-tag {
+            display: inline-block; margin-top: .4rem;
+            font-size: 8px; font-weight: 700; letter-spacing: .18em;
+            text-transform: uppercase; padding: 2px 8px;
+            background: var(--primary); color: var(--white);
+        }
+
+        /* Qty control */
+        .col-qty { display: flex; justify-content: center }
+        @media (max-width: 768px) { .col-qty { justify-content: flex-start } }
+
+        .qty-wrap {
+            display: inline-flex; align-items: center;
+            border: 1px solid var(--gray); height: 38px;
+        }
+        .qty-btn {
+            width: 38px; height: 100%; display: flex; align-items: center; justify-content: center;
+            font-size: 18px; font-weight: 300; color: var(--olive);
+            transition: color var(--t), background var(--t); flex-shrink: 0;
+            user-select: none;
+        }
+        .qty-btn:hover:not(:disabled) { color: var(--primary); background: var(--p10) }
+        .qty-btn:disabled { opacity: .3; cursor: not-allowed }
+        .qty-val {
+            width: 42px; text-align: center;
+            font-size: 12px; color: var(--black);
+            border-left: 1px solid var(--gray);
+            border-right: 1px solid var(--gray);
+            line-height: 38px; user-select: none;
+        }
+
+        /* Subtotal */
+        .col-sub {
+            font-size: 12px; font-weight: 400; letter-spacing: .06em;
+            color: var(--black); text-align: right;
+        }
+        @media (max-width: 768px) { .col-sub { text-align: left } }
+
+        /* Action */
+        .col-act { display: flex; justify-content: flex-end; align-items: center }
+        .remove-btn {
+            font-size: 9px; letter-spacing: .2em; text-transform: uppercase;
+            color: var(--gray); border-bottom: 1px solid transparent;
+            transition: color var(--t), border-color var(--t);
+            padding-bottom: 1px;
+        }
+        .remove-btn:hover { color: var(--red); border-color: var(--red) }
+
+        /* ── SUMMARY ── */
+        .summary-wrap {
+            display: flex; justify-content: flex-end; margin-top: 2.5rem;
+        }
+        .summary-box { width: 100%; max-width: 360px }
+
+        .summary-row {
+            display: flex; justify-content: space-between; align-items: baseline;
+            padding: .65rem 0; border-bottom: 1px solid var(--gray);
+        }
+        .summary-label {
+            font-size: 9px; letter-spacing: .28em; text-transform: uppercase; color: var(--o60);
+        }
+        .summary-val {
+            font-size: 11px; letter-spacing: .06em; color: var(--black);
+        }
+        .summary-total-row {
+            display: flex; justify-content: space-between; align-items: baseline;
+            padding: 1rem 0 1.5rem;
+        }
+        .summary-total-label {
+            font-size: 10px; font-weight: 700; letter-spacing: .28em;
+            text-transform: uppercase; color: var(--primary);
+        }
+        .summary-total-val {
+            font-size: 1.2rem; font-weight: 300; letter-spacing: .05em; color: var(--primary);
+        }
+
+        .btn-checkout {
+            display: block; width: 100%; height: 52px;
+            background: var(--primary); color: var(--white);
+            font-family: inherit; font-size: 10px; font-weight: 700;
+            letter-spacing: .35em; text-transform: uppercase;
+            border: 1px solid var(--primary); text-align: center;
+            line-height: 52px;
+            transition: background var(--t), color var(--t), border-color var(--t);
+        }
+        .btn-checkout:hover { background: var(--white); color: var(--primary) }
+
+        .btn-continue {
+            display: block; width: 100%; height: 44px;
+            background: var(--white); color: var(--primary);
+            font-family: inherit; font-size: 10px; font-weight: 700;
+            letter-spacing: .28em; text-transform: uppercase;
+            border: 1px solid var(--gray); text-align: center;
+            line-height: 44px; margin-top: .6rem;
+            transition: border-color var(--t), color var(--t);
+        }
+        .btn-continue:hover { border-color: var(--primary) }
+
+        .summary-note {
+            font-size: 9px; letter-spacing: .15em; text-transform: uppercase;
+            color: var(--o60); text-align: center; margin-top: .9rem;
+            font-style: italic; opacity: .7;
+        }
+
+        /* ── EMPTY STATE ── */
+        .empty-state {
+            text-align: center; padding: 6rem 1rem;
+        }
+        .empty-icon {
+            width: 48px; height: 48px; margin: 0 auto 2rem;
+            opacity: .15;
+        }
+        .empty-text {
+            font-size: 11px; letter-spacing: .35em; text-transform: uppercase;
+            color: var(--o60); margin-bottom: 2.5rem; font-style: italic;
+        }
+        .btn-shop {
+            display: inline-block; padding: 14px 40px;
+            font-size: 10px; font-weight: 700; letter-spacing: .35em; text-transform: uppercase;
+            background: var(--primary); color: var(--white);
+            border: 1px solid var(--primary);
+            transition: background var(--t), color var(--t);
+        }
+        .btn-shop:hover { background: var(--white); color: var(--primary) }
+
+        /* ── FOOTER ── */
+        footer { background: var(--primary); color: var(--white); padding: 1.25rem }
+        .f-copy {
+            text-align: center; font-size: 9px; letter-spacing: .3em;
+            text-transform: uppercase; color: rgba(255,255,255,.4);
+        }
+
+        /* ── TOAST ── */
+        .toast {
+            position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
+            background: var(--primary); color: var(--white);
+            font-size: 10px; letter-spacing: .2em; text-transform: uppercase;
+            padding: .75rem 1.5rem; z-index: 999;
+            opacity: 0; transition: opacity .3s ease; pointer-events: none;
+            white-space: nowrap;
+        }
+        .toast.show { opacity: 1 }
     </style>
 </head>
-<body class="bg-[#FCFCFA] text-[#1a1a1a] antialiased">
+<body>
 
-    <header class="py-6 px-8 flex justify-between items-center border-b border-gray-100 bg-white sticky top-0 z-50">
-        <a href="/" class="text-[10px] uppercase tracking-widest flex items-center gap-2 hover:opacity-60 transition font-sans">
-            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-            Farhana
-        </a>
+    {{-- Navbar --}}
+    <header class="navbar" role="banner">
+        <div class="navbar-inner">
+            <a href="{{ route('home') }}" class="back-btn" aria-label="Kembali belanja">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6"/>
+                </svg>
+                <span>Collection</span>
+            </a>
+            <a href="{{ route('home') }}" class="brand" aria-label="Farhana Home">Farhana</a>
+            <div class="nav-right">
+                <span id="cart-count">{{ count(session('cart') ?? []) }}</span> item
+            </div>
+        </div>
     </header>
-    
-    <main class="max-w-[1000px] mx-auto px-6 py-16 min-h-[70vh]">
-        
-        <div class="flex items-center gap-6 mb-16">
-            <h1 class="text-lg tracking-[0.4em] uppercase font-light text-[#1a1a1a]">Shopping Bag</h1>
-            <div class="h-[1px] flex-grow bg-gray-100"></div>
-            <span class="text-[9px] uppercase tracking-widest text-gray-400 font-medium font-sans">
-                <span id="cart-count">{{ count(session('cart') ?? []) }}</span> ITEMS
+
+    <main class="page" role="main">
+
+        {{-- Page Header --}}
+        <div class="page-head">
+            <h1 class="page-title">Keranjang</h1>
+            <div class="page-head-line"></div>
+            <span class="item-count">
+                <span id="cart-count-head">{{ count(session('cart') ?? []) }}</span> items
             </span>
         </div>
 
         @if(session('cart') && count(session('cart')) > 0)
-            <div class="divide-y divide-gray-50" id="cart-container">
+
+            {{-- Table Header --}}
+            <div class="cart-head">
+                <span></span>
+                <span>Produk</span>
+                <span class="col-qty">Jumlah</span>
+                <span class="col-sub">Subtotal</span>
+                <span class="col-act">Hapus</span>
+            </div>
+
+            {{-- Cart Items --}}
+            <div class="cart-table" id="cart-container">
                 @php $total = 0; @endphp
                 @foreach(session('cart') as $id => $details)
                     @php $total += $details['price'] * $details['quantity']; @endphp
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 py-10 items-center cart-item-transition" id="item-row-{{ $id }}">
-                        <div class="col-span-1 md:col-span-2 flex justify-center md:justify-start">
-                            <div class="product-img-container overflow-hidden bg-[#f9f9f7] relative border border-gray-50">
-                                @if($details['image'])
-                                    <img src="{{ asset('storage/' . $details['image']) }}" 
-                                         alt="{{ $details['name'] }}" 
-                                         class="w-full h-full object-cover mix-blend-multiply">
+
+                    <div class="cart-row" id="item-row-{{ $id }}">
+
+                        {{-- Image --}}
+                        <div class="col-img">
+                            <div class="prod-img">
+                                @if(!empty($details['image']))
+                                    <img src="{{ asset('storage/' . $details['image']) }}"
+                                         alt="{{ $details['name'] }}" loading="lazy">
                                 @endif
                             </div>
                         </div>
 
-                        <div class="col-span-1 md:col-span-5 text-center md:text-left">
-                            <h2 class="text-[12px] tracking-[0.15em] uppercase font-semibold text-[#1a1a1a] mb-1">{{ $details['name'] }}</h2>
-                            <p class="text-[10px] text-gray-400 uppercase tracking-[0.15em] mb-1 font-sans">{{ $details['color'] }} / {{ $details['size'] }}</p>
-                            <p class="text-[11px] font-medium text-gray-600 font-sans">Rp {{ number_format($details['price'], 0, ',', '.') }}</p>
+                        {{-- Info --}}
+                        <div class="col-info">
+                            <p class="prod-name">{{ $details['name'] }}</p>
+                            <p class="prod-meta">{{ $details['color'] }} / {{ $details['size'] }}</p>
+                            <p class="prod-price">Rp {{ number_format($details['price'], 0, ',', '.') }}</p>
+                            @if(!empty($details['is_preorder']) && $details['is_preorder'])
+                                <span class="preorder-tag">Pre-Order</span>
+                            @endif
+                            {{-- Mobile remove --}}
+                            <form action="{{ route('cart.remove', $id) }}" method="POST" class="mobile-remove" style="margin-top:.6rem">
+                                @csrf @method('DELETE')
+                                <button type="submit" class="remove-btn">Hapus</button>
+                            </form>
                         </div>
 
-                        <div class="col-span-1 md:col-span-3 flex justify-center">
-                            <div class="qty-wrapper" data-id="{{ $id }}">
-                                <button type="button" class="qty-input-btn btn-update" data-action="decrease" {{ $details['quantity'] <= 1 ? 'disabled' : '' }}>−</button>
-                                <span class="qty-value font-sans" id="qty-val-{{ $id }}">{{ $details['quantity'] }}</span>
-                                <button type="button" class="qty-input-btn btn-update" data-action="increase">+</button>
+                        {{-- Quantity --}}
+                        <div class="col-qty">
+                            <div class="qty-wrap" data-id="{{ $id }}">
+                                <button type="button" class="qty-btn btn-update"
+                                        data-action="decrease"
+                                        aria-label="Kurangi"
+                                        {{ $details['quantity'] <= 1 ? 'disabled' : '' }}>−</button>
+                                <span class="qty-val" id="qty-val-{{ $id }}">{{ $details['quantity'] }}</span>
+                                <button type="button" class="qty-btn btn-update"
+                                        data-action="increase"
+                                        aria-label="Tambah">+</button>
                             </div>
                         </div>
 
-                        <div class="col-span-1 md:col-span-2 flex flex-col items-center md:items-end gap-3">
-                            <span class="text-[12px] font-semibold tracking-wider text-[#1a1a1a] font-sans" id="item-subtotal-{{ $id }}">
+                        {{-- Subtotal --}}
+                        <div class="col-sub">
+                            <span id="item-subtotal-{{ $id }}">
                                 Rp {{ number_format($details['price'] * $details['quantity'], 0, ',', '.') }}
                             </span>
+                        </div>
+
+                        {{-- Remove (desktop) --}}
+                        <div class="col-act">
                             <form action="{{ route('cart.remove', $id) }}" method="POST">
                                 @csrf @method('DELETE')
-                                <button type="submit" class="text-[9px] uppercase tracking-[0.2em] text-gray-300 hover:text-red-500 transition-colors border-b border-gray-100 hover:border-red-500 pb-0.5 font-sans">
-                                    Remove
-                                </button>
+                                <button type="submit" class="remove-btn">Hapus</button>
                             </form>
                         </div>
+
                     </div>
                 @endforeach
             </div>
 
-            <div class="mt-16 pt-10 border-t border-gray-100 flex flex-col items-center md:items-end">
-                <div class="w-full md:w-[320px] space-y-6">
-                    <div class="flex justify-between items-baseline">
-                        <span class="text-[10px] uppercase tracking-[0.3em] text-gray-400 font-medium">Subtotal</span>
-                        <span class="text-lg font-light tracking-[0.05em] text-[#1a1a1a] font-sans" id="cart-total">
-                            Rp {{ number_format($total, 0, ',', '.') }}
-                        </span>
+            {{-- Summary --}}
+            <div class="summary-wrap">
+                <div class="summary-box">
+                    <div class="summary-row">
+                        <span class="summary-label">Subtotal</span>
+                        <span class="summary-val" id="cart-total">Rp {{ number_format($total, 0, ',', '.') }}</span>
                     </div>
-                    
-                    <a href="{{ route('checkout.index') }}" 
-                    class="block w-full bg-[#5A5A00] text-white py-5 text-[10px] font-bold uppercase tracking-[0.4em] text-center border border-[#5A5A00] hover:bg-white hover:text-[#5A5A00] transition-all duration-500">
-                    Checkout
-                    </a>
-                    <p class="text-[9px] text-gray-400 tracking-widest text-center uppercase italic opacity-60">Taxes and shipping calculated at checkout</p>
+                    <div class="summary-row">
+                        <span class="summary-label">Ongkos kirim</span>
+                        <span class="summary-val" style="color:var(--o60);font-style:italic">Dihitung saat checkout</span>
+                    </div>
+                    <div class="summary-total-row">
+                        <span class="summary-total-label">Total</span>
+                        <span class="summary-total-val" id="cart-total-big">Rp {{ number_format($total, 0, ',', '.') }}</span>
+                    </div>
+
+                    <a href="{{ route('checkout.index') }}" class="btn-checkout">Checkout</a>
+                    <a href="{{ route('home') }}" class="btn-continue">Lanjut Belanja</a>
+                    <p class="summary-note">Pajak & ongkir dihitung saat checkout</p>
                 </div>
             </div>
 
         @else
-            <div class="text-center py-40">
-                <p class="text-[11px] text-gray-400 uppercase tracking-[0.4em] mb-12 italic">Your shopping bag is empty.</p>
-                <a href="/" class="inline-block text-[10px] font-bold uppercase tracking-[0.4em] border border-[#1a1a1a] px-14 py-4 hover:bg-[#1a1a1a] hover:text-white transition-all">Start Shopping</a>
+
+            {{-- Empty State --}}
+            <div class="empty-state">
+                <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+                    <line x1="3" y1="6" x2="21" y2="6"/>
+                    <path d="M16 10a4 4 0 01-8 0"/>
+                </svg>
+                <p class="empty-text">Keranjang belanja kosong.</p>
+                <a href="{{ route('home') }}" class="btn-shop">Mulai Belanja</a>
             </div>
+
         @endif
     </main>
-    
-    <footer class="mt-20 py-10 text-center border-t border-gray-50">
-        <p class="text-[9px] text-gray-300 uppercase tracking-[0.5em] font-sans">&copy; 2026 Farhana Official</p>
+
+    <footer role="contentinfo">
+        <p class="f-copy">&copy; 2026 Farhana Official. All Rights Reserved.</p>
     </footer>
+
+    {{-- Toast --}}
+    <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
-        document.querySelectorAll('.btn-update').forEach(button => {
-            button.addEventListener('click', function() {
-                const wrapper = this.closest('.qty-wrapper');
-                const id = wrapper.getAttribute('data-id');
-                const action = this.getAttribute('data-action');
-                const qtyValSpan = document.getElementById(`qty-val-${id}`);
-                const row = document.getElementById(`item-row-${id}`);
+    function showToast(msg, duration = 2500) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), duration);
+    }
 
-                // Visual feedback: Tambahkan kelas updating
-                row.classList.add('updating');
+    function syncTotals(cartTotal) {
+        document.getElementById('cart-total').textContent     = cartTotal;
+        document.getElementById('cart-total-big').textContent = cartTotal;
+    }
 
-                axios.patch(`/cart/update/${id}`, {
-                    action: action
-                })
-                .then(response => {
-                    if (response.data.success) {
-                        // 1. Update Angka Quantity
-                        qtyValSpan.innerText = response.data.newQty;
+    document.querySelectorAll('.btn-update').forEach(button => {
+        button.addEventListener('click', function () {
+            const wrapper = this.closest('.qty-wrap');
+            const id      = wrapper.getAttribute('data-id');
+            const action  = this.getAttribute('data-action');
+            const row     = document.getElementById(`item-row-${id}`);
 
-                        // 2. Update Subtotal Item tersebut (Format Rupiah)
-                        const itemSubtotal = document.getElementById(`item-subtotal-${id}`);
-                        itemSubtotal.innerText = response.data.itemSubtotal;
+            row.classList.add('updating');
 
-                        // 3. Update Total Akhir Keranjang
-                        const cartTotal = document.getElementById('cart-total');
-                        cartTotal.innerText = response.data.cartTotal;
+            axios.patch(`/cart/update/${id}`, { action })
+                .then(res => {
+                    if (res.data.success) {
+                        document.getElementById(`qty-val-${id}`).textContent       = res.data.newQty;
+                        document.getElementById(`item-subtotal-${id}`).textContent = res.data.itemSubtotal;
+                        syncTotals(res.data.cartTotal);
 
-                        // 4. Update Button State (Disable minus jika qty 1)
                         const btnMinus = wrapper.querySelector('[data-action="decrease"]');
-                        btnMinus.disabled = (response.data.newQty <= 1);
+                        btnMinus.disabled = res.data.newQty <= 1;
                     }
                 })
-                .catch(error => {
-                    const msg = error.response?.data?.message || 'Gagal memperbarui keranjang';
-                    alert(msg);
+                .catch(err => {
+                    const msg = err.response?.data?.message || 'Gagal memperbarui keranjang.';
+                    showToast(msg);
                 })
-                .finally(() => {
-                    row.classList.remove('updating');
-                });
-            });
+                .finally(() => row.classList.remove('updating'));
         });
+    });
     </script>
 </body>
 </html>

@@ -116,8 +116,12 @@
                     </button>
                 </div>
 
-                <div class="flex-shrink-0">
-                    <a href="{{ route('home') }}" class="text-lg font-light tracking-[0.4em] uppercase">Farhana</a>
+                <div class="shrink-0 flex items-center">
+                <a href="{{ route('home') }}">
+                    <img src="{{ Storage::url('LOGO-FARHANA-NEW-TRANSPARENT.png') }}"
+                         alt="Farhana"
+                         class="h-20 w-auto object-contain">
+                </a>
                 </div>
 
                 <div class="hidden md:flex space-x-10 items-center">

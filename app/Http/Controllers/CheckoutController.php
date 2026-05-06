@@ -41,13 +41,15 @@ class CheckoutController extends Controller
         }
 
         $totalAmount = 0;
-        foreach ($cart as $variantId => $item) {
-            $variant = ProductVariant::find($variantId);
-            if (!$variant || $variant->stock < $item['quantity']) {
-                return redirect()->route('cart.index')->with('error', 'Stok tidak mencukupi.');
-            }
-            $totalAmount += $item['price'] * $item['quantity'];
+       foreach ($cart as $variantId => $item) {
+        $variant    = ProductVariant::find($variantId);
+        $isPreorder = $item['is_preorder'] ?? false;
+
+        if (!$variant || (! $isPreorder && $variant->stock < $item['quantity'])) {
+            return redirect()->route('cart.index')->with('error', 'Stok tidak mencukupi.');
         }
+        $totalAmount += $item['price'] * $item['quantity'];
+    }
 
         $user        = Auth::user();
         $addresses   = $user->addresses()->orderBy('is_default', 'desc')->get();
@@ -128,24 +130,38 @@ class CheckoutController extends Controller
                 ]);
 
                 foreach ($cart as $variantId => $details) {
-                    $variant = ProductVariant::where('id', $variantId)->lockForUpdate()->first();
+                $variant    = ProductVariant::with('product')
+                                ->where('id', $variantId)
+                                ->lockForUpdate()
+                                ->first();
+                $isPreorder = $details['is_preorder'] ?? false;
 
-                    if (!$variant || $variant->stock < $details['quantity']) {
-                        throw new \Exception("Maaf, stok {$details['name']} baru saja habis.");
-                    }
-
-                    $order->items()->create([
-                        'product_id' => $variant->product_id,
-                        'quantity'   => $details['quantity'],
-                        'price'      => $details['price'],
-                        'size'       => $variant->size,
-                        'color'      => $variant->color,
-                    ]);
-
-                    $variant->decrement('stock', $details['quantity']);
+                if (!$variant || (! $isPreorder && $variant->stock < $details['quantity'])) {
+                    throw new \Exception("Maaf, stok {$details['name']} baru saja habis.");
                 }
 
-                $this->setupMidtrans();
+                // Tandai order sebagai pre-order jika ada item pre-order
+                if ($isPreorder) {
+                    $order->is_preorder            = true;
+                    $order->preorder_release_date  = $variant->product->release_date;
+                    $order->save();
+                }
+
+                $order->items()->create([
+                    'product_id' => $variant->product_id,
+                    'quantity'   => $details['quantity'],
+                    'price'      => $details['price'],
+                    'size'       => $variant->size,
+                    'color'      => $variant->color,
+                ]);
+
+                // Pre-order: stok TIDAK dikurangi sekarang, dikurangi saat release oleh scheduler
+               if (! $isPreorder) {
+                    $variant->decrement('stock', $details['quantity']);
+                }
+            } // tutup foreach
+
+            $this->setupMidtrans(); // ini masih di dalam DB::transaction
 
                 $itemDetails = [];
                 foreach ($cart as $variantId => $item) {
@@ -273,8 +289,10 @@ class CheckoutController extends Controller
             }
 
             if ($status === 'success' && $order->status !== 'success') {
-                $this->generateAwb($order);
-                $order->update(['status' => 'success']);
+            if (! $order->is_preorder) {
+                $this->generateAwb($order); // AWB hanya untuk order reguler
+            }
+            $order->update(['status' => 'success']);
             } elseif ($status === 'cancelled' && $order->status !== 'cancelled') {
                 $this->restoreStockAndCancel($order);
             } else {
@@ -367,20 +385,23 @@ class CheckoutController extends Controller
     }
 
     private function restoreStockAndCancel(Order $order): void
-    {
-        if ($order->status === 'cancelled') return;
+{
+    if ($order->status === 'cancelled') return;
 
-        DB::transaction(function () use ($order) {
-            $order->update(['status' => 'cancelled']);
-            foreach ($order->items as $item) {
-                $variant = ProductVariant::where('product_id', $item->product_id)
-                    ->where('color', $item->color)
-                    ->where('size', $item->size)
-                    ->first();
-                if ($variant) {
-                    $variant->increment('stock', $item->quantity);
-                }
+    DB::transaction(function () use ($order) {
+        $order->update(['status' => 'cancelled']);
+
+        // Pre-order: stok belum pernah dikurangi, jadi tidak perlu dikembalikan
+        if ($order->is_preorder) return;
+
+        foreach ($order->items as $item) {
+            $variant = ProductVariant::where('product_id', $item->product_id)
+                ->where('color', $item->color)
+                ->where('size', $item->size)
+                ->first();
+            if ($variant) {
+                $variant->increment('stock', $item->quantity);
             }
-        });
-    }
-}
+        }
+    });
+}}

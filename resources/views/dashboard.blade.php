@@ -1,311 +1,371 @@
 <x-app-layout>
     <style>
         [x-cloak] { display: none !important; }
-        .address-card:hover { transform: translateY(-2px); }
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #000; }
+
+        /* ── Typography & Base ── */
+        * { 
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
+            -webkit-font-smoothing: antialiased;
+        }
+
+        :root {
+            --primary:    #2F3526;
+            --white:      #FFFFFF;
+            --black:      #000000;
+            --olive-tint: #6B705C;
+            --light-gray: #E9E9E9;
+            --p8:  rgba(47,53,38,.05);
+            --p15: rgba(47,53,38,.12);
+        }
+
+        body { background-color: var(--white); color: var(--black); }
+
+        /* ── Scrollbar Refined ── */
+        .custom-scrollbar::-webkit-scrollbar       { width: 2px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--olive-tint); border-radius: 99px; }
+
+        /* ── Navigation Buttons Fixed ── */
+.tab-btn {
+    position: relative;
+    display: flex; 
+    align-items: center; /* Memastikan icon & teks sejajar vertikal */
+    justify-content: flex-start; /* Memulai dari kiri */
+    width: 220px; /* Lebar tetap agar ukuran pill Order History & Shipping Address sama persis */
+    padding: 12px 24px; /* Padding kiri-kanan lebih lega agar bentuk pill terlihat bagus */
+    border-radius: 99px; /* Pill shape lebih konsisten */
+    font-size: 10px; 
+    font-weight: 700;
+    letter-spacing: .15em; 
+    text-transform: uppercase;
+    transition: all .3s ease;
+    cursor: pointer;
+    border: 1px solid transparent; /* Mencegah layout jumping */
+}
+
+.tab-btn svg {
+    margin-right: 12px; /* Jarak tetap antara icon dan teks */
+    flex-shrink: 0; /* Mencegah icon gepeng */
+}
+
+.tab-btn.active { 
+    background: var(--primary); 
+    color: var(--white); 
+}
+
+.tab-btn:not(.active) { 
+    background: transparent; 
+    color: var(--olive-tint); 
+    opacity: 0.6; 
+}
+
+.tab-btn:not(.active):hover { 
+    background: var(--p8); 
+    color: var(--primary); 
+    opacity: 1; 
+}
+
+        /* ── Luxury Cards ── */
+        .order-card {
+            border: 1px solid var(--light-gray);
+            border-radius: 28px;
+            background: var(--white);
+            padding: 32px;
+            transition: all .4s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .order-card:hover {
+            border-color: transparent;
+            box-shadow: 0 20px 40px rgba(47,53,38,.06);
+            transform: translateY(-2px);
+        }
+
+        .address-card {
+            border-radius: 32px;
+            background: var(--white);
+            transition: all .4s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .address-card:hover {
+            box-shadow: 0 24px 48px rgba(47,53,38,.08);
+            transform: translateY(-4px);
+        }
+
+        /* ── UI Elements ── */
+        .badge {
+            display: inline-flex; align-items: center;
+            padding: 5px 12px; border-radius: 99px;
+            font-size: 8px; font-weight: 700;
+            letter-spacing: .12em; text-transform: uppercase;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+            border-radius: 99px;
+            transition: all .3s ease;
+            display: inline-flex; align-items: center; justify-content: center;
+        }
+        .btn-primary:hover { opacity: 0.9; transform: scale(1.02); }
+
+        .modal-backdrop {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        /* ── Animations ── */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .fade-up { animation: fadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) both; }
+        .fade-up-1 { animation-delay: 0.1s; }
+        .fade-up-2 { animation-delay: 0.2s; }
+
+        .spinner {
+            width: 24px; height: 24px;
+            border: 2px solid var(--light-gray);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin .8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 
-    <div class="max-w-5xl mx-auto px-6 py-20" x-data="trackingSystem()" x-cloak>
+    <div class="min-h-screen" style="background: var(--white);">
+        <div class="max-w-6xl mx-auto px-8 py-24" x-data="trackingSystem()" x-cloak>
 
-        {{-- Header --}}
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 pb-10 border-b border-gray-100">
-            <div>
-                <nav class="flex mb-4">
-                    <ol class="flex items-center space-x-2 text-[9px] uppercase tracking-[0.2em] text-gray-400">
-                        <li><a href="/" class="hover:text-black">Home</a></li>
-                        <li><span class="mx-2">/</span></li>
-                        <li class="text-black font-bold">Account</li>
-                    </ol>
-                </nav>
-                <h1 class="text-3xl md:text-4xl font-light tracking-[0.15em] uppercase italic text-gray-900">
-                    Welcome back, <span class="font-normal not-italic">{{ auth()->user()->name }}</span>
-                </h1>
-            </div>
-            <div class="mt-6 md:mt-0">
-                <a href="{{ route('profile.edit') }}" class="group flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] font-bold">
-                    <span class="pb-0.5 border-b border-transparent group-hover:border-black transition-all">Account Settings</span>
-                    <svg class="w-3 h-3 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                    </svg>
-                </a>
-            </div>
-        </div>
-
-        @if(session('success') || session('status'))
-        <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)"
-             class="mb-10 p-5 bg-black text-white text-[10px] uppercase tracking-[0.2em] font-medium flex justify-between items-center">
-            <span>{{ session('success') ?? session('status') }}</span>
-            <button @click="show = false" class="opacity-50 hover:opacity-100">&times;</button>
-        </div>
-        @endif
-
-        @if(session('warning'))
-        <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 6000)"
-             class="mb-10 p-5 bg-amber-50 border border-amber-200 text-amber-700 text-[10px] uppercase tracking-[0.2em] font-medium flex justify-between items-center">
-            <span>{{ session('warning') }}</span>
-            <button @click="show = false" class="opacity-50 hover:opacity-100">&times;</button>
-        </div>
-        @endif
-
-        <div class="flex flex-col lg:flex-row gap-12">
-
-            {{-- Sidebar Nav --}}
-            <div class="lg:w-1/4">
-                <div class="sticky top-10 flex flex-row lg:flex-col border-b lg:border-b-0 border-gray-100 overflow-x-auto">
-                    <button @click="tab = 'orders'"
-                        :class="tab === 'orders' ? 'border-black text-black' : 'border-transparent text-gray-400 hover:text-black'"
-                        class="flex-1 lg:flex-none text-left py-4 lg:pr-8 border-b-2 lg:border-b-0 lg:border-l-2 text-[10px] font-black uppercase tracking-[0.3em] transition-all whitespace-nowrap px-4 lg:px-6">
-                        Order History
-                    </button>
-                    <button @click="tab = 'delivery'"
-                        :class="tab === 'delivery' ? 'border-black text-black' : 'border-transparent text-gray-400 hover:text-black'"
-                        class="flex-1 lg:flex-none text-left py-4 lg:pr-8 border-b-2 lg:border-b-0 lg:border-l-2 text-[10px] font-black uppercase tracking-[0.3em] transition-all whitespace-nowrap px-4 lg:px-6">
-                        Shipping Address
-                    </button>
+            {{-- ── HEADER ── --}}
+            <div class="fade-up flex flex-col md:flex-row justify-between items-start md:items-end mb-20">
+                <div class="space-y-6">
+                    <nav>
+                        <ol class="flex items-center gap-3 text-[10px] uppercase tracking-[.3em]" style="color: var(--olive-tint);">
+                            <li><a href="{{ route('home') }}" class="hover:text-black transition-colors">Home</a></li>
+                            <li class="opacity-30">/</li>
+                            <li style="color: var(--primary); font-weight: 700;">Account</li>
+                        </ol>
+                    </nav>
+                    <h1 class="text-4xl md:text-5xl font-light tracking-tight" style="color: var(--primary);">
+                        Hello, <span class="font-bold text-black">{{ explode(' ', auth()->user()->name)[0] }}</span>
+                    </h1>
+                </div>
+                <div class="mt-8 md:mt-0">
+                    <a href="{{ route('profile.edit') }}"
+                       class="group flex items-center gap-3 text-[10px] uppercase tracking-[.3em] font-bold py-2 border-b border-black/10 hover:border-black transition-all">
+                        Account Settings
+                        <svg class="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                        </svg>
+                    </a>
                 </div>
             </div>
 
-            <div class="lg:w-3/4">
+            {{-- ── ALERTS ── --}}
+            @if(session('success') || session('status'))
+            <div x-data="{ show: true }" x-show="show" x-transition class="fade-up fade-up-1 mb-12 flex justify-between items-center rounded-2xl px-8 py-5 text-[10px] uppercase tracking-widest font-bold" style="background: var(--primary); color: var(--white);">
+                <span>{{ session('success') ?? session('status') }}</span>
+                <button @click="show = false" class="text-lg opacity-60 hover:opacity-100">&times;</button>
+            </div>
+            @endif
 
-                {{-- TAB: ORDER HISTORY --}}
-                <div x-show="tab === 'orders'"
-                     x-transition:enter="transition ease-out duration-300"
-                     x-transition:enter-start="opacity-0 translate-y-4">
+            <div class="flex flex-col lg:flex-row gap-20 fade-up fade-up-2">
+                {{-- ── SIDEBAR ── --}}
+                <!-- Bagian Sidebar -->
+<div class="lg:w-1/4">
+    <div class="sticky top-12 space-y-6">
+        <p class="text-[9px] uppercase tracking-[.4em] font-black mb-6 opacity-30 px-5">Menu Navigation</p>
+        <div class="space-y-3">
+            <button @click="tab = 'orders'" :class="tab === 'orders' ? 'active' : ''" class="tab-btn">
+                <!-- Icon Box -->
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                </svg>
+                Order History
+            </button>
 
-                    <div class="mb-10 flex items-center justify-between">
-                        <h4 class="text-[12px] font-black uppercase tracking-[0.4em] text-black">
-                            Recent Orders <span class="ml-2 text-gray-300 font-light">({{ $orders->count() }})</span>
-                        </h4>
-                    </div>
+            <button @click="tab = 'delivery'" :class="tab === 'delivery' ? 'active' : ''" class="tab-btn">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                </svg>
+                Shipping Address
+            </button>
+        </div>
+    </div>
+</div>
 
-                    @if($orders->isEmpty())
-                    <div class="py-24 text-center border border-gray-50 bg-gray-50/30">
-                        <p class="text-[10px] text-gray-400 uppercase tracking-[0.4em] mb-8 italic">No records to display.</p>
-                        <a href="/" class="inline-block px-12 py-4 bg-black text-white text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-gray-800 transition">
-                            Start Shopping
-                        </a>
-                    </div>
-                    @else
-                    <div class="space-y-4">
-                        @foreach($orders as $order)
-                        <div class="group border border-gray-100 p-8 hover:border-black transition-all duration-500 bg-white shadow-sm hover:shadow-md">
-                            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-                                <div class="space-y-2">
-                                    <div class="flex items-center gap-4 flex-wrap">
-                                        <span class="text-[12px] font-bold uppercase tracking-widest text-black">{{ $order->order_number }}</span>
-                                        <span class="w-1 h-1 bg-gray-300 rounded-full"></span>
-                                        <span class="text-[10px] text-gray-500 uppercase tracking-widest">{{ $order->created_at->format('M d, Y') }}</span>
+                {{-- ── MAIN CONTENT ── --}}
+                <div class="lg:w-3/4">
+                    {{-- TAB: ORDERS --}}
+                    <div x-show="tab === 'orders'" x-transition:enter="transition ease-out duration-500" x-transition:enter-start="opacity-0 translate-y-4">
+                        <div class="mb-10 flex items-center justify-between">
+                            <h4 class="text-[11px] font-black uppercase tracking-[.4em]">Recent Transactions</h4>
+                            <div class="h-px flex-1 mx-8 bg-gray-100"></div>
+                            <span class="text-[10px] font-bold px-4 py-1 rounded-full bg-gray-50">{{ $orders->count() }} Orders</span>
+                        </div>
+
+                        @if($orders->isEmpty())
+                        <div class="py-32 text-center rounded-[3rem] border border-dashed border-gray-200">
+                            <p class="text-[11px] uppercase tracking-widest text-gray-400 mb-8">Your closet is empty</p>
+                            <a href="{{ route('home') }}" class="btn-primary px-10 py-4 text-[10px] font-bold uppercase tracking-widest">Explore Collection</a>
+                        </div>
+                        @else
+                        <div class="space-y-6">
+                            @foreach($orders as $order)
+                            <div class="order-card">
+                                <div class="flex flex-col md:flex-row justify-between items-start gap-6">
+                                    <div class="space-y-4">
+                                        <div class="flex items-center gap-4">
+                                            <span class="text-[12px] font-black uppercase tracking-tighter">#{{ $order->order_number }}</span>
+                                            <span class="h-4 w-px bg-gray-200"></span>
+                                            <span class="text-[10px] uppercase tracking-widest text-gray-400">{{ $order->created_at->format('d M Y') }}</span>
+                                        </div>
+                                        <div>
+                                            <p class="text-xl font-medium tracking-tight">Rp {{ number_format($order->grand_total, 0, ',', '.') }}</p>
+                                        </div>
+                                        <div class="flex items-center gap-3">
+                                            @php
+                                                $statusStyles = [
+                                                    'pending'   => 'background:#FFFBEB; color:#B45309;',
+                                                    'success'   => 'background:#F0FDF4; color:#15803D;',
+                                                    'cancelled' => 'background:#FEF2F2; color:#B91C1C;',
+                                                    'shipped'   => 'background:#EFF6FF; color:#1D4ED8;',
+                                                ];
+                                                $s = $statusStyles[$order->status] ?? 'background:var(--light-gray); color:var(--olive-tint);';
+                                            @endphp
+                                            <span class="badge" style="{{ $s }}">{{ $order->status }}</span>
+                                            @if($order->tracking_number)
+                                                <span class="text-[9px] font-mono text-gray-400">AWB: {{ $order->tracking_number }}</span>
+                                            @endif
+                                        </div>
                                     </div>
-                                    <div class="flex items-center gap-3 flex-wrap">
-                                        <span class="text-[11px] text-black font-light tracking-widest">
-                                            Rp {{ number_format($order->grand_total, 0, ',', '.') }}
-                                        </span>
-                                        @php
-                                            $statusColors = [
-                                                'pending'   => 'bg-yellow-50 text-yellow-700',
-                                                'success'   => 'bg-green-50 text-green-700',
-                                                'cancelled' => 'bg-red-50 text-red-500',
-                                                'shipped'   => 'bg-blue-50 text-blue-700',
-                                            ];
-                                            $statusColor = $statusColors[$order->status] ?? 'bg-gray-100 text-gray-600';
-                                        @endphp
-                                        <span class="px-3 py-1 {{ $statusColor }} text-[8px] font-bold uppercase tracking-[0.2em] rounded-full">
-                                            {{ $order->status }}
-                                        </span>
+                                    <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
                                         @if($order->tracking_number)
-                                        <span class="text-[9px] text-gray-400 font-mono">AWB: {{ $order->tracking_number }}</span>
-                                        @endif
-                                    </div>
-                                </div>
-
-                                <div class="flex flex-wrap items-center gap-3">
-                                    @if($order->tracking_number)
-                                    <button @click="openTrackingModal('{{ $order->tracking_number }}')"
-                                        class="text-[9px] font-black uppercase tracking-[0.3em] bg-white border border-black px-6 py-3 hover:bg-black hover:text-white transition-all duration-300 flex items-center gap-2">
-                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
-                                        </svg>
-                                        Track Resi
-                                    </button>
-                                    @endif
-
-                                    <a href="{{ route('profile.orders.detail', $order->order_number) }}"
-                                        class="text-[9px] font-black uppercase tracking-[0.3em] bg-gray-50 px-6 py-3 group-hover:bg-black group-hover:text-white transition-all duration-300 text-center">
-                                        Manage Order
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        @endforeach
-                    </div>
-                    @endif
-                </div>
-
-                {{-- TAB: SHIPPING ADDRESS --}}
-                <div x-show="tab === 'delivery'" style="display:none"
-                     x-transition:enter="transition ease-out duration-300"
-                     x-transition:enter-start="opacity-0 translate-y-4">
-
-                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 gap-4">
-                        <div>
-                            <h4 class="text-[12px] font-black uppercase tracking-[0.4em] text-black">Shipping Directory</h4>
-                            <p class="text-[9px] text-gray-400 uppercase tracking-[0.2em] mt-2">Default address will be used for all orders.</p>
-                        </div>
-                        <a href="{{ route('address.create') }}"
-                            class="w-full sm:w-auto text-center bg-black text-white px-10 py-4 text-[9px] font-bold uppercase tracking-[0.2em] hover:bg-gray-800 transition-all">
-                            + Add Address
-                        </a>
-                    </div>
-
-                    @php $addresses = auth()->user()->addresses ?? collect(); @endphp
-
-                    @if($addresses->isEmpty())
-                    <div class="py-24 text-center border-2 border-dashed border-gray-100 rounded-xl">
-                        <p class="text-[10px] text-gray-300 uppercase tracking-[0.4em] mb-6 italic">Empty Directory</p>
-                        <a href="{{ route('address.create') }}" class="text-[9px] font-bold uppercase border-b-2 border-black pb-1 hover:text-gray-500 transition">
-                            Register New Address
-                        </a>
-                    </div>
-                    @else
-                    <div class="space-y-8">
-                        @foreach($addresses as $address)
-                        <div class="address-card border {{ $address->is_default ? 'border-black ring-1 ring-black' : 'border-gray-100 shadow-sm' }} p-10 relative transition-all duration-300 bg-white">
-                            @if($address->is_default)
-                            <div class="absolute -top-3 left-10 bg-black text-white text-[8px] px-6 py-1.5 uppercase tracking-[0.3em] font-bold">
-                                Primary
-                            </div>
-                            @endif
-
-                            <div class="flex justify-between items-start mb-8">
-                                <h5 class="text-[11px] font-black uppercase tracking-[0.3em] text-black bg-gray-50 px-3 py-1">
-                                    {{ $address->label ?? 'General' }}
-                                </h5>
-                            </div>
-
-                            <div class="grid md:grid-cols-2 gap-8 text-[11px] text-gray-600 leading-loose uppercase tracking-[0.15em]">
-                                <div class="space-y-1">
-                                    <p class="text-black font-bold text-[13px] tracking-[0.2em] mb-2">{{ $address->recipient_name }}</p>
-                                    <p class="flex items-center gap-2">
-                                        <span class="w-4 h-[1px] bg-gray-200"></span>{{ $address->phone }}
-                                    </p>
-                                </div>
-                                <div class="space-y-1 md:border-l md:pl-8 border-gray-50">
-                                    <p class="text-black font-medium leading-relaxed">{{ $address->address }}</p>
-                                    <p>{{ $address->district_name }}, {{ $address->city_name }}</p>
-                                    <p class="text-gray-400 font-bold">{{ $address->province_name }} — {{ $address->postal_code }}</p>
-                                </div>
-                            </div>
-
-                            <div class="mt-10 pt-8 border-t border-gray-50 flex flex-wrap items-center gap-10">
-                                @if(!$address->is_default)
-                                <form action="{{ route('address.select', $address->id) }}" method="POST">
-                                    @csrf
-                                    <button class="text-[9px] font-black uppercase tracking-[0.2em] text-black hover:tracking-[0.3em] transition-all flex items-center gap-2">
-                                        Set Primary <span class="text-lg">→</span>
-                                    </button>
-                                </form>
-                                @endif
-                                <div class="flex items-center gap-6 ml-auto">
-                                    <a href="{{ route('address.edit', $address->id) }}"
-                                        class="text-[9px] font-bold uppercase tracking-widest text-gray-400 hover:text-black transition">
-                                        Edit
-                                    </a>
-                                    <form action="{{ route('address.destroy', $address->id) }}" method="POST"
-                                        onsubmit="return confirm('Delete this address?')">
-                                        @csrf @method('DELETE')
-                                        <button class="text-[9px] font-bold uppercase tracking-widest text-red-300 hover:text-red-600 transition">
-                                            Delete
+                                        <button @click="openTrackingModal('{{ $order->tracking_number }}')" 
+                                                class="px-8 py-4 rounded-full border border-gray-200 text-[9px] font-bold uppercase tracking-widest hover:bg-black hover:text-white transition-all">
+                                            Track Order
                                         </button>
-                                    </form>
+                                        @endif
+                                        <a href="{{ route('profile.orders.detail', $order->order_number) }}" 
+                                           class="btn-primary px-8 py-4 text-[9px] font-bold uppercase tracking-widest">
+                                            Details
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
+                            @endforeach
                         </div>
-                        @endforeach
-                    </div>
-                    @endif
-                </div>
-
-            </div>
-        </div>
-
-        {{-- MODAL TRACKING --}}
-        <div x-show="modalOpen"
-             class="fixed inset-0 z-[60] flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm"
-             x-transition:enter="transition ease-out duration-300"
-             x-transition:enter-start="opacity-0"
-             x-transition:leave="transition ease-in duration-200"
-             x-transition:leave-end="opacity-0"
-             x-cloak>
-
-            <div @click.away="modalOpen = false"
-                 class="bg-white w-full max-w-2xl shadow-2xl flex flex-col max-h-[85vh]">
-
-                {{-- Header --}}
-                <div class="p-8 border-b border-gray-50 flex justify-between items-center flex-shrink-0">
-                    <div>
-                        <h3 class="text-[12px] font-black uppercase tracking-[0.4em] text-black">Shipment Tracker</h3>
-                        <p class="text-[9px] text-gray-400 uppercase tracking-widest mt-1">
-                            AWB: <span class="text-black font-mono" x-text="activeAwb"></span>
-                        </p>
-                    </div>
-                    <button @click="modalOpen = false" class="text-2xl font-light hover:rotate-90 transition-transform duration-300">&times;</button>
-                </div>
-
-                {{-- Body --}}
-                <div class="p-8 overflow-y-auto custom-scrollbar flex-1">
-
-                    {{-- Loading --}}
-                    <div x-show="loading" class="py-20 text-center">
-                        <div class="inline-block w-8 h-8 border-[3px] border-black border-t-transparent rounded-full animate-spin"></div>
-                        <p class="mt-6 text-[9px] uppercase tracking-[0.3em] text-gray-400 animate-pulse">Retrieving logistics data...</p>
+                        @endif
                     </div>
 
-                    {{-- Data --}}
-                    <div x-show="!loading && trackingData">
-                        {{-- Status Badge --}}
-                        <div class="mb-6 p-4 bg-gray-50 border-l-4 border-black">
-                            <p class="text-[8px] uppercase tracking-widest text-gray-400 mb-1">Current Status</p>
-                            <p class="text-[13px] font-bold uppercase tracking-widest text-black" x-text="trackingData?.status"></p>
-                            <p class="text-[10px] text-gray-500 mt-1" x-text="trackingData?.last"></p>
+                    {{-- TAB: ADDRESS --}}
+                    <div x-show="tab === 'delivery'" style="display:none" x-transition:enter="transition ease-out duration-500" x-transition:enter-start="opacity-0 translate-y-4">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-12">
+                            <h4 class="text-[11px] font-black uppercase tracking-[.4em]">Shipping Directory</h4>
+                            <a href="{{ route('address.create') }}" class="btn-primary px-8 py-4 text-[10px] font-bold uppercase tracking-widest gap-2">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
+                                </svg>
+                                New Address
+                            </a>
                         </div>
 
-                        {{-- Timeline --}}
-                        <div class="space-y-6 relative before:absolute before:inset-0 before:ml-[11px] before:h-full before:w-[1px] before:bg-gray-100">
-                            <template x-for="(h, index) in trackingData?.history" :key="index">
-                                <div class="relative flex items-start gap-6">
-                                    <div :class="index === 0 ? 'bg-black ring-4 ring-black/10' : 'bg-gray-200'"
-                                         class="absolute left-0 w-[24px] h-[24px] rounded-full border-4 border-white z-10 flex items-center justify-center flex-shrink-0">
-                                        <div x-show="index === 0" class="w-1.5 h-1.5 bg-white rounded-full"></div>
+                        @php $addresses = auth()->user()->addresses ?? collect(); @endphp
+
+                        <div class="space-y-8">
+                            @forelse($addresses as $address)
+                            <div class="address-card relative p-10 border border-gray-100" style="{{ $address->is_default ? 'border-color: var(--primary); border-width: 1.5px;' : '' }}">
+                                @if($address->is_default)
+                                <div class="absolute -top-3 left-10 rounded-full px-4 py-1 text-[8px] font-black uppercase tracking-widest" style="background: var(--primary); color: var(--white);">Primary</div>
+                                @endif
+
+                                <div class="grid md:grid-cols-2 gap-12">
+                                    <div class="space-y-4">
+                                        <span class="inline-block text-[9px] font-bold uppercase tracking-widest px-3 py-1 bg-gray-50 rounded">{{ $address->label }}</span>
+                                        <h5 class="text-lg font-bold">{{ $address->recipient_name }}</h5>
+                                        <p class="text-[11px] text-gray-500 tracking-widest">{{ $address->phone }}</p>
                                     </div>
-                                    <div class="ml-10 pb-2">
-                                        <p :class="index === 0 ? 'text-black font-bold' : 'text-gray-400'"
-                                           class="text-[10px] uppercase tracking-widest font-mono" x-text="h.date"></p>
-                                        <p :class="index === 0 ? 'text-gray-900' : 'text-gray-500'"
-                                           class="text-[11px] mt-1 leading-relaxed" x-text="h.desc"></p>
+                                    <div class="space-y-2 text-[12px] leading-relaxed opacity-80">
+                                        <p class="font-medium text-black">{{ $address->address }}</p>
+                                        <p>{{ $address->district_name }}, {{ $address->city_name }}</p>
+                                        <p>{{ $address->province_name }} — {{ $address->postal_code }}</p>
                                     </div>
                                 </div>
-                            </template>
+
+                                <div class="mt-10 pt-8 border-t border-gray-50 flex items-center justify-between">
+                                    <div class="flex gap-8">
+                                        <a href="{{ route('address.edit', $address->id) }}" class="text-[9px] font-bold uppercase tracking-widest hover:text-black transition-colors">Edit</a>
+                                        <form action="{{ route('address.destroy', $address->id) }}" method="POST" onsubmit="return confirm('Remove address?')">
+                                            @csrf @method('DELETE')
+                                            <button class="text-[9px] font-bold uppercase tracking-widest text-red-500 hover:text-red-700">Remove</button>
+                                        </form>
+                                    </div>
+                                    @if(!$address->is_default)
+                                    <form action="{{ route('address.select', $address->id) }}" method="POST">
+                                        @csrf
+                                        <button class="text-[9px] font-bold uppercase tracking-widest border-b border-black pb-1">Set Default</button>
+                                    </form>
+                                    @endif
+                                </div>
+                            </div>
+                            @empty
+                            <div class="py-32 text-center rounded-[3rem] border border-dashed border-gray-200">
+                                <p class="text-[11px] uppercase tracking-widest text-gray-400 mb-4">No addresses saved</p>
+                            </div>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- ── TRACKING MODAL ── --}}
+            <div x-show="modalOpen" class="modal-backdrop fixed inset-0 z-[60] flex items-end sm:items-center justify-center p-4 sm:p-8" x-transition x-cloak>
+                <div @click.away="modalOpen = false" class="w-full max-w-xl bg-white rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col" style="max-height: 85vh;">
+                    <div class="p-10 border-b border-gray-50 flex justify-between items-center">
+                        <div>
+                            <h3 class="text-[12px] font-black uppercase tracking-[.4em]">Shipment Data</h3>
+                            <p class="text-[10px] mt-2 text-gray-400 uppercase tracking-widest">AWB <span class="text-black font-mono" x-text="activeAwb"></span></p>
+                        </div>
+                        <button @click="modalOpen = false" class="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center hover:bg-gray-100 transition-colors">&times;</button>
+                    </div>
+
+                    <div class="p-10 overflow-y-auto custom-scrollbar flex-1">
+                        <div x-show="loading" class="py-20 flex flex-col items-center">
+                            <div class="spinner mb-6"></div>
+                            <p class="text-[10px] uppercase tracking-[.3em] opacity-40">Contacting Logistics...</p>
+                        </div>
+
+                        <div x-show="!loading && trackingData">
+                            <div class="mb-12 p-8 rounded-3xl bg-[#F9F9F8]">
+                                <p class="text-[8px] uppercase tracking-widest text-gray-400 mb-2">Current Status</p>
+                                <p class="text-lg font-bold uppercase tracking-tight text-[#2F3526]" x-text="trackingData?.status"></p>
+                                <p class="text-[11px] mt-2 opacity-60" x-text="trackingData?.last"></p>
+                            </div>
+
+                            <div class="relative pl-10 space-y-10">
+                                <div class="absolute left-[3px] top-2 bottom-2 w-[1px] bg-gray-100"></div>
+                                <template x-for="(h, index) in trackingData?.history" :key="index">
+                                    <div class="relative">
+                                        <div :class="index === 0 ? 'bg-black w-2 h-2 scale-150' : 'bg-gray-200 w-1.5 h-1.5'" class="absolute -left-[10px] top-1 rounded-full z-10 transition-all"></div>
+                                        <div>
+                                            <p class="text-[9px] font-bold uppercase tracking-widest mb-1" :class="index === 0 ? 'text-black' : 'text-gray-400'" x-text="h.date"></p>
+                                            <p class="text-[11px] leading-relaxed opacity-70" x-text="h.desc"></p>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+
+                        <div x-show="!loading && !trackingData" class="py-12 text-center">
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-red-400" x-text="errorMessage || 'Logistics ID not found'"></p>
                         </div>
                     </div>
 
-                    {{-- Error --}}
-                    <div x-show="!loading && !trackingData" class="py-10 text-center">
-                        <p class="text-[10px] text-red-400 uppercase tracking-widest italic" x-text="errorMessage || 'Data tidak ditemukan.'"></p>
+                    <div class="p-10 pt-0">
+                        <button @click="modalOpen = false" class="btn-primary w-full py-5 text-[10px] font-bold uppercase tracking-widest">Close Record</button>
                     </div>
                 </div>
-
-                {{-- Footer --}}
-                <div class="p-6 border-t border-gray-50 bg-gray-50/50 flex-shrink-0">
-                    <button @click="modalOpen = false"
-                        class="w-full py-4 bg-black text-white text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-gray-800 transition">
-                        Close Tracker
-                    </button>
-                </div>
             </div>
-        </div>
 
+        </div>
     </div>
 
     <script>
@@ -319,9 +379,9 @@
             errorMessage: '',
 
             async openTrackingModal(awb) {
-                this.activeAwb   = awb;
-                this.modalOpen   = true;
-                this.loading     = true;
+                this.activeAwb    = awb;
+                this.modalOpen    = true;
+                this.loading      = true;
                 this.trackingData = null;
                 this.errorMessage = '';
 
@@ -336,7 +396,7 @@
                             history: result.history || [],
                         };
                     } else {
-                        this.errorMessage = result.message || 'Resi tidak ditemukan.';
+                        this.errorMessage = result.message || 'Data tidak ditemukan.';
                     }
                 } catch (err) {
                     this.errorMessage = 'Gagal terhubung ke sistem tracking.';

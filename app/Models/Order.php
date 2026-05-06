@@ -30,6 +30,14 @@ class Order extends Model
         'service_code',   // ← ditambahkan
         'receiver_city',  // ← ditambahkan
         'receiver_zip',   // ← ditambahkan
+        'is_preorder',            // ← tambahkan
+        'preorder_release_date',
+    ];
+
+    protected $casts = [
+        'payment_deadline'      => 'datetime',
+        'is_preorder'           => 'boolean',
+        'preorder_release_date' => 'datetime',
     ];
 
     protected static function boot()
@@ -51,9 +59,21 @@ class Order extends Model
         return $this->hasMany(OrderItem::class);
     }
 
-    public function orders(): HasMany
+    public function scopeReadyToRelease($query)
     {
-        // Pastikan nama model kamu adalah 'Order'
-        return $this->hasMany(Order::class); 
+        return $query
+            ->where('is_preorder', true)
+            ->where('status', 'success')
+            ->where('preorder_release_date', '<=', now());
+    }
+
+    public function isPreorderReleased(): bool
+    {
+        if (! $this->is_preorder) {
+            return true;
+        }
+        return $this->preorder_release_date
+            ? now()->gte($this->preorder_release_date)
+            : false;
     }
 }
