@@ -15,10 +15,10 @@
                     <div class="h-1 w-12 bg-[#5A5A00] mt-4"></div>
                 </div>
                 
-                <a href="{{ route('size-guides.create') }}" class="inline-flex items-center px-6 py-3 bg-black text-white text-[10px] font-bold uppercase tracking-[0.2em] rounded-xl hover:bg-[#5A5A00] transition duration-300 shadow-lg">
-                    <span class="mr-2">+</span> Tambah Template
-                </a>
-            </div>
+            <a href="{{ route('size-guides.create') }}" 
+            class="inline-flex items-center px-6 py-3 bg-[#2F3526] text-white text-[10px] font-bold uppercase tracking-[0.2em] rounded-xl hover:bg-[#6B705C] transition duration-300 shadow-lg">
+                <span class="mr-2">+</span> Tambah Template
+            </a>
 
             @if(session('success'))
                 <div class="mb-6 mx-4 sm:mx-0 p-4 bg-green-50 border-l-4 border-green-500 text-green-700 text-[11px] uppercase tracking-widest font-bold">

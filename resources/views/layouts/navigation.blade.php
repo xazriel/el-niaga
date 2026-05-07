@@ -1,13 +1,16 @@
 <nav x-data="{ open: false }" class="bg-white border-b border-gray-100 w-full">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center h-16">
+        <div class="flex justify-between items-center h-16 relative">
 
-            {{-- LOGO KIRI --}}
-            <div class="shrink-0 flex items-center">
+            {{-- Spacer kiri untuk keseimbangan layout di mobile --}}
+            <div class="w-8 sm:hidden"></div>
+
+            {{-- LOGO TENGAH DI MOBILE, KIRI DI DESKTOP --}}
+            <div class="absolute left-1/2 -translate-x-1/2 sm:static sm:translate-x-0 shrink-0 flex items-center">
                 <a href="{{ route('home') }}">
                     <img src="{{ Storage::url('LOGO-FARHANA-NEW-TRANSPARENT.png') }}"
                          alt="Farhana"
-                         class="h-20 w-auto object-contain">
+                         class="h-12 sm:h-20 w-auto object-contain">
                 </a>
             </div>
 
@@ -66,6 +69,10 @@
             </div>
 
             {{-- HAMBURGER (MOBILE) --}}
+            @php
+                $showAdminDrawer = auth()->check() && auth()->user()->role === 'admin' && !request()->routeIs('admin.dashboard');
+            @endphp
+            @if(!$showAdminDrawer)
             <div class="-me-2 flex items-center sm:hidden">
                 <button @click="open = ! open" class="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 transition">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
@@ -74,10 +81,14 @@
                     </svg>
                 </button>
             </div>
+            @else
+            <div class="-me-2 flex items-center sm:hidden w-10"></div>
+            @endif
         </div>
     </div>
 
     {{-- MOBILE MENU --}}
+    @if(!$showAdminDrawer)
     <div :class="{'block': open, 'hidden': !open}" class="hidden sm:hidden bg-white border-t border-gray-100">
         <div class="pt-4 pb-3">
             @auth
@@ -118,5 +129,5 @@
                 </div>
             @endauth
         </div>
-    </div>
+    @endif
 </nav>

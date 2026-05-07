@@ -1,100 +1,109 @@
-<section id="how-to-buy-section" class="py-24 md:py-32 scroll-mt-20 relative overflow-hidden" style="background: #FFFFFF;">
-    <style>
-        .step-card {
-            background: #FFFFFF;
-            border: 1px solid #E9E9E9;
-            border-radius: 40px;
-            padding: 40px;
-            transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            height: 100%;
-        }
-        .step-card:hover {
-            box-shadow: 0 30px 60px rgba(47,53,38,.06);
-            transform: translateY(-8px);
-            border-color: #6B705C;
-        }
-        .step-number {
-            font-size: 64px;
-            font-weight: 200;
-            line-height: 1;
-            color: rgba(47,53,38,.05);
-            transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-        .step-card:hover .step-number {
-            color: rgba(47,53,38,.15);
-            transform: translateY(-4px);
-        }
-        .step-dot {
-            width: 12px; height: 12px;
-            border-radius: 50%;
-            background: rgba(47,53,38,.1);
-            transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-        .step-card:hover .step-dot {
-            background: #2F3526;
-            transform: scale(1.2);
-        }
-        .step-line {
-            position: absolute;
-            bottom: 40px; left: 40px;
-            height: 1px; width: 0;
-            background: #2F3526;
-            transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-        .step-card:hover .step-line {
-            width: 40px;
-        }
-    </style>
+<section id="how-to-buy-section" class="py-24 md:py-32 scroll-mt-20 relative overflow-hidden" style="background:#FFFFFF;">
+<style>
+    /* ── HOW TO BUY ── */
+    .htb-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    @media (min-width: 640px)  { .htb-grid { grid-template-columns: 1fr 1fr; } }
+    @media (min-width: 1024px) { .htb-grid { grid-template-columns: repeat(4, 1fr); } }
 
-    {{-- Subtle decorative background --}}
-    <div class="absolute bottom-0 left-0 w-[600px] h-[600px] bg-[#F9F9F8] rounded-full blur-3xl opacity-60 -z-10 -translate-x-1/3 translate-y-1/3"></div>
+    .htb-card {
+        border: 1px solid #E9E9E9;
+        border-radius: 20px;
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-height: 190px;
+        cursor: default;
+        position: relative;
+        overflow: hidden;
+        transition: border-color .35s ease, transform .4s cubic-bezier(.22,1,.36,1);
+    }
+    .htb-card:hover {
+        border-color: #6B705C;
+        transform: translateY(-5px);
+    }
 
-    <div class="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-20 relative z-10">
-        {{-- Header --}}
-        <div class="text-center mb-20 md:mb-28">
-            <p class="text-[9px] md:text-[10px] font-black uppercase tracking-[.4em] mb-4" style="color: #6B705C;">Shopping Guide</p>
-            <h2 class="text-4xl md:text-5xl lg:text-6xl font-light uppercase tracking-[.1em]" style="color: #2F3526;">
-                How To <strong class="font-black" style="color: #000000;">Purchase</strong>
-            </h2>
-            <div class="mx-auto mt-6" style="width: 40px; height: 1.5px; background: #2F3526;"></div>
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10">
-            @php
-                $steps = [
-                    ['01', 'Browse', 'Temukan koleksi yang sesuai dengan karakter Anda.'],
-                    ['02', 'Secure', 'Lengkapi detail pengiriman untuk presisi kurir.'],
-                    ['03', 'Payment', 'Transaksi aman melalui gerbang pembayaran terenkripsi.'],
-                    ['04', 'Receive', 'Duduk manis, kami akan mengantar paket Anda ke tujuan.']
-                ];
-            @endphp
+    .htb-card-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1.5rem;
+    }
+    .htb-dot {
+        width: 9px; height: 9px; border-radius: 50%;
+        background: rgba(47,53,38,.12);
+        margin-top: 5px; flex-shrink: 0;
+        transition: background .35s ease, transform .35s ease;
+    }
+    .htb-card:hover .htb-dot { background: #2F3526; transform: scale(1.25); }
 
-            @foreach($steps as $step)
-            <div class="step-card group cursor-default">
-                {{-- Top Section --}}
-                <div class="flex justify-between items-start mb-24 relative z-10">
-                    <div class="step-dot mt-2"></div>
-                    <span class="step-number">{{ $step[0] }}</span>
-                </div>
-                
-                {{-- Bottom Section --}}
-                <div class="relative z-10">
-                    <h4 class="text-[14px] font-black uppercase tracking-[.2em] mb-4" style="color: #2F3526;">
-                        {{ $step[1] }}
-                    </h4>
-                    <p class="text-[13px] leading-relaxed" style="color: #6B705C;">
-                        {{ $step[2] }}
-                    </p>
-                </div>
-                
-                {{-- Hover Progress Line --}}
-                <div class="step-line"></div>
-            </div>
-            @endforeach
-        </div>
+    .htb-num {
+        font-size: 52px; font-weight: 200; line-height: 1;
+        color: rgba(47,53,38,.06);
+        transition: color .4s ease;
+    }
+    .htb-card:hover .htb-num { color: rgba(47,53,38,.16); }
+
+    .htb-step-title {
+        font-size: 10px; font-weight: 700;
+        letter-spacing: .22em; text-transform: uppercase;
+        color: #2F3526; margin: 0 0 5px;
+    }
+    .htb-step-desc {
+        font-size: 12px; color: #6B705C;
+        line-height: 1.7; margin: 0;
+    }
+
+    /* Progress line that grows on hover */
+    .htb-line {
+        position: absolute;
+        bottom: 1.5rem; left: 1.5rem;
+        height: 1px; width: 0;
+        background: #2F3526;
+        transition: width .45s cubic-bezier(.22,1,.36,1);
+    }
+    .htb-card:hover .htb-line { width: 32px; }
+</style>
+
+<div class="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-20">
+
+    {{-- Header --}}
+    <div style="text-align:center; margin-bottom: 3rem;">
+        <span style="display:block; font-size:9px; font-weight:700; letter-spacing:.3em; text-transform:uppercase; color:#6B705C; margin-bottom:.4rem;">Shopping Guide</span>
+        <h2 style="font-size:clamp(1.7rem,4vw,2.6rem); font-weight:300; letter-spacing:.08em; text-transform:uppercase; color:#2F3526; margin:0;">
+            How To <strong style="font-weight:900; color:#000;">Purchase</strong>
+        </h2>
+        <div style="width:36px; height:1.5px; background:#2F3526; margin:1.1rem auto 0;"></div>
     </div>
+
+    @php
+        $steps = [
+            ['01', 'Browse',   'Temukan koleksi yang sesuai dengan karakter Anda.'],
+            ['02', 'Secure',   'Lengkapi detail pengiriman untuk presisi kurir.'],
+            ['03', 'Payment',  'Transaksi aman melalui gerbang pembayaran terenkripsi.'],
+            ['04', 'Receive',  'Duduk manis, kami akan mengantar paket Anda ke tujuan.'],
+        ];
+    @endphp
+
+    <div class="htb-grid">
+        @foreach($steps as $step)
+        <div class="htb-card">
+            <div class="htb-card-top">
+                <span class="htb-dot"></span>
+                <span class="htb-num">{{ $step[0] }}</span>
+            </div>
+            <div>
+                <p class="htb-step-title">{{ $step[1] }}</p>
+                <p class="htb-step-desc">{{ $step[2] }}</p>
+            </div>
+            <div class="htb-line"></div>
+        </div>
+        @endforeach
+    </div>
+
+</div>
 </section>

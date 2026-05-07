@@ -4,13 +4,13 @@
             <div>
                 <p class="text-[9px] font-black text-[#6B705C] uppercase tracking-[0.25em] mb-1">Web Content · Homepage</p>
                 <h2 class="font-black text-xl md:text-2xl text-[#2F3526] leading-tight tracking-tight">
-                    Kelola Banner Slider
+                    Kelola Banner Promo
                 </h2>
             </div>
             <a href="{{ route('admin.dashboard') }}"
                class="inline-flex items-center gap-2 text-[9px] font-black text-[#6B705C] uppercase tracking-widest hover:text-[#2F3526] transition-all group">
                 <span class="w-5 h-px bg-[#6B705C] group-hover:w-8 transition-all duration-300"></span>
-                Dashboard
+                Kembali ke Dashboard
             </a>
         </div>
     </x-slot>
@@ -38,7 +38,7 @@
                         </svg>
                     </div>
                     <div>
-                        <p class="text-[9px] font-black uppercase tracking-[0.2em] mb-1.5">Gagal Mengunggah</p>
+                        <p class="text-[9px] font-black uppercase tracking-[0.2em] mb-1.5">Gagal Menyimpan</p>
                         @if(session('error'))
                             <p class="text-[10px] font-semibold">· {{ session('error') }}</p>
                         @endif
@@ -50,20 +50,15 @@
             @endif
 
             {{-- ══════════════════════════════════════
-                 FORM UPLOAD
+                 FORM UPLOAD (Dibuat sangat awam)
             ══════════════════════════════════════ --}}
             <div class="bg-white border border-[#E9E9E9] rounded-3xl overflow-hidden shadow-sm">
 
                 {{-- Header form --}}
-                <div class="bg-[#2F3526] px-8 py-5 flex items-center justify-between">
+                <div class="bg-[#2F3526] px-8 py-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
-                        <h3 class="text-sm font-black text-white uppercase tracking-[0.2em]">Tambah Banner Baru</h3>
-                        <p class="text-[8px] text-[#6B705C] uppercase tracking-wider mt-0.5">JPG · PNG · WebP · GIF · MP4 · Maks 100MB per file</p>
-                    </div>
-                    <div class="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center">
-                        <svg class="w-4 h-4 text-[#6B705C]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                        </svg>
+                        <h3 class="text-[13px] font-black text-white uppercase tracking-[0.15em]">Tambahkan Banner / Promo Baru</h3>
+                        <p class="text-[9px] text-[#E9E9E9]/70 uppercase tracking-widest mt-1">Banner akan langsung tampil di halaman depan website.</p>
                     </div>
                 </div>
 
@@ -71,207 +66,97 @@
                     @csrf
 
                     {{-- Nama Banner --}}
-                    <div class="mb-7">
-                        <label class="block text-[9px] font-black text-[#2F3526] uppercase tracking-[0.2em] mb-2">
-                            Nama / Label Banner
+                    <div class="mb-8">
+                        <label class="block text-[10px] font-black text-[#2F3526] uppercase tracking-[0.2em] mb-2">
+                            Nama Banner / Promo
                         </label>
                         <input type="text" name="title" value="{{ old('title') }}"
-                               placeholder="Contoh: PROMO SUMMER 2025"
-                               class="w-full sm:w-1/2 bg-[#E9E9E9]/40 border border-[#E9E9E9] focus:border-[#2F3526] focus:ring-0 rounded-xl text-[11px] font-bold text-[#2F3526] placeholder:text-[#6B705C]/40 py-3 px-4 tracking-tight transition">
-                        <p class="mt-1.5 text-[8px] text-[#6B705C] uppercase tracking-widest">Digunakan untuk identifikasi internal, tidak tampil di publik</p>
+                               placeholder="Contoh: Promo Lebaran 2025"
+                               class="w-full sm:w-2/3 bg-[#E9E9E9]/30 border border-[#E9E9E9] focus:border-[#2F3526] focus:ring-0 rounded-xl text-[12px] font-bold text-[#2F3526] placeholder:text-[#6B705C]/50 py-3.5 px-4 transition">
+                        <p class="mt-2 text-[9px] text-[#6B705C] uppercase tracking-widest">Hanya untuk catatan internal tim, tidak akan terbaca oleh pengunjung.</p>
                     </div>
 
-                    {{-- Upload Area --}}
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-7">
+                    {{-- Upload Area (Side by side) --}}
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
 
-                        {{-- Desktop Upload --}}
-                        <div class="relative">
-                            <div class="upload-zone rounded-2xl border-2 border-dashed border-[#E9E9E9] hover:border-[#2F3526] transition-all duration-300 p-6 cursor-pointer group bg-[#E9E9E9]/20 hover:bg-[#2F3526]/5"
-                                 onclick="this.querySelector('input').click()">
-                                {{-- Icon --}}
-                                <div class="flex items-start gap-4">
-                                    <div class="w-10 h-10 rounded-xl bg-[#2F3526] flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition">
-                                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                                        </svg>
-                                    </div>
-                                    <div class="flex-1 min-w-0">
-                                        <div class="flex items-center gap-2 mb-1">
-                                            <p class="text-[10px] font-black text-[#2F3526] uppercase tracking-[0.15em]">Desktop / Utama</p>
-                                            <span class="bg-[#2F3526] text-[6px] text-white px-2 py-0.5 rounded-full font-black uppercase tracking-widest">WAJIB</span>
-                                        </div>
-                                        <p class="text-[8px] text-[#6B705C] font-bold uppercase">Rasio 16:9 · Landscape</p>
-                                        <p class="text-[8px] text-[#6B705C] font-bold uppercase mt-0.5">IMG: JPG, PNG, WebP, GIF · VID: MP4</p>
-                                    </div>
+                        {{-- Desktop Upload (Wajib) --}}
+                        <div class="relative group cursor-pointer" onclick="this.querySelector('input').click()">
+                            <div class="h-full rounded-2xl border-2 border-dashed border-[#E9E9E9] group-hover:border-[#2F3526] transition-all duration-300 p-8 bg-white flex flex-col items-center justify-center text-center">
+                                <div class="w-14 h-14 mb-4 rounded-full bg-[#E9E9E9]/60 group-hover:bg-[#2F3526] group-hover:text-white transition-colors duration-300 flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-inherit" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                                    </svg>
                                 </div>
-
-                                {{-- File preview name --}}
-                                <div id="desktop-preview" class="mt-4 hidden">
-                                    <div class="flex items-center gap-2 bg-[#2F3526]/5 rounded-lg px-3 py-2">
-                                        <svg class="w-3 h-3 text-[#2F3526]" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"/>
-                                        </svg>
-                                        <span id="desktop-filename" class="text-[9px] font-bold text-[#2F3526] truncate"></span>
-                                    </div>
+                                <h4 class="text-[11px] font-black text-[#2F3526] uppercase tracking-[0.1em] mb-1">Banner Layar Komputer</h4>
+                                <span class="bg-[#2F3526] text-[7px] text-white px-2.5 py-0.5 rounded-full font-black uppercase tracking-widest mb-3">WAJIB DIISI</span>
+                                <p class="text-[9px] text-[#6B705C] font-semibold">Klik di sini untuk memilih foto atau video (Mendatar)</p>
+                                <p class="text-[8px] text-[#6B705C]/60 uppercase tracking-widest mt-3">Maks 100MB (JPG / PNG / MP4)</p>
+                                
+                                {{-- Preview File Name --}}
+                                <div id="desktop-preview" class="w-full mt-4 p-3 bg-[#E9E9E9]/40 rounded-xl hidden">
+                                    <p id="desktop-filename" class="text-[9px] font-bold text-[#2F3526] truncate text-center"></p>
                                 </div>
-
-                                <div id="desktop-empty" class="mt-4 flex items-center gap-2">
-                                    <div class="flex-1 h-px bg-[#E9E9E9]"></div>
-                                    <span class="text-[8px] text-[#6B705C]/60 uppercase font-bold">Klik untuk pilih file</span>
-                                    <div class="flex-1 h-px bg-[#E9E9E9]"></div>
-                                </div>
-
-                                <input type="file" name="image" accept="image/*,video/mp4" class="hidden"
-                                       onchange="previewFile(this, 'desktop')">
                             </div>
+                            <input type="file" name="image" accept="image/*,video/mp4" class="hidden" onchange="previewFile(this, 'desktop')">
                         </div>
 
-                        {{-- Mobile Upload --}}
-                        <div class="relative">
-                            <div class="upload-zone rounded-2xl border-2 border-dashed border-[#E9E9E9] hover:border-[#6B705C] transition-all duration-300 p-6 cursor-pointer group bg-[#E9E9E9]/20 hover:bg-[#6B705C]/5"
-                                 onclick="this.querySelector('input').click()">
-                                <div class="flex items-start gap-4">
-                                    <div class="w-10 h-10 rounded-xl bg-[#6B705C] flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition">
-                                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-                                        </svg>
-                                    </div>
-                                    <div class="flex-1 min-w-0">
-                                        <div class="flex items-center gap-2 mb-1">
-                                            <p class="text-[10px] font-black text-[#2F3526] uppercase tracking-[0.15em]">Mobile / Portrait</p>
-                                            <span class="bg-[#6B705C] text-[6px] text-white px-2 py-0.5 rounded-full font-black uppercase tracking-widest">OPSIONAL</span>
-                                        </div>
-                                        <p class="text-[8px] text-[#6B705C] font-bold uppercase">Rasio 9:16 · Portrait</p>
-                                        <p class="text-[8px] text-[#6B705C] font-bold uppercase mt-0.5">IMG: JPG, PNG, WebP, GIF · VID: MP4</p>
-                                    </div>
+                        {{-- Mobile Upload (Opsional) --}}
+                        <div class="relative group cursor-pointer" onclick="this.querySelector('input').click()">
+                            <div class="h-full rounded-2xl border-2 border-dashed border-[#E9E9E9] group-hover:border-[#6B705C] transition-all duration-300 p-8 bg-white flex flex-col items-center justify-center text-center">
+                                <div class="w-14 h-14 mb-4 rounded-full bg-[#E9E9E9]/60 group-hover:bg-[#6B705C] group-hover:text-white transition-colors duration-300 flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-inherit" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                                    </svg>
                                 </div>
-
-                                <div id="mobile-preview" class="mt-4 hidden">
-                                    <div class="flex items-center gap-2 bg-[#6B705C]/10 rounded-lg px-3 py-2">
-                                        <svg class="w-3 h-3 text-[#6B705C]" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"/>
-                                        </svg>
-                                        <span id="mobile-filename" class="text-[9px] font-bold text-[#6B705C] truncate"></span>
-                                    </div>
+                                <h4 class="text-[11px] font-black text-[#2F3526] uppercase tracking-[0.1em] mb-1">Banner Layar Handphone</h4>
+                                <span class="bg-[#E9E9E9] text-[7px] text-[#6B705C] px-2.5 py-0.5 rounded-full font-black uppercase tracking-widest mb-3 border border-[#E9E9E9]">OPSIONAL</span>
+                                <p class="text-[9px] text-[#6B705C] font-semibold">Klik di sini untuk versi foto/video Handphone (Berdiri)</p>
+                                <p class="text-[8px] text-[#6B705C]/60 uppercase tracking-widest mt-3">Maks 100MB (JPG / PNG / MP4)</p>
+                                
+                                {{-- Preview File Name --}}
+                                <div id="mobile-preview" class="w-full mt-4 p-3 bg-[#E9E9E9]/40 rounded-xl hidden">
+                                    <p id="mobile-filename" class="text-[9px] font-bold text-[#6B705C] truncate text-center"></p>
                                 </div>
-
-                                <div id="mobile-empty" class="mt-4 flex items-center gap-2">
-                                    <div class="flex-1 h-px bg-[#E9E9E9]"></div>
-                                    <span class="text-[8px] text-[#6B705C]/60 uppercase font-bold">Klik untuk pilih file</span>
-                                    <div class="flex-1 h-px bg-[#E9E9E9]"></div>
-                                </div>
-
-                                <input type="file" name="image_mobile" accept="image/*,video/mp4" class="hidden"
-                                       onchange="previewFile(this, 'mobile')">
                             </div>
-                        </div>
-                    </div>
-
-                    {{-- Guide tipe file --}}
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-7">
-                        <div class="flex items-center gap-2.5 bg-[#E9E9E9]/40 rounded-xl px-3 py-2.5 border border-[#E9E9E9]">
-                            <div class="w-7 h-7 rounded-lg bg-[#2F3526] flex items-center justify-center flex-shrink-0">
-                                <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <p class="text-[8px] font-black text-[#2F3526] uppercase tracking-widest">IMG Desktop</p>
-                                <p class="text-[7px] text-[#6B705C] uppercase">JPG / PNG / WebP</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-2.5 bg-[#E9E9E9]/40 rounded-xl px-3 py-2.5 border border-[#E9E9E9]">
-                            <div class="w-7 h-7 rounded-lg bg-black flex items-center justify-center flex-shrink-0">
-                                <svg class="w-3.5 h-3.5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <p class="text-[8px] font-black text-[#2F3526] uppercase tracking-widest">VID Desktop</p>
-                                <p class="text-[7px] text-[#6B705C] uppercase">MP4 · 16:9</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-2.5 bg-[#E9E9E9]/40 rounded-xl px-3 py-2.5 border border-[#E9E9E9]">
-                            <div class="w-7 h-7 rounded-lg bg-[#6B705C] flex items-center justify-center flex-shrink-0">
-                                <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <p class="text-[8px] font-black text-[#2F3526] uppercase tracking-widest">IMG Mobile</p>
-                                <p class="text-[7px] text-[#6B705C] uppercase">JPG / PNG · 9:16</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-2.5 bg-[#E9E9E9]/40 rounded-xl px-3 py-2.5 border border-[#E9E9E9]">
-                            <div class="w-7 h-7 rounded-lg bg-[#6B705C]/60 flex items-center justify-center flex-shrink-0">
-                                <svg class="w-3.5 h-3.5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <p class="text-[8px] font-black text-[#2F3526] uppercase tracking-widest">VID Mobile</p>
-                                <p class="text-[7px] text-[#6B705C] uppercase">MP4 · 9:16</p>
-                            </div>
+                            <input type="file" name="image_mobile" accept="image/*,video/mp4" class="hidden" onchange="previewFile(this, 'mobile')">
                         </div>
                     </div>
 
                     {{-- Submit --}}
-                    <div class="flex justify-end">
+                    <div class="flex justify-end border-t border-[#E9E9E9] pt-6">
                         <button type="submit" id="btnSubmit"
-                                class="inline-flex items-center gap-3 bg-[#2F3526] text-white px-8 py-3.5 rounded-xl font-black uppercase text-[10px] tracking-[0.25em] hover:bg-black transition-all duration-300 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed shadow-lg shadow-[#2F3526]/20">
+                                class="inline-flex items-center gap-3 bg-[#2F3526] text-white px-8 py-4 rounded-xl font-black uppercase text-[10px] tracking-[0.25em] hover:bg-black transition-all duration-300 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed shadow-lg shadow-[#2F3526]/20">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
                             </svg>
-                            Simpan Banner
+                            Simpan & Tampilkan Banner
                         </button>
                     </div>
                 </form>
             </div>
 
-
             {{-- ══════════════════════════════════════
-                 GALLERY BANNER
+                 GALLERY BANNER (Dibuat sederhana)
             ══════════════════════════════════════ --}}
             <div>
-                <div class="flex items-center justify-between mb-5">
-                    <div>
-                        <h3 class="text-[10px] font-black text-[#2F3526] uppercase tracking-[0.2em]">Banner Aktif</h3>
-                        <p class="text-[8px] text-[#6B705C] uppercase tracking-widest mt-0.5">{{ $sliders->count() }} banner terdaftar</p>
-                    </div>
-                    {{-- Legend pill --}}
-                    <div class="hidden sm:flex items-center gap-2">
-                        <div class="flex items-center gap-1.5 bg-[#E9E9E9]/60 rounded-full px-3 py-1.5">
-                            <span class="w-2 h-2 rounded-full bg-[#2F3526]"></span>
-                            <span class="text-[7px] font-black uppercase tracking-widest text-[#2F3526]">DSK-IMG</span>
-                        </div>
-                        <div class="flex items-center gap-1.5 bg-[#E9E9E9]/60 rounded-full px-3 py-1.5">
-                            <span class="w-2 h-2 rounded-full bg-black"></span>
-                            <span class="text-[7px] font-black uppercase tracking-widest text-[#2F3526]">DSK-VID</span>
-                        </div>
-                        <div class="flex items-center gap-1.5 bg-[#E9E9E9]/60 rounded-full px-3 py-1.5">
-                            <span class="w-2 h-2 rounded-full bg-[#6B705C]"></span>
-                            <span class="text-[7px] font-black uppercase tracking-widest text-[#2F3526]">MOB-IMG</span>
-                        </div>
-                        <div class="flex items-center gap-1.5 bg-[#E9E9E9]/60 rounded-full px-3 py-1.5">
-                            <span class="w-2 h-2 rounded-full bg-[#6B705C]/50"></span>
-                            <span class="text-[7px] font-black uppercase tracking-widest text-[#2F3526]">MOB-VID</span>
-                        </div>
-                    </div>
+                <div class="mb-6">
+                    <h3 class="text-[12px] font-black text-[#2F3526] uppercase tracking-[0.2em]">Daftar Banner Saat Ini</h3>
+                    <p class="text-[9px] text-[#6B705C] uppercase tracking-widest mt-1">Terdapat {{ $sliders->count() }} banner yang sedang aktif di website.</p>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     @forelse($sliders as $slider)
-                    <div class="bg-white border border-[#E9E9E9] rounded-2xl overflow-hidden group hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
+                    <div class="bg-white border border-[#E9E9E9] rounded-2xl overflow-hidden group hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col">
 
-                        {{-- ── DESKTOP THUMB ── --}}
+                        {{-- Thumbnail Utama (Hanya Desktop) --}}
                         <div class="relative aspect-[16/9] bg-[#E9E9E9]/40 overflow-hidden">
                             @if($slider->type === 'video' && $slider->video_path)
                                 <video muted loop playsinline class="w-full h-full object-cover">
                                     <source src="{{ asset('storage/' . $slider->video_path) }}" type="video/mp4">
                                 </video>
-                                <div class="absolute inset-0 bg-black/30 flex items-center justify-center">
-                                    <div class="w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center">
-                                        <svg class="w-3.5 h-3.5 text-white ml-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <div class="absolute inset-0 bg-black/20 flex items-center justify-center">
+                                    <div class="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center">
+                                        <svg class="w-4 h-4 text-white ml-1" fill="currentColor" viewBox="0 0 20 20">
                                             <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
                                         </svg>
                                     </div>
@@ -282,115 +167,63 @@
                                      class="w-full h-full object-cover group-hover:scale-105 transition duration-700">
                             @else
                                 <div class="w-full h-full flex flex-col items-center justify-center gap-2">
-                                    <div class="w-8 h-8 rounded-xl bg-[#E9E9E9] flex items-center justify-center">
-                                        <svg class="w-4 h-4 text-[#6B705C]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01"/>
-                                        </svg>
-                                    </div>
-                                    <span class="text-[7px] font-bold text-[#6B705C]/40 uppercase">No Content</span>
+                                    <svg class="w-6 h-6 text-[#6B705C]/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01"/>
+                                    </svg>
+                                    <span class="text-[8px] font-bold text-[#6B705C]/50 uppercase tracking-widest">Visual Kosong</span>
                                 </div>
                             @endif
 
-                            {{-- Badges overlay --}}
-                            <div class="absolute top-2.5 left-2.5 flex gap-1.5">
-                                @if($slider->type === 'video')
-                                    <span class="inline-flex items-center gap-1 bg-black/70 backdrop-blur-md text-[6px] text-white px-2 py-0.5 rounded-full font-black uppercase tracking-widest">
-                                        <span class="w-1 h-1 rounded-full bg-white inline-block"></span>VID
-                                    </span>
-                                @else
-                                    <span class="inline-flex items-center gap-1 bg-[#2F3526]/80 backdrop-blur-md text-[6px] text-white px-2 py-0.5 rounded-full font-black uppercase tracking-widest">
-                                        <span class="w-1 h-1 rounded-full bg-white inline-block"></span>IMG
-                                    </span>
-                                @endif
-                                <span class="bg-white/20 backdrop-blur-md text-[6px] text-white px-2 py-0.5 rounded-full font-black border border-white/20">🖥 DSK</span>
-                            </div>
-
-                            <span class="absolute top-2.5 right-2.5 bg-black/60 backdrop-blur-md text-[7px] text-white/80 px-2 py-0.5 rounded-full font-black">#{{ $slider->order }}</span>
-                        </div>
-
-                        {{-- ── MOBILE THUMB ── --}}
-                        @if($slider->image_mobile_path)
-                            @php
-                                $mobileExt = strtolower(pathinfo($slider->image_mobile_path, PATHINFO_EXTENSION));
-                                $isMobileVideo = $mobileExt === 'mp4';
-                            @endphp
-                            <div class="mx-3 mt-3 bg-[#E9E9E9]/30 rounded-xl p-3 border border-[#E9E9E9] flex items-center gap-3">
-                                {{-- Portrait thumbnail --}}
-                                <div class="relative flex-shrink-0 w-9 rounded-lg overflow-hidden bg-[#E9E9E9]" style="aspect-ratio:9/16;max-height:64px;">
-                                    @if($isMobileVideo)
-                                        <video muted loop playsinline class="w-full h-full object-cover">
-                                            <source src="{{ asset('storage/' . $slider->image_mobile_path) }}" type="video/mp4">
-                                        </video>
-                                        <div class="absolute inset-0 bg-black/30 flex items-center justify-center">
-                                            <svg class="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                                <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
-                                            </svg>
-                                        </div>
-                                    @else
-                                        <img src="{{ asset('storage/' . $slider->image_mobile_path) }}"
-                                             alt="Mobile: {{ $slider->title }}" loading="lazy"
-                                             class="w-full h-full object-cover">
-                                    @endif
-                                </div>
-                                {{-- Mobile info --}}
-                                <div>
-                                    <div class="flex items-center gap-1.5 mb-1">
-                                        <span class="text-[7px] font-black text-[#6B705C] uppercase tracking-widest">📱 Mobile</span>
-                                        @if($isMobileVideo)
-                                            <span class="bg-[#6B705C]/60 text-[5px] text-white px-1.5 py-0.5 rounded-full font-black uppercase">VID</span>
-                                        @else
-                                            <span class="bg-[#6B705C] text-[5px] text-white px-1.5 py-0.5 rounded-full font-black uppercase">IMG</span>
-                                        @endif
-                                    </div>
-                                    <p class="text-[7px] text-[#6B705C]/70 font-bold uppercase">{{ strtoupper($mobileExt) }} · 9:16 ✓</p>
-                                </div>
-                            </div>
-                        @else
-                            <div class="mx-3 mt-3 rounded-xl px-3 py-2.5 border border-dashed border-[#E9E9E9] flex items-center gap-2.5">
-                                <div class="w-6 h-6 rounded-lg bg-[#E9E9E9]/60 flex items-center justify-center flex-shrink-0">
-                                    <svg class="w-3 h-3 text-[#6B705C]/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            {{-- Badge Indikator HP --}}
+                            @if($slider->image_mobile_path)
+                            <div class="absolute bottom-3 left-3">
+                                <span class="inline-flex items-center gap-1.5 bg-white/95 backdrop-blur-md text-[7px] text-[#2F3526] px-3 py-1.5 rounded-full font-black uppercase tracking-widest shadow-sm">
+                                    <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
                                     </svg>
-                                </div>
-                                <span class="text-[7px] text-[#6B705C]/40 font-bold uppercase tracking-widest">Tidak ada versi mobile</span>
+                                    Dilengkapi Versi HP
+                                </span>
                             </div>
-                        @endif
 
-                        {{-- ── INFO ── --}}
-                        <div class="px-4 py-3">
-                            <h4 class="text-[10px] font-black text-[#2F3526] truncate uppercase tracking-tight mb-2">
-                                {{ $slider->title ?? 'Untitled Banner' }}
-                            </h4>
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center gap-3">
-                                    {{-- Desktop type pill --}}
-                                    <div class="flex items-center gap-1">
-                                        <span class="w-1.5 h-1.5 rounded-full {{ $slider->type === 'video' ? 'bg-black' : 'bg-[#2F3526]' }}"></span>
-                                        <span class="text-[7px] font-black text-[#6B705C] uppercase">
-                                            🖥 {{ $slider->type === 'video' ? 'MP4' : strtoupper(pathinfo($slider->image_path ?? '', PATHINFO_EXTENSION)) }}
-                                        </span>
-                                    </div>
-                                    {{-- Mobile type pill --}}
-                                    @if($slider->image_mobile_path)
-                                    <div class="flex items-center gap-1">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-[#6B705C]"></span>
-                                        <span class="text-[7px] font-black text-[#6B705C] uppercase">
-                                            📱 {{ strtoupper(pathinfo($slider->image_mobile_path, PATHINFO_EXTENSION)) }}
-                                        </span>
-                                    </div>
-                                    @endif
-                                </div>
-                                <span class="text-[7px] text-[#6B705C]/50 font-bold uppercase">{{ $slider->created_at->format('d/m/y') }}</span>
+                            {{-- Preview Mobile (Picture in Picture) --}}
+                            <div class="absolute bottom-3 right-3 w-10 sm:w-12 rounded border border-white/50 shadow-2xl overflow-hidden bg-[#E9E9E9] z-10" style="aspect-ratio: 9/16;">
+                                @php
+                                    $mobileExt = strtolower(pathinfo($slider->image_mobile_path, PATHINFO_EXTENSION));
+                                    $isMobileVideo = $mobileExt === 'mp4';
+                                @endphp
+                                @if($isMobileVideo)
+                                    <video muted loop playsinline class="w-full h-full object-cover">
+                                        <source src="{{ asset('storage/' . $slider->image_mobile_path) }}" type="video/mp4">
+                                    </video>
+                                @else
+                                    <img src="{{ asset('storage/' . $slider->image_mobile_path) }}"
+                                         alt="Mobile Version"
+                                         class="w-full h-full object-cover">
+                                @endif
                             </div>
+                            @endif
+
+                            {{-- Urutan --}}
+                            <span class="absolute top-3 right-3 bg-black/60 backdrop-blur-md text-[8px] text-white px-2.5 py-1 rounded-full font-black">#{{ $slider->order }}</span>
                         </div>
 
-                        {{-- ── HAPUS ── --}}
-                        <div class="px-4 pb-4">
+                        {{-- Info dan Action --}}
+                        <div class="p-5 flex-1 flex flex-col justify-between">
+                            <div class="mb-5">
+                                <h4 class="text-[12px] font-black text-[#2F3526] uppercase tracking-wide mb-1">
+                                    {{ $slider->title ?? 'Banner Tanpa Nama' }}
+                                </h4>
+                                <p class="text-[9px] text-[#6B705C] font-semibold">Diunggah: {{ $slider->created_at->format('d M Y') }}</p>
+                            </div>
+
                             <form action="{{ route('sliders.destroy', $slider) }}" method="POST"
-                                  onsubmit="return confirm('Hapus banner \'{{ $slider->title ?? 'ini' }}\'?')">
+                                  onsubmit="return confirm('Apakah Anda yakin ingin menghapus banner ini?')">
                                 @csrf
                                 @method('DELETE')
-                                <button class="w-full text-[9px] font-black uppercase tracking-widest text-[#6B705C]/60 py-2.5 rounded-xl border border-[#E9E9E9] hover:bg-red-500 hover:text-white hover:border-red-500 transition-all duration-300">
+                                <button class="w-full flex items-center justify-center gap-2 text-[9px] font-black uppercase tracking-widest text-red-500 bg-red-50 py-3 rounded-xl hover:bg-red-500 hover:text-white transition-all duration-300">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                    </svg>
                                     Hapus Banner
                                 </button>
                             </form>
@@ -399,14 +232,14 @@
                     @empty
                     <div class="col-span-full">
                         <div class="bg-white border-2 border-dashed border-[#E9E9E9] rounded-3xl py-24 flex flex-col items-center justify-center gap-4">
-                            <div class="w-14 h-14 rounded-2xl bg-[#E9E9E9]/60 flex items-center justify-center">
-                                <svg class="w-6 h-6 text-[#6B705C]/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div class="w-16 h-16 rounded-full bg-[#E9E9E9]/60 flex items-center justify-center text-[#6B705C]/30">
+                                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                                 </svg>
                             </div>
                             <div class="text-center">
-                                <p class="text-[10px] font-black text-[#6B705C]/50 uppercase tracking-[0.3em]">Belum ada banner aktif</p>
-                                <p class="text-[8px] text-[#6B705C]/30 uppercase tracking-widest mt-1">Tambahkan banner pertama di atas</p>
+                                <p class="text-[12px] font-black text-[#6B705C]/70 uppercase tracking-[0.2em]">Belum Ada Banner</p>
+                                <p class="text-[10px] text-[#6B705C]/50 mt-1">Silakan tambahkan banner pertama Anda melalui form di atas.</p>
                             </div>
                         </div>
                     </div>
@@ -415,12 +248,8 @@
             </div>
 
             {{-- Footer --}}
-            <div class="flex justify-center pt-4">
-                <div class="flex items-center gap-3">
-                    <div class="w-6 h-px bg-[#E9E9E9]"></div>
-                    <p class="text-[7px] font-black text-[#6B705C]/30 uppercase tracking-[0.5em]">Visual Manager v1.0</p>
-                    <div class="w-6 h-px bg-[#E9E9E9]"></div>
-                </div>
+            <div class="flex justify-center pt-8">
+                <p class="text-[8px] font-black text-[#6B705C]/30 uppercase tracking-[0.4em]">Sistem Manajemen Konten Farhana</p>
             </div>
 
         </div>
@@ -432,16 +261,24 @@
             const file = input.files[0];
             const prefix = type; // 'desktop' or 'mobile'
             const preview = document.getElementById(prefix + '-preview');
-            const empty   = document.getElementById(prefix + '-empty');
             const fname   = document.getElementById(prefix + '-filename');
 
             if (file) {
                 fname.textContent = file.name;
                 preview.classList.remove('hidden');
-                empty.classList.add('hidden');
+                
+                // Beri efek border solid untuk menandakan sudah terpilih
+                input.closest('.group').querySelector('.border-dashed').classList.replace('border-dashed', 'border-solid');
+                input.closest('.group').querySelector('.border-solid').classList.add('border-[#2F3526]');
             } else {
                 preview.classList.add('hidden');
-                empty.classList.remove('hidden');
+                
+                // Kembalikan ke dashed
+                const borderDiv = input.closest('.group').querySelector('.border-solid');
+                if(borderDiv) {
+                    borderDiv.classList.replace('border-solid', 'border-dashed');
+                    borderDiv.classList.remove('border-[#2F3526]');
+                }
             }
         }
 
@@ -464,7 +301,7 @@
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
                     </svg>
-                    <span class="animate-pulse tracking-[0.25em]">Mengunggah...</span>
+                    <span class="animate-pulse tracking-[0.2em]">Menyimpan Data...</span>
                 `;
             });
         }

@@ -71,10 +71,10 @@
         /* ── PAGE HEADER ── */
         .page-head {
             display: flex; align-items: center; gap: 1.5rem; margin-bottom: 3rem;
-            padding-bottom: 1.5rem; border-bottom: 1px solid var(--gray);
+            padding-bottom: 1.5rem; 
         }
         .page-title {
-            font-size: clamp(1.1rem, 2.5vw, 1.6rem); font-weight: 300;
+            font-size: clamp(0.9rem, 2vw, 1.2rem); font-weight: 300;
             letter-spacing: .4em; text-transform: uppercase; color: var(--primary);
             white-space: nowrap;
         }
@@ -310,10 +310,11 @@
                 </svg>
                 <span>Collection</span>
             </a>
-            <a href="{{ route('home') }}" class="brand" aria-label="Farhana Home">Farhana</a>
-            <div class="nav-right">
-                <span id="cart-count">{{ count(session('cart') ?? []) }}</span> item
-            </div>
+            <a href="{{ route('home') }}">
+            <img src="{{ Storage::url('LOGO-FARHANA-NEW-TRANSPARENT.png') }}"
+                alt="Farhana"
+                class="h-20 w-auto object-contain">
+                </a>
         </div>
     </header>
 
@@ -321,7 +322,7 @@
 
         {{-- Page Header --}}
         <div class="page-head">
-            <h1 class="page-title">Keranjang</h1>
+            <h1 class="page-title">Cart</h1>
             <div class="page-head-line"></div>
             <span class="item-count">
                 <span id="cart-count-head">{{ count(session('cart') ?? []) }}</span> items

@@ -144,18 +144,9 @@
                             <li style="color: var(--primary); font-weight: 700;">Account</li>
                         </ol>
                     </nav>
-                    <h1 class="text-4xl md:text-5xl font-light tracking-tight" style="color: var(--primary);">
-                        Hello, <span class="font-bold text-black">{{ explode(' ', auth()->user()->name)[0] }}</span>
+                    <h1 class="text-4xl md:text-4xl font-light tracking-tight" style="color: var(--primary);">
+                        Hello, <span class="font-lighr text-black">{{ explode(' ', auth()->user()->name)[0] }}</span>
                     </h1>
-                </div>
-                <div class="mt-8 md:mt-0">
-                    <a href="{{ route('profile.edit') }}"
-                       class="group flex items-center gap-3 text-[10px] uppercase tracking-[.3em] font-bold py-2 border-b border-black/10 hover:border-black transition-all">
-                        Account Settings
-                        <svg class="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-                        </svg>
-                    </a>
                 </div>
             </div>
 

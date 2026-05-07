@@ -145,7 +145,7 @@
         }
         .badge-po  { background:var(--primary); color:var(--white) }
         .badge-tag { background:var(--gray); color:var(--primary); border:1px solid var(--p20) }
-        .badge-cat { background:var(--p10); color:var(--primary); border:1px solid var(--p20); border-radius:99px }
+        .badge-cat { background:var(--p10); color:var(--primary); border:1px solid var(--p20); border-radius:0 }
 
         /* Title & Price */
         .product-name {
@@ -201,6 +201,77 @@
         /* size — square */
         .sz-opt span { min-width:46px; height:46px; padding:0 8px; font-weight:500 }
 
+        /* ══════════════════════════════════════════════
+           VALIDATION UX — HIGHLIGHT BORDER
+           Berikan outline merah pada section yang belum dipilih
+        ══════════════════════════════════════════════ */
+        .form-sec.needs-attention {
+            padding: .75rem;
+            border: 1.5px solid var(--red);
+            background: rgba(192,57,43,.04);
+            border-radius: 2px;
+            transition: border-color .3s ease, background .3s ease;
+        }
+        .form-sec.needs-attention .sec-label {
+            color: var(--red);
+        }
+
+        /* ── SHAKE ANIMATION ── */
+        @keyframes hintShake {
+            0%,100% { transform:translateX(0) }
+            15%      { transform:translateX(-5px) }
+            35%      { transform:translateX(5px) }
+            55%      { transform:translateX(-4px) }
+            75%      { transform:translateX(4px) }
+            90%      { transform:translateX(-2px) }
+        }
+        .hint-shake { animation:hintShake .45s ease }
+
+        /* ── INLINE HINT (next to heading) ── */
+        .inline-hint {
+            font-size:9px; letter-spacing:.15em; text-transform:uppercase;
+            color:var(--red); display:none; align-items:center; gap:4px;
+            opacity: 0;
+            transform: translateX(6px);
+            transition: opacity .2s ease, transform .2s ease;
+        }
+        .inline-hint.show {
+            display: inline-flex;
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .inline-hint svg { flex-shrink:0 }
+
+        /* ── FLOATING TOAST — muncul di bawah buttons, lebih impactful ── */
+        @keyframes toastIn {
+            from { opacity:0; transform:translateY(8px) }
+            to   { opacity:1; transform:translateY(0) }
+        }
+        @keyframes toastOut {
+            from { opacity:1; transform:translateY(0) }
+            to   { opacity:0; transform:translateY(6px) }
+        }
+        .v-msg {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            padding: .8rem 1rem;
+            border-left: 3px solid var(--red);
+            background: rgba(192,57,43,.08);
+            color: var(--red);
+            margin-top: .75rem;
+            animation: toastIn .2s ease forwards;
+        }
+        .v-msg.hiding {
+            animation: toastOut .25s ease forwards;
+        }
+        .v-msg.hidden { display: none !important }
+        .v-msg-icon { flex-shrink: 0; width:14px; height:14px }
+
         .guide-btn {
             font-size:9px; letter-spacing:.15em; text-transform:uppercase;
             color:var(--olive); border-bottom:1px solid var(--gray); padding-bottom:1px;
@@ -240,15 +311,6 @@
             color:var(--black); background:var(--white); outline:none;
         }
 
-        /* Validation */
-        .v-msg {
-            font-size:10px; font-weight:700; letter-spacing:.15em;
-            text-transform:uppercase; color:var(--red);
-            padding:.5rem 0;
-        }
-        @keyframes fadeDown { from{opacity:0;transform:translateY(-5px)} to{opacity:1;transform:translateY(0)} }
-        .anim { animation:fadeDown .25s ease forwards }
-
         /* Buttons */
         .btn-row { display:flex; flex-direction:column; gap:.6rem; margin-top:1.25rem }
         .btn {
@@ -263,6 +325,16 @@
         .btn-outline { background:var(--white); color:var(--primary); border:1px solid var(--primary) }
         .btn-outline:hover:not(:disabled) { background:var(--p10) }
 
+        /* Button shake on failed submit */
+        @keyframes btnShake {
+            0%,100% { transform:translateX(0) }
+            20%      { transform:translateX(-5px) }
+            40%      { transform:translateX(5px) }
+            60%      { transform:translateX(-4px) }
+            80%      { transform:translateX(4px) }
+        }
+        .btn-shake { animation: btnShake .4s ease }
+
         /* Description */
         .desc-block { border-top:1px solid var(--gray); padding-top:1.75rem; margin-top:1.75rem }
         .desc-title { font-size:10px; font-weight:700; letter-spacing:.28em; text-transform:uppercase; color:var(--primary); margin-bottom:1rem }
@@ -270,7 +342,7 @@
 
         /* ── RELATED ── */
         .related-sec { border-top:1px solid var(--gray); padding-top:3.5rem; margin-top:4.5rem }
-        .related-h { font-size:clamp(1.2rem,2.5vw,1.8rem); font-weight:300; letter-spacing:.4em; text-transform:uppercase; text-align:center; color:var(--primary); margin-bottom:2.5rem }
+        .related-h { font-size:clamp(1rem,2.2vw,1.5rem); font-weight:300; letter-spacing:.4em; text-transform:uppercase; text-align:center; color:var(--primary); margin-bottom:2.5rem }
         .related-scroll { overflow-x:auto; scrollbar-width:none; -ms-overflow-style:none }
         .related-scroll::-webkit-scrollbar { display:none }
         .related-track { display:flex; gap:1.25rem; min-width:max-content; padding-bottom:.5rem }
@@ -284,25 +356,53 @@
         .r-card-price { font-size:10px; letter-spacing:.09em; color:var(--olive) }
 
         /* ── FOOTER ── */
-        footer { background:var(--primary); color:var(--white); padding-top:3.5rem }
-        .footer-inner { max-width:1400px; margin:0 auto; padding:0 1.25rem 3.5rem }
-        .footer-grid { display:grid; grid-template-columns:1fr; gap:2.5rem }
-        @media(min-width:600px)  { .footer-grid { grid-template-columns:1fr 1fr } }
-        @media(min-width:1024px) { .footer-grid { grid-template-columns:1.5fr 1fr 1fr } }
-        .f-title { font-size:10px; font-weight:700; letter-spacing:.28em; text-transform:uppercase; color:var(--white); margin-bottom:1rem }
-        .f-text  { font-size:11px; letter-spacing:.07em; line-height:1.9; color:var(--w80) }
-        .f-link  { display:block; font-size:11px; letter-spacing:.11em; text-transform:uppercase; color:var(--w80); margin-bottom:.65rem; transition:color var(--t) }
-        .f-link:hover { color:var(--white) }
-        .f-social { display:flex; align-items:center; gap:.65rem }
+        footer {
+            padding: 4rem 0 0;
+            background: #2F3526;
+            color: #fff;
+        }
+        .footer-inner {
+            max-width: 1400px; margin: 0 auto; padding: 0 1.5rem 3.5rem;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 4rem;
+            text-align: left;
+        }
+        @media(min-width:600px) { .footer-grid { grid-template-columns: 1fr 1fr } }
+        @media(min-width:1024px) { .footer-grid { grid-template-columns: 1.5fr 1fr 1fr } }
+        .f-title {
+            font-size: 10px; font-weight: 700; letter-spacing: .3em;
+            text-transform: uppercase; color: #f7f7f7; margin-bottom: 1.5rem;
+        }
+        .f-text {
+            font-size: 11px; color: rgba(255,255,255,.8);
+            line-height: 1.9; letter-spacing: .07em; text-transform: uppercase;
+        }
+        .f-links { display:flex; flex-direction:column; gap:.75rem }
+        .f-link {
+            font-size: 11px; letter-spacing: .11em; text-transform: uppercase;
+            color: rgba(255,255,255,.8);
+            transition: color var(--t), transform var(--t);
+            background: none; border: none; cursor: pointer; padding: 0; text-align: left;
+            font-family: inherit;
+        }
+        .f-link:hover { color: #fff; transform: translateX(4px) }
+        .f-social { display:flex; align-items:center; gap:1rem }
         .f-icon {
-            width:36px; height:36px; border-radius:50%; background:var(--white);
-            color:var(--primary); display:flex; align-items:center; justify-content:center;
-            transition:background var(--t);
+            width:36px; height:36px; border-radius:50%; background:#fff;
+            color:#2F3526; display:flex; align-items:center; justify-content:center;
+            flex-shrink:0; transition:background var(--t);
         }
         .f-icon:hover { background:var(--gray) }
-        .f-handle { font-size:10px; letter-spacing:.11em; color:var(--w80) }
-        .f-bottom { border-top:1px solid var(--w12); padding:.9rem 1.25rem; text-align:center }
-        .f-copy { font-size:9px; letter-spacing:.3em; text-transform:uppercase; color:var(--w50) }
+        .f-icon svg { width:20px; height:20px }
+        .f-handle { font-size:10px; letter-spacing:.11em; text-transform:uppercase; color:rgba(255,255,255,.8) }
+        .f-bottom {
+            border-top: 1px solid rgba(255,255,255,.1);
+            padding: .9rem 1.5rem; text-align: center; margin-top: 5rem;
+        }
+        .f-copy { font-size:9px; letter-spacing:.4em; text-transform:uppercase; color:rgba(255,255,255,.4) }
 
         /* ── MODAL ── */
         .modal {
@@ -328,13 +428,33 @@
         .modal-body { padding:1.25rem }
         .modal-body img { width:100%; height:auto }
 
+        /* Footer modal */
+        .footer-modal-overlay {
+            position:fixed; inset:0; z-index:999;
+            display:flex; align-items:center; justify-content:center;
+            padding:1.5rem; background:rgba(0,0,0,.4); backdrop-filter:blur(4px);
+        }
+        .footer-modal-box {
+            background:#fff; width:100%; max-width:900px;
+            max-height:90vh; overflow-y:auto; position:relative;
+            border-radius:2.5rem; box-shadow:0 25px 60px rgba(0,0,0,.25);
+            scrollbar-width:none;
+        }
+        .footer-modal-box::-webkit-scrollbar { display:none }
+        .footer-modal-close {
+            position:absolute; top:2rem; right:2rem; z-index:10;
+            padding:.5rem; border-radius:50%; background:rgba(249,250,251,1);
+            transition:background var(--t); color:#000; font-size:0;
+        }
+        .footer-modal-close:hover { background:#e5e7eb }
+
         .hidden { display:none !important }
     </style>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body x-data="{ openModal: null }">
 
-    <!-- Modal Container -->
+    <!-- Top-level Alpine Modal -->
     <template x-if="openModal">
         <div class="fixed inset-0 z-[400] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" @click.self="openModal = null">
             <div class="bg-white w-full max-w-[1000px] max-h-[85vh] overflow-y-auto rounded-[2rem] shadow-2xl relative text-gray-800" style="scrollbar-width: none;">
@@ -375,10 +495,11 @@
                          class="h-20 w-auto object-contain">
                 </a>
             </div>
-        @if(session('success'))
-            <div class="success-toast" role="alert">{{ session('success') }}</div>
-        @endif
+        </div>{{-- /navbar-inner --}}
     </header>
+    @if(session('success'))
+        <div class="success-toast" role="alert">{{ session('success') }}</div>
+    @endif
 
     {{-- Main --}}
     <main class="page" role="main">
@@ -464,14 +585,19 @@
                             $hasColor = $uniqueColors->count() > 0;
                         @endphp
 
-                        {{-- Color --}}
+                        {{-- ── COLOR SECTION ── --}}
                         @if($hasColor)
-                        <div class="form-sec">
+                        <div class="form-sec" id="colorSection">
                             <div class="form-sec-head">
-                                <span class="sec-label">Pilih Warna</span>
-                                <span id="colorHint" class="sec-label" style="font-size:9px;color:var(--red);letter-spacing:.15em;display:none">← Pilih dulu</span>
+                                <span class="sec-label" id="colorLabel">Pilih Warna</span>
+                                <span id="colorHint" class="inline-hint" aria-live="polite">
+                                    <svg class="v-msg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                                    </svg>
+                                    <span class="hint-text">Pilih warna dulu</span>
+                                </span>
                             </div>
-                            <div class="v-opts" role="group" aria-label="Pilihan warna">
+                            <div class="v-opts" role="group" aria-label="Pilihan warna" id="colorOpts">
                                 @foreach($uniqueColors as $color)
                                     <label class="v-opt">
                                         <input type="radio" name="color" value="{{ $color }}"
@@ -483,12 +609,17 @@
                         </div>
                         @endif
 
-                        {{-- Size --}}
-                        <div class="form-sec">
+                        {{-- ── SIZE SECTION ── --}}
+                        <div class="form-sec" id="sizeSection">
                             <div class="form-sec-head">
-                                <span class="sec-label">Pilih Ukuran</span>
+                                <span class="sec-label" id="sizeLabel">Pilih Ukuran</span>
                                 <div style="display:flex;align-items:center;gap:.75rem">
-                                    <span id="sizeHint" class="sec-label" style="font-size:9px;color:var(--red);letter-spacing:.15em;display:none">← Pilih dulu</span>
+                                    <span id="sizeHint" class="inline-hint" aria-live="polite">
+                                        <svg class="v-msg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                                        </svg>
+                                        <span class="hint-text">Pilih ukuran dulu</span>
+                                    </span>
                                     @if($product->sizeGuide)
                                         <button type="button" class="guide-btn" onclick="openModal('guideModal')">Panduan Ukuran</button>
                                     @endif
@@ -496,7 +627,7 @@
                             </div>
                             <div class="v-opts" id="sizeContainer" role="group" aria-label="Pilihan ukuran">
                                 @foreach($uniqueSizes as $size)
-                                    <label class="v-opt sz-opt" data-size="{{ $size }}">
+                                    <label class="v-opt sz-opt" data-size="{{ $size }}" onclick="onSizeLabelClick(event, this)">
                                         <input type="radio" name="size" value="{{ $size }}"
                                                onchange="onSizeChange()"
                                                {{ !$hasColor ? '' : 'disabled' }}>
@@ -522,13 +653,21 @@
                             </div>
                         </div>
 
-                        <div id="vMsg" class="v-msg hidden anim" role="alert" aria-live="assertive"></div>
+                        {{-- Validation message --}}
+                        <div id="vMsg" class="v-msg hidden" role="alert" aria-live="assertive">
+                            <svg class="v-msg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"/>
+                                <line x1="12" y1="8" x2="12" y2="12"/>
+                                <line x1="12" y1="16" x2="12.01" y2="16"/>
+                            </svg>
+                            <span id="vMsgText"></span>
+                        </div>
 
-                        <div class="btn-row">
-                            <button type="button" class="btn btn-outline" id="btnCart" onclick="submit('add')">
+                        <div class="btn-row" id="btnRow">
+                            <button type="button" class="btn btn-outline" id="btnCart" onclick="handleOrder('add')">
                                 {{ $product->is_preorder ? 'Pre-Order Sekarang' : 'Tambah ke Keranjang' }}
                             </button>
-                            <button type="button" class="btn btn-primary" id="btnBuy" onclick="submit('buy')">
+                            <button type="button" class="btn btn-primary" id="btnBuy" onclick="handleOrder('buy')">
                                 Beli Sekarang
                             </button>
                         </div>
@@ -567,63 +706,53 @@
     </main>
 
     {{-- ── FOOTER ── --}}
-    <footer id="about" role="contentinfo">
+    <footer id="about" role="contentinfo"
+            x-data="{ footerModal: null }">
+
+        <div x-show="footerModal"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="footer-modal-overlay"
+             style="display:none;">
+            <div @click.away="footerModal = null" class="footer-modal-box">
+                <button @click="footerModal = null" class="footer-modal-close" aria-label="Tutup">
+                    <svg style="width:20px;height:20px" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+                <div class="prose prose-sm max-w-none">
+                    <template x-if="footerModal === 'contact'"><div>@include('includes.contact')</div></template>
+                    <template x-if="footerModal === 'shipping'"><div>@include('includes.shipping')</div></template>
+                    <template x-if="footerModal === 'howtobuy'"><div>@include('includes.how-to-buy')</div></template>
+                    <template x-if="footerModal === 'faqs'"><div>@include('includes.faqs')</div></template>
+                </div>
+            </div>
+        </div>
+
         <div class="footer-inner">
             <div class="footer-grid">
                 <div>
-                    <p class="f-title">Tentang Farhana</p>
+                    <h4 class="f-title">About Farhana</h4>
                     <p class="f-text">Eksklusivitas dalam balutan kesantunan. Kami menghadirkan kualitas terbaik untuk gaya Muslim modern yang elegan dan berkelas.</p>
                 </div>
-                <div x-data="{ openModal: null }">
-    <p class="f-title" style="color: #f7f7f7ff; font-weight: 800; text-transform: uppercase; letter-spacing: 0.3em; font-size: 9px; margin-bottom: 1.5rem;">
-        Layanan Pelanggan
-    </p>
-    
-    <div class="flex flex-col gap-3">
-        <button @click="openModal = 'contact'" class="f-link text-left hover:translate-x-1 transition-transform duration-300">Hubungi Kami</button>
-        <button @click="openModal = 'shipping'" class="f-link text-left hover:translate-x-1 transition-transform duration-300">Pengiriman & Pengembalian</button>
-        <button @click="openModal = 'howtobuy'" class="f-link text-left hover:translate-x-1 transition-transform duration-300">Cara Berbelanja</button>
-        <button @click="openModal = 'faqs'" class="f-link text-left hover:translate-x-1 transition-transform duration-300">FAQ</button>
-    </div>
-
-    {{-- Modal Overlay Container --}}
-    <div x-show="openModal" 
-         x-transition:enter="transition ease-out duration-300"
-         x-transition:enter-start="opacity-0"
-         x-transition:enter-end="opacity-100"
-         x-transition:leave="transition ease-in duration-200"
-         x-transition:leave-start="opacity-100"
-         x-transition:leave-end="opacity-0"
-         class="fixed inset-0 z-[999] flex items-center justify-center p-6 bg-black/40 backdrop-blur-sm"
-         style="display: none;">
-        
-        {{-- Modal Content Box --}}
-        <div @click.away="openModal = null" 
-             class="bg-white w-full max-w-4xl max-h-[90vh] overflow-y-auto relative rounded-[2.5rem] shadow-2xl">
-            
-            {{-- Close Button --}}
-            <button @click="openModal = null" class="absolute top-8 right-8 z-10 group">
-                <div class="p-2 rounded-full bg-gray-50 group-hover:bg-gray-100 transition-colors">
-                    <svg class="w-5 h-5 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/>
-                    </svg>
-                </div>
-            </button>
-
-            <div class="prose prose-sm max-w-none">
-                <template x-if="openModal === 'contact'"><div>@include('includes.contact')</div></template>
-                <template x-if="openModal === 'shipping'"><div>@include('includes.shipping')</div></template>
-                <template x-if="openModal === 'howtobuy'"><div>@include('includes.how-to-buy')</div></template>
-                <template x-if="openModal === 'faqs'"><div>@include('includes.faqs')</div></template>
-            </div>
-        </div>
-    </div>
-</div>
                 <div>
-                    <p class="f-title">Ikuti Kami</p>
+                    <h4 class="f-title">Customer Care</h4>
+                    <div class="f-links">
+                        <button @click="footerModal = 'contact'"  class="f-link">Contact Us</button>
+                        <button @click="footerModal = 'shipping'" class="f-link">Shipping &amp; Returns</button>
+                        <button @click="footerModal = 'howtobuy'" class="f-link">How To Buy</button>
+                        <button @click="footerModal = 'faqs'"     class="f-link">FAQs</button>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="f-title">Follow Us</h4>
                     <div class="f-social">
                         <a href="#" class="f-icon" aria-label="Instagram Farhana" rel="noopener" target="_blank">
-                            <svg width="17" height="17" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
                             </svg>
                         </a>
@@ -632,6 +761,7 @@
                 </div>
             </div>
         </div>
+
         <div class="f-bottom">
             <p class="f-copy">&copy; 2026 Farhana Official. All Rights Reserved.</p>
         </div>
@@ -655,14 +785,19 @@
     @endif
 
     <script>
-    /* ─── DATA ─── */
-    const variants     = @json($product->variants);
-    const imgUrls      = @json($product->images->values()->map(fn($i) => asset('storage/'.$i->image_path)));
-    const hasColor     = {{ $hasColor ? 'true' : 'false' }};
-    let   curIdx       = 0;
-    let   maxStock     = 0;   // stok variant yang dipilih
+    /* ══════════════════════════════════════════════
+       DATA
+    ══════════════════════════════════════════════ */
+    const variants   = @json($product->variants);
+    const imgUrls    = @json($product->images->values()->map(fn($i) => asset('storage/'.$i->image_path)));
+    const hasColor   = {{ $hasColor ? 'true' : 'false' }};
+    const isLoggedIn = {{ auth()->check() ? 'true' : 'false' }};
+    let   curIdx     = 0;
+    let   maxStock   = 0;
 
-    /* ─── GALLERY ─── */
+    /* ══════════════════════════════════════════════
+       GALLERY
+    ══════════════════════════════════════════════ */
     function goToImage(idx) {
         if (idx < 0 || idx >= imgUrls.length) return;
         curIdx = idx;
@@ -687,48 +822,190 @@
         if (d > 45) navigate(1); else if (d < -45) navigate(-1);
     }, { passive:true });
 
-    /* ─── COLOR CHANGE ─── */
+    /* ══════════════════════════════════════════════
+       VALIDATION UX HELPERS
+       — Tiga lapis feedback: border merah, inline hint, banner bawah —
+    ══════════════════════════════════════════════ */
+
+    /**
+     * Tambahkan border merah + shake pada sebuah form-sec
+     * Auto-hilang setelah 3.5 detik atau saat user berinteraksi
+     */
+    function _highlightSection(sectionId) {
+        const sec = document.getElementById(sectionId);
+        if (!sec) return;
+        sec.classList.add('needs-attention');
+        sec.classList.remove('hint-shake');
+        void sec.offsetWidth; // reflow untuk restart animation
+        sec.classList.add('hint-shake');
+        sec.addEventListener('animationend', () => sec.classList.remove('hint-shake'), { once:true });
+        // auto-clear
+        clearTimeout(sec._highlightTid);
+        sec._highlightTid = setTimeout(() => sec.classList.remove('needs-attention'), 3500);
+    }
+
+    function _clearSection(sectionId) {
+        const sec = document.getElementById(sectionId);
+        if (sec) {
+            sec.classList.remove('needs-attention', 'hint-shake');
+            clearTimeout(sec._highlightTid);
+        }
+    }
+
+    /**
+     * Tampilkan inline hint di sebelah label heading
+     */
+    function showColorHint(msg) {
+        const el = document.getElementById('colorHint');
+        if (!el) return;
+        if (msg) { const t = el.querySelector('.hint-text'); if (t) t.textContent = msg; }
+        el.classList.add('show');
+        clearTimeout(el._tid);
+        el._tid = setTimeout(() => el.classList.remove('show'), 3500);
+    }
+    function hideColorHint() {
+        const el = document.getElementById('colorHint');
+        if (el) { el.classList.remove('show'); clearTimeout(el._tid); }
+    }
+
+    function showSizeHint(msg) {
+        const el = document.getElementById('sizeHint');
+        if (!el) return;
+        if (msg) { const t = el.querySelector('.hint-text'); if (t) t.textContent = msg; }
+        el.classList.add('show');
+        clearTimeout(el._tid);
+        el._tid = setTimeout(() => el.classList.remove('show'), 3500);
+    }
+    function hideSizeHint() {
+        const el = document.getElementById('sizeHint');
+        if (el) { el.classList.remove('show'); clearTimeout(el._tid); }
+    }
+
+    /**
+     * Banner merah di bawah tombol
+     */
+    let _bannerTimer = null;
+    function showBanner(msg) {
+        const el  = document.getElementById('vMsg');
+        const txt = document.getElementById('vMsgText');
+        if (!el || !txt) return;
+
+        el.classList.remove('hidden', 'hiding');
+        txt.textContent = msg;
+
+        clearTimeout(_bannerTimer);
+        _bannerTimer = setTimeout(() => {
+            el.classList.add('hiding');
+            setTimeout(() => el.classList.add('hidden'), 260);
+        }, 4000);
+    }
+    function hideBanner() {
+        clearTimeout(_bannerTimer);
+        const el = document.getElementById('vMsg');
+        if (el) el.classList.add('hidden');
+    }
+
+    /**
+     * Shake tombol submit — agar terasa ada "penolakan"
+     */
+    function shakeBtn(id) {
+        const btn = document.getElementById(id);
+        if (!btn) return;
+        btn.classList.remove('btn-shake');
+        void btn.offsetWidth;
+        btn.classList.add('btn-shake');
+        btn.addEventListener('animationend', () => btn.classList.remove('btn-shake'), { once:true });
+    }
+
+    /**
+     * Scroll ke section yang bermasalah (mobile friendly)
+     */
+    function scrollToSection(sectionId) {
+        const el = document.getElementById(sectionId);
+        if (!el) return;
+        const top = el.getBoundingClientRect().top + window.scrollY - 100;
+        window.scrollTo({ top, behavior:'smooth' });
+    }
+
+    /* ══════════════════════════════════════════════
+       SIZE LABEL CLICK GUARD
+    ══════════════════════════════════════════════ */
+    function onSizeLabelClick(event, labelEl) {
+        if (labelEl.classList.contains('off')) {
+            event.preventDefault();
+            return;
+        }
+        const inp = labelEl.querySelector('input');
+        if (inp && inp.disabled) {
+            event.preventDefault();
+            /* User coba klik size padahal warna belum dipilih */
+            _highlightSection('colorSection');
+            showColorHint('Pilih warna dulu');
+            scrollToSection('colorSection');
+            return;
+        }
+    }
+
+    /* ══════════════════════════════════════════════
+       COLOR CHANGE
+    ══════════════════════════════════════════════ */
     function onColorChange(color) {
-    const thumb = document.querySelector(`.thumb[data-color="${color.toLowerCase().trim()}"]`);
-    if (thumb) goToImage(parseInt(thumb.dataset.index));
+        hideBanner();
+        hideColorHint();
+        hideSizeHint();
+        _clearSection('colorSection');
+        _clearSection('sizeSection');
 
-    const isPreorder = {{ $product->is_preorder ? 'true' : 'false' }};
+        const thumb = document.querySelector(`.thumb[data-color="${color.toLowerCase().trim()}"]`);
+        if (thumb) goToImage(parseInt(thumb.dataset.index));
 
-    document.querySelectorAll('.sz-opt').forEach(opt => {
-        const v     = variants.find(v => v.color === color && v.size === opt.dataset.size);
-        const inp   = opt.querySelector('input');
-        const avail = isPreorder ? !!v : (v && parseInt(v.stock) > 0);
+        const isPreorder = {{ $product->is_preorder ? 'true' : 'false' }};
 
-        opt.classList.toggle('off', !avail);
-        inp.disabled = !avail;
-        if (!avail && inp.checked) inp.checked = false;
-    });
+        document.querySelectorAll('.sz-opt').forEach(opt => {
+            const v     = variants.find(v => v.color === color && v.size === opt.dataset.size);
+            const inp   = opt.querySelector('input');
+            const avail = isPreorder ? !!v : (v && parseInt(v.stock) > 0);
 
-    document.getElementById('variantId').value = '';
-    hideMsg();
-    resetStockBadge();
-    resetQty();
-    onSizeChange();
-}
+            opt.classList.toggle('off', !avail);
+            inp.disabled = !avail;
+            if (!avail && inp.checked) inp.checked = false;
+        });
 
-    /* ─── SIZE CHANGE ─── */
+        document.getElementById('variantId').value = '';
+        resetStockBadge();
+        resetQty();
+        onSizeChange();
+    }
+
+    /* ══════════════════════════════════════════════
+       SIZE CHANGE
+    ══════════════════════════════════════════════ */
     function onSizeChange() {
         const color = document.querySelector('input[name="color"]:checked')?.value;
         const size  = document.querySelector('input[name="size"]:checked')?.value;
+
         if (!size) { resetStockBadge(); return; }
+        if (hasColor && !color) { resetStockBadge(); return; }
 
         const v = variants.find(v => (!hasColor || v.color === color) && v.size === size);
         if (!v) { resetStockBadge(); return; }
+
+        hideBanner();
+        hideColorHint();
+        hideSizeHint();
+        _clearSection('colorSection');
+        _clearSection('sizeSection');
 
         document.getElementById('variantId').value = v.id;
         const stock = parseInt(v.stock);
         maxStock = stock;
         setStockBadge(stock);
         resetQty();
-        hideMsg();
     }
 
-    /* ─── STOCK BADGE ─── */
+    /* ══════════════════════════════════════════════
+       STOCK BADGE
+    ══════════════════════════════════════════════ */
     function setStockBadge(stock) {
         const badge = document.getElementById('stockBadge');
         const txt   = document.getElementById('stockText');
@@ -743,32 +1020,35 @@
             badge.classList.add('stock-ok');
             txt.textContent = `${stock} Tersedia`;
         }
-        // lock/unlock qty buttons
-        document.getElementById('qtyMinus').disabled = stock <= 0;
-        document.getElementById('qtyPlus').disabled  = stock <= 0;
-        document.getElementById('btnCart').disabled  = stock <= 0;
-        document.getElementById('btnBuy').disabled   = stock <= 0;
+        const outOfStock = stock <= 0;
+        document.getElementById('qtyMinus').disabled = outOfStock;
+        document.getElementById('qtyPlus').disabled  = outOfStock;
+        document.getElementById('btnCart').disabled  = outOfStock;
+        document.getElementById('btnBuy').disabled   = outOfStock;
     }
 
     function resetStockBadge() {
         maxStock = 0;
-        document.getElementById('stockBadge').className = 'stock-badge';
-        document.getElementById('stockText').textContent = hasColor ? 'Pilih warna & ukuran' : 'Pilih ukuran';
+        const badge = document.getElementById('stockBadge');
+        const txt   = document.getElementById('stockText');
+        badge.className = 'stock-badge';
+        txt.textContent = hasColor ? 'Pilih warna & ukuran' : 'Pilih ukuran';
         document.getElementById('qtyPlus').disabled  = false;
-        document.getElementById('qtyMinus').disabled = false;
+        document.getElementById('qtyMinus').disabled = true;
         document.getElementById('btnCart').disabled  = false;
         document.getElementById('btnBuy').disabled   = false;
     }
 
-    /* ─── QUANTITY ─── */
+    /* ══════════════════════════════════════════════
+       QUANTITY
+    ══════════════════════════════════════════════ */
     function adjustQty(delta) {
         const inp = document.getElementById('qtyInput');
         let val   = parseInt(inp.value) + delta;
         if (val < 1) val = 1;
         if (maxStock > 0 && val > maxStock) {
             val = maxStock;
-            showMsg(`Stok hanya tersedia ${maxStock} pcs.`);
-            setTimeout(hideMsg, 2500);
+            showBanner(`Stok hanya tersedia ${maxStock} pcs.`);
         }
         inp.value = val;
         document.getElementById('qtyMinus').disabled = val <= 1;
@@ -776,72 +1056,112 @@
     }
 
     function resetQty() {
-        const inp = document.getElementById('qtyInput');
-        inp.value = 1;
-        document.getElementById('qtyMinus').disabled = true; // always disable minus at 1
+        document.getElementById('qtyInput').value = 1;
+        document.getElementById('qtyMinus').disabled = true;
         document.getElementById('qtyPlus').disabled  = false;
     }
 
-    /* ─── SUBMIT ─── */
-  function submit(type) {
-    const color = document.querySelector('input[name="color"]:checked');
-    const size  = document.querySelector('input[name="size"]:checked');
+    /* ══════════════════════════════════════════════
+       HANDLE ORDER — validasi + UX 3 lapis
+       (Sengaja TIDAK dinamai "submit" karena itu
+        reserved keyword di context form element)
+       1. Border merah + shake pada section bermasalah
+       2. Inline hint di samping label heading
+       3. Banner pesan di bawah tombol
+       4. Shake tombol
+       5. Scroll ke section pertama yang bermasalah
+    ══════════════════════════════════════════════ */
+    function handleOrder(type) {
+        hideBanner();
+        hideColorHint();
+        hideSizeHint();
+        _clearSection('colorSection');
+        _clearSection('sizeSection');
 
-    hideMsg();
+        const colorEl = document.querySelector('input[name="color"]:checked');
+        const sizeEl  = document.querySelector('input[name="size"]:checked');
 
-    const colorHint = document.getElementById('colorHint');
-    const sizeHint  = document.getElementById('sizeHint');
-    if (colorHint) colorHint.style.display = 'none';
-    if (sizeHint)  sizeHint.style.display  = 'none';
-
-    if (hasColor && !color) {
-        if (colorHint) colorHint.style.display = 'inline';
-        showMsg('Silakan pilih warna terlebih dahulu.');
-        return;
-    }
-    if (!size) {
-        if (sizeHint) sizeHint.style.display = 'inline';
-        showMsg('Silakan pilih ukuran Anda.');
-        return;
-    }
-
-    const isPreorder = {{ $product->is_preorder ? 'true' : 'false' }};
-
-    const v = variants.find(v => (!hasColor || v.color === color.value) && v.size === size.value);
-
-    if (!v || (!isPreorder && parseInt(v.stock) <= 0)) {
-        showMsg('Ukuran ini sudah habis terjual.');
-        return;
-    }
-
-    const form = document.getElementById('cartForm');
-    const existing = form.querySelector('input[name="buy_now"]');
-    if (existing) existing.remove();
-
-    if (type === 'buy') {
-
-    if (!isLoggedIn) {
-            window.location.href = '{{ route('login') }}?redirect={{ urlencode(request()->fullUrl()) }}';
+        /* ── Kasus 1: Tidak ada yang dipilih sama sekali ── */
+        if (hasColor && !colorEl && !sizeEl) {
+            _highlightSection('colorSection');
+            _highlightSection('sizeSection');
+            showColorHint('Pilih warna dulu');
+            showSizeHint('Pilih ukuran dulu');
+            showBanner('Pilih warna & ukuran terlebih dahulu.');
+            shakeBtn('btnCart');
+            shakeBtn('btnBuy');
+            scrollToSection('colorSection');
             return;
         }
-        const inp = document.createElement('input');
-        inp.type = 'hidden'; inp.name = 'buy_now'; inp.value = '1';
-        form.appendChild(inp);
+
+        /* ── Kasus 2: Tidak ada yang dipilih (tanpa color variant) ── */
+        if (!hasColor && !sizeEl) {
+            _highlightSection('sizeSection');
+            showSizeHint('Pilih ukuran dulu');
+            showBanner('Pilih ukuran terlebih dahulu.');
+            shakeBtn('btnCart');
+            shakeBtn('btnBuy');
+            scrollToSection('sizeSection');
+            return;
+        }
+
+        /* ── Kasus 3: Warna sudah dipilih tapi ukuran belum ── */
+        if (!sizeEl) {
+            _highlightSection('sizeSection');
+            showSizeHint('Pilih ukuran dulu');
+            showBanner('Pilih ukuran terlebih dahulu.');
+            shakeBtn('btnCart');
+            shakeBtn('btnBuy');
+            scrollToSection('sizeSection');
+            return;
+        }
+
+        /* ── Kasus 4: Ukuran dipilih tapi warna belum (edge case) ── */
+        if (hasColor && !colorEl) {
+            _highlightSection('colorSection');
+            showColorHint('Pilih warna dulu');
+            showBanner('Pilih warna terlebih dahulu.');
+            shakeBtn('btnCart');
+            shakeBtn('btnBuy');
+            scrollToSection('colorSection');
+            return;
+        }
+
+        /* ── Cari variant & cek stok ── */
+        const isPreorder = {{ $product->is_preorder ? 'true' : 'false' }};
+        const v = variants.find(v =>
+            (!hasColor || v.color === colorEl.value) && v.size === sizeEl.value
+        );
+
+        if (!v || (!isPreorder && parseInt(v.stock) <= 0)) {
+            showBanner('Stok untuk pilihan ini sudah habis.');
+            shakeBtn('btnCart');
+            shakeBtn('btnBuy');
+            return;
+        }
+
+        /* ── Semua valid — kirim form ── */
+        const form = document.getElementById('cartForm');
+        const existing = form.querySelector('input[name="buy_now"]');
+        if (existing) existing.remove();
+
+        if (type === 'buy') {
+            if (!isLoggedIn) {
+                window.location.href = '{{ route('login') }}?redirect={{ urlencode(request()->fullUrl()) }}';
+                return;
+            }
+            const inp = document.createElement('input');
+            inp.type = 'hidden'; inp.name = 'buy_now'; inp.value = '1';
+            form.appendChild(inp);
+        }
+
+        /* Gunakan prototype langsung agar tidak bentrok dengan nama function */
+        HTMLFormElement.prototype.submit.call(form);
     }
 
-    form.submit();
-}
-    /* ─── MSG ─── */
-    function showMsg(msg) {
-        const el = document.getElementById('vMsg');
-        el.textContent = msg;
-        el.classList.remove('hidden');
-    }
-    function hideMsg() {
-        document.getElementById('vMsg').classList.add('hidden');
-    }
-
-    /* ─── MODAL ─── */
+    /* ══════════════════════════════════════════════
+       MODAL (size guide)
+    ══════════════════════════════════════════════ */
     function openModal(id) {
         const m = document.getElementById(id);
         if (!m) return;
@@ -862,28 +1182,34 @@
         document.body.style.overflow = '';
     });
 
-    /* ─── COUNTDOWN ─── */
+    /* Block accidental form submit via Enter */
+    document.getElementById('cartForm').addEventListener('keydown', e => {
+        if (e.key === 'Enter') e.preventDefault();
+    });
+
+    /* ══════════════════════════════════════════════
+       COUNTDOWN
+    ══════════════════════════════════════════════ */
     document.addEventListener('DOMContentLoaded', () => {
         const el = document.getElementById('cdWrap');
-        if (!el) return;
-        const target = new Date(el.dataset.expire).getTime();
-        function tick() {
-            const dist = target - Date.now();
-            if (dist <= 0) return;
-            el.classList.remove('hidden');
-            let r = dist;
-            const parts = { cdD:86400000, cdH:3600000, cdM:60000, cdS:1000 };
-            for (const [id, ms] of Object.entries(parts)) {
-                document.getElementById(id).textContent = String(Math.floor(r / ms)).padStart(2,'0');
-                r %= ms;
+        if (el) {
+            const target = new Date(el.dataset.expire).getTime();
+            function tick() {
+                const dist = target - Date.now();
+                if (dist <= 0) return;
+                el.classList.remove('hidden');
+                let r = dist;
+                const parts = { cdD:86400000, cdH:3600000, cdM:60000, cdS:1000 };
+                for (const [id, ms] of Object.entries(parts)) {
+                    document.getElementById(id).textContent = String(Math.floor(r / ms)).padStart(2,'0');
+                    r %= ms;
+                }
             }
+            tick(); setInterval(tick, 1000);
         }
-        tick(); setInterval(tick, 1000);
 
-        // Init: disable minus at qty=1
         document.getElementById('qtyMinus').disabled = true;
 
-        // If no color required, unlock size options immediately
         if (!hasColor) {
             document.querySelectorAll('.sz-opt input').forEach(i => i.disabled = false);
         }

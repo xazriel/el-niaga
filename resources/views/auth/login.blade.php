@@ -1,69 +1,121 @@
 <x-guest-layout>
-    <div class="min-h-screen flex flex-col justify-center items-center bg-white px-4">
+    {{-- Container utama dipaksa full screen dan mengabaikan padding bawaan --}}
+    <div class="fixed inset-0 min-h-screen w-full flex flex-row bg-[#FDFDFB] overflow-hidden" style="min-width: 100vw;">
         
-        <div class="mb-12">
-            <a href="/" class="text-3xl font-light tracking-[0.5em] uppercase text-gray-900">
-                Farhana
-            </a>
-        </div>
+        {{-- SISI KIRI: Branding & Aesthetic Elements --}}
+        <div class="hidden lg:flex w-1/2 bg-[#2F3526] flex-col justify-between pt-10 px-16 pb-16 relative overflow-hidden">
+            
+            {{-- ELEMEN GEOMETRIS (PENGISI RUANG) --}}
+            <div class="absolute top-[35%] -right-20 w-80 h-80 border border-white/[0.03] rounded-full pointer-events-none"></div>
+            <div class="absolute bottom-20 right-12 w-32 h-32 border border-white/[0.05] rounded-full pointer-events-none"></div>
+            <div class="absolute left-10 top-1/4 h-1/2 w-[1px] bg-gradient-to-b from-transparent via-white/[0.05] to-transparent pointer-events-none"></div>
 
-        <div class="w-full max-w-sm">
-            <div class="text-center mb-10">
-                <h2 class="text-[10px] font-bold tracking-[0.3em] uppercase text-gray-400 mb-2">Welcome Back</h2>
-                <h1 class="text-xl font-light tracking-[0.2em] uppercase text-gray-900">Login to Your Account</h1>
+            {{-- LOGO & TAHUN (Rata Kiri Atas) --}}
+            <div class="relative z-10">
+                <a href="{{ route('home') }}" class="block">
+                    <img src="{{ Storage::url('LOGO-FARHANA-NEW-TRANSPARENT.png') }}"
+                         alt="Farhana"
+                         class="h-40 w-auto object-contain brightness-0 invert opacity-95 -ml-12 -mt-2">
+                </a>
+                <p class="text-[#6B705C] text-[10px] tracking-[0.4em] uppercase mt-0 ml-1">Est. MMXXVI</p>
             </div>
 
-            <x-auth-session-status class="mb-4" :status="session('status')" />
+            {{-- QUOTE (Bagian Bawah) --}}
+            <div class="relative z-10">
+                <p class="text-white/30 text-[9px] uppercase tracking-[0.4em] leading-loose max-w-xs ml-1">
+                    "Simplicity is the ultimate sophistication."
+                </p>
+            </div>
 
-            <form method="POST" action="{{ route('login') }}" class="space-y-6">
-                @csrf
+            {{-- Background Curve Bawaan --}}
+            <div class="absolute inset-0 opacity-5 pointer-events-none">
+                <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+                    <path d="M0 100 C 30 0 70 0 100 100" stroke="white" fill="transparent" stroke-width="0.1" />
+                </svg>
+            </div>
+        </div>
 
-                <div>
-                    <label for="email" class="block text-[10px] font-bold tracking-[0.2em] uppercase text-gray-700 mb-2">Email Address</label>
-                    <input id="email" type="email" name="email" :value="old('email')" required autofocus 
-                        class="w-full border-b border-gray-300 border-t-0 border-x-0 bg-transparent px-0 py-2 focus:ring-0 focus:border-black transition-all duration-300 placeholder-gray-300 text-sm tracking-widest"
-                        placeholder="EMAIL@EXAMPLE.COM">
-                    <x-input-error :messages="$errors->get('email')" class="mt-2" />
+        {{-- SISI KANAN: Form Login --}}
+        <div class="w-full lg:w-1/2 flex flex-col items-center justify-center p-8 bg-white overflow-y-auto">
+            <div class="w-full max-w-[380px] py-10">
+                
+                {{-- Header Login (Rata Kiri) --}}
+                <div class="flex flex-col items-start space-y-2 mb-12">
+                    <h3 class="text-3xl font-extralight text-[#2F3526] tracking-tight leading-tight uppercase">
+                        Login
+                    </h3>
+                    <p class="text-[9px] font-bold tracking-[0.3em] uppercase text-gray-400">Access your account</p>
                 </div>
 
-                <div class="mt-4">
-                    <label for="password" class="block text-[10px] font-bold tracking-[0.2em] uppercase text-gray-700 mb-2">Password</label>
-                    <input id="password" type="password" name="password" required autocomplete="current-password"
-                        class="w-full border-b border-gray-300 border-t-0 border-x-0 bg-transparent px-0 py-2 focus:ring-0 focus:border-black transition-all duration-300 placeholder-gray-300 text-sm tracking-widest"
-                        placeholder="••••••••">
-                    <x-input-error :messages="$errors->get('password')" class="mt-2" />
-                </div>
+                <form method="POST" action="{{ route('login') }}" class="space-y-10">
+                    @csrf
 
-                <div class="flex items-center justify-between mt-4">
-                    <label for="remember_me" class="inline-flex items-center">
-                        <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-black shadow-sm focus:ring-black" name="remember">
-                        <span class="ml-2 text-[10px] tracking-widest uppercase text-gray-500">{{ __('Remember me') }}</span>
+                    {{-- Input Email --}}
+                    <div class="border-b border-gray-100 pb-2 focus-within:border-[#2F3526] transition-colors duration-500">
+                        <label class="block text-[9px] font-bold tracking-[0.2em] uppercase text-gray-400 mb-1">Email Address</label>
+                        <input type="email" name="email" :value="old('email')" required autofocus 
+                            class="w-full border-none bg-transparent p-0 focus:ring-0 text-sm tracking-wide text-gray-800 placeholder-gray-200"
+                            placeholder="yourname@domain.com">
+                    </div>
+
+                    {{-- Input Password --}}
+                    <div class="border-b border-gray-100 pb-2 focus-within:border-[#2F3526] transition-colors duration-500" 
+                        x-data="{ show: false }">
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="text-[9px] font-bold tracking-[0.2em] uppercase text-gray-400">Password</label>
+                            @if (Route::has('password.request'))
+                                <a href="{{ route('password.request') }}" class="text-[9px] tracking-widest text-gray-300 hover:text-[#2F3526]">Forgot?</a>
+                            @endif
+                        </div>
+                        <div class="relative">
+                            <input :type="show ? 'text' : 'password'" 
+                                name="password" 
+                                required
+                                class="w-full border-none bg-transparent p-0 pr-10 focus:ring-0 text-sm tracking-wide text-gray-800 placeholder-gray-200"
+                                placeholder="••••••••">
+                            
+                            <button type="button" 
+                                    @click="show = !show" 
+                                    class="absolute right-0 top-1/2 -translate-y-1/2 text-gray-300 hover:text-[#2F3526] transition-colors focus:outline-none">
+                                
+                                <svg x-show="!show" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+
+                                <svg x-show="show" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="display: none;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    {{-- ERROR NOTIFICATION AREA --}}
+                    @if ($errors->any())
+                        <div class="animate-in fade-in slide-in-from-top-1 duration-300">
+                            <p class="text-[10px] tracking-[0.2em] uppercase text-red-500 font-bold">
+                                Incorrect email or password. Please try again.
+                            </p>
+                        </div>
+                    @endif
+
+                    {{-- Checkbox Remember Me --}}
+                    <label class="flex items-center cursor-pointer group">
+                        <input type="checkbox" name="remember" class="h-3.5 w-3.5 border-gray-200 text-[#2F3526] focus:ring-0 rounded-sm">
+                        <span class="ml-3 text-[10px] tracking-[0.2em] uppercase text-gray-400 group-hover:text-gray-600">Remember Me</span>
                     </label>
 
-                    @if (Route::has('password.request'))
-                        <a class="text-[10px] tracking-widest uppercase text-gray-400 hover:text-black transition" href="{{ route('password.request') }}">
-                            {{ __('Forgot password?') }}
-                        </a>
-                    @endif
-                </div>
-
-                <div class="pt-6">
-                    <button type="submit" class="w-full py-4 bg-black text-white text-[10px] tracking-[0.4em] uppercase hover:bg-gray-800 transition duration-500 italic">
-                        Sign In
+                    {{-- Submit Button --}}
+                    <button type="submit" class="w-full py-5 bg-[#2F3526] text-white text-[10px] font-bold tracking-[0.5em] uppercase hover:bg-[#1a1f16] transition-all shadow-lg active:scale-[0.98]">
+                        Login
                     </button>
-                </div>
 
-                <div class="text-center mt-8">
-                    <p class="text-[10px] tracking-widest text-gray-400 uppercase">
-                        Don't have an account? 
-                        <a href="{{ route('register') }}" class="text-black font-bold border-b border-black pb-1 ml-1 hover:text-gray-600 hover:border-gray-600 transition">Register Now</a>
+                    {{-- Link Register --}}
+                    <p class="text-left text-[10px] tracking-[0.2em] text-gray-400 uppercase pt-4">
+                        New here? <a href="{{ route('register') }}" class="text-[#2F3526] font-bold border-b border-[#2F3526]/20 ml-1">Join Us</a>
                     </p>
-                </div>
-            </form>
-        </div>
-        
-        <div class="mt-20 text-[9px] text-gray-300 uppercase tracking-[0.4em]">
-            &copy; 2026 Farhana Official.
+                </form>
+            </div>
         </div>
     </div>
 </x-guest-layout>

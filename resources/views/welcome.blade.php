@@ -103,114 +103,126 @@
         </div>
     </div>
 
-    <!-- Navbar -->
-    <nav class="bg-white border-b border-gray-100 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-20">
+<!-- Navbar -->
+<nav class="bg-white border-b border-gray-100 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-20">
 
-                <div class="flex items-center md:hidden">
-                    <button id="mobile-menu-button" class="text-gray-600 hover:text-black focus:outline-none">
+            <!-- LEFT: Hamburger & Logo -->
+            <div class="flex items-center">
+                <!-- Mobile Menu Button: Digeser ke kanan & dipastikan di layer paling atas -->
+                <div class="flex items-center md:hidden mr-2 ml-2 relative z-20">
+                    <button id="mobile-menu-button" class="text-gray-600 hover:text-black focus:outline-none p-2">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/>
                         </svg>
                     </button>
                 </div>
 
-                <div class="shrink-0 flex items-center">
-                <a href="{{ route('home') }}">
-                    <img src="{{ Storage::url('LOGO-FARHANA-NEW-TRANSPARENT.png') }}"
-                         alt="Farhana"
-                         class="h-20 w-auto object-contain">
-                </a>
+                <!-- Logo -->
+                <div class="shrink-0 flex items-center relative">
+                    <a href="{{ route('home') }}">
+                        <img src="{{ Storage::url('LOGO-FARHANA-NEW-TRANSPARENT.png') }}"
+                             alt="Farhana"
+                             class="h-14 md:h-20 w-auto object-contain">
+                    </a>
                 </div>
+            </div>
 
-                <div class="hidden md:flex space-x-10 items-center">
-                    <a href="{{ route('home') }}" class="nav-link font-bold hover:text-gray-400 uppercase">Shop All</a>
+            <!-- CENTER: Desktop Menu (Hidden on Mobile) -->
+            <div class="hidden md:flex space-x-10 items-center">
+                <a href="{{ route('home') }}" class="nav-link font-bold hover:text-gray-400 uppercase text-[11px] tracking-widest">Shop All</a>
 
-                    <div class="group static">
-                        <button class="nav-link font-bold hover:text-gray-400 flex items-center uppercase">
-                            Collections
-                            <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-width="2" d="M19 9l-7 7-7-7"/>
-                            </svg>
-                        </button>
-                        <div class="mega-menu pt-10 pb-12 shadow-2xl animate-fade-in-down">
-                            <div class="max-w-7xl mx-auto px-8 grid grid-cols-4 gap-12">
-                                @foreach($categories as $cat)
-                                <div>
-                                    <h4 class="text-[11px] font-black tracking-widest text-gray-900 mb-5 uppercase border-b pb-2">
-                                        {{ $cat->name }}
-                                    </h4>
-                                    <ul class="space-y-3">
-                                        <li>
-                                            <button type="button"
-                                                onclick="filterCategory('{{ $cat->slug }}')"
-                                                class="text-[10px] text-gray-500 hover:text-black uppercase tracking-widest transition">
-                                                {{ $cat->name }}
-                                            </button>
-                                        </li>
-                                    </ul>
-                                </div>
-                                @endforeach
-                            </div>
-                        </div>
-                    </div>
-
-                    <a href="#about" class="nav-link font-bold hover:text-gray-400 uppercase">About</a>
-                </div>
-
-                <div class="flex items-center space-x-6">
-                    <button onclick="toggleSearch()" class="text-gray-600 hover:text-black transition">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                <div class="group static">
+                    <button class="nav-link font-bold hover:text-gray-400 flex items-center uppercase text-[11px] tracking-widest">
+                        Collections
+                        <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-width="2" d="M19 9l-7 7-7-7"/>
                         </svg>
                     </button>
-
-                    <x-cart-count />
-
-                    @auth
-                        <a href="{{ Auth::user()->is_admin ? route('admin.dashboard') : route('dashboard') }}" class="text-gray-600 hover:text-black transition">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/>
-                            </svg>
-                        </a>
-                    @else
-                        <a href="{{ route('login') }}" class="text-gray-600 hover:text-black transition">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/>
-                            </svg>
-                        </a>
-                    @endauth
-                </div>
-            </div>
-        </div>
-
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="fixed inset-0 bg-white z-[60] md:hidden flex flex-col p-8 space-y-8">
-            <div class="flex justify-end">
-                <button id="close-menu-button" class="text-gray-500">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/>
-                    </svg>
-                </button>
-            </div>
-            <nav class="flex flex-col space-y-6">
-                <a href="{{ route('home') }}" class="text-sm font-bold tracking-widest uppercase border-b pb-2">Shop All</a>
-                <div class="space-y-4">
-                    <p class="text-[10px] text-gray-400 tracking-widest uppercase">Collections</p>
-                    <div class="grid grid-cols-1 gap-4 pl-4">
-                        @foreach($categories as $cat)
-                        <button onclick="filterCategory('{{ $cat->slug }}'); toggleMenu();"
-                            class="text-left text-xs tracking-widest uppercase hover:text-gray-500">
-                            {{ $cat->name }}
-                        </button>
-                        @endforeach
+                    <div class="mega-menu pt-10 pb-12 shadow-2xl animate-fade-in-down">
+                        <div class="max-w-7xl mx-auto px-8 grid grid-cols-4 gap-12">
+                            @foreach($categories as $cat)
+                            <div>
+                                <h4 class="text-[11px] font-black tracking-widest text-gray-900 mb-5 uppercase border-b pb-2">
+                                    {{ $cat->name }}
+                                </h4>
+                                <ul class="space-y-3">
+                                    <li>
+                                        <button type="button"
+                                            onclick="filterCategory('{{ $cat->slug }}')"
+                                            class="text-[10px] text-gray-500 hover:text-black uppercase tracking-widest transition">
+                                            {{ $cat->name }}
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
+                            @endforeach
+                        </div>
                     </div>
                 </div>
-                <a href="#about" onclick="toggleMenu()" class="text-sm font-bold tracking-widest uppercase border-b pb-2">About</a>
-            </nav>
+
+                <a href="#about" class="nav-link font-bold hover:text-gray-400 uppercase text-[11px] tracking-widest">About</a>
+            </div>
+
+            <!-- RIGHT: Icons (Rapat & Nyaman diklik) -->
+            <div class="flex items-center space-x-1 md:space-x-4">
+                <!-- Search -->
+                <button onclick="toggleSearch()" class="p-1.5 text-gray-600 hover:text-black transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                </button>
+
+                <!-- Cart -->
+                <div class="p-1.5">
+                    <x-cart-count />
+                </div>
+
+                <!-- User Account -->
+                @auth
+                    <a href="{{ Auth::user()->is_admin ? route('admin.dashboard') : route('dashboard') }}" class="p-1.5 text-gray-600 hover:text-black transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/>
+                        </svg>
+                    </a>
+                @else
+                    <a href="{{ route('login') }}" class="p-1.5 text-gray-600 hover:text-black transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/>
+                        </svg>
+                    </a>
+                @endauth
+            </div>
         </div>
-    </nav>
+    </div>
+
+    <!-- Mobile Menu Overlay (Pastikan ID sesuai dengan JS) -->
+    <div id="mobile-menu" class="fixed inset-0 bg-white z-[60] md:hidden flex flex-col p-8 space-y-8 translate-x-full transition-transform duration-300">
+        <div class="flex justify-end">
+            <button id="close-menu-button" class="text-gray-500 p-2">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+        <nav class="flex flex-col space-y-6">
+            <a href="{{ route('home') }}" class="text-sm font-bold tracking-widest uppercase border-b pb-2">Shop All</a>
+            <div class="space-y-4">
+                <p class="text-[10px] text-gray-400 tracking-widest uppercase">Collections</p>
+                <div class="grid grid-cols-1 gap-4 pl-4">
+                    @foreach($categories as $cat)
+                    <button onclick="filterCategory('{{ $cat->slug }}'); toggleMenu();"
+                        class="text-left text-xs tracking-widest uppercase hover:text-gray-500">
+                        {{ $cat->name }}
+                    </button>
+                    @endforeach
+                </div>
+            </div>
+            <a href="#about" onclick="toggleMenu()" class="text-sm font-bold tracking-widest uppercase border-b pb-2">About</a>
+        </nav>
+    </div>
+</nav>
 
     <!-- Hero Slider -->
     <header class="relative overflow-hidden bg-[#E9E9E9]">

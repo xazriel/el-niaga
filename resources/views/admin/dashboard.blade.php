@@ -120,9 +120,11 @@
                     </a>
                 </div>
                 
-                <a href="{{ route('home') }}" target="_blank" class="px-8 py-4 bg-brand-black rounded-full text-[10px] font-bold text-brand-white uppercase tracking-widest hover:bg-brand-primary transition-all duration-300 flex items-center gap-3 shadow-lg shadow-brand-black/20 hover:-translate-y-1">
+                <a href="{{ route('home') }}" target="_blank" class="px-8 py-4 bg-[#2F3526] rounded-full text-[10px] font-bold text-white uppercase tracking-widest hover:bg-[#6B705C] transition-all duration-300 flex items-center gap-3 shadow-lg shadow-[#2F3526]/20 hover:-translate-y-1">
                     Buka Website Utama
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
                 </a>
             </div>
         </div>
