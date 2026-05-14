@@ -1225,14 +1225,16 @@ $(document).ready(function () {
         $(btn).text('Menghapus...').prop('disabled', true);
 
         try {
-            const res = await fetch(`/profile/addresses/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': CSRF,
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: `_token=${CSRF}`
-            });
+           const res = await fetch(`/profile/addresses/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': CSRF,
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Accept':       'application/json',   // ← tambah ini
+                'X-Requested-With': 'XMLHttpRequest'  // ← tambah ini
+            },
+            body: `_token=${CSRF}`
+        });
 
             if (res.ok) {
                 // Remove card from DOM with animation

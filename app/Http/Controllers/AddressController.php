@@ -48,11 +48,15 @@ class AddressController extends Controller
         ]);
 
         if ($request->has('from_checkout')) {
-            return redirect()->route('checkout.index')->with('success', 'Alamat berhasil ditambahkan.');
+        // Kalau dari JS fetch, return JSON
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json(['success' => true]);
         }
-
-        return redirect()->route('address.index')->with('success', 'Alamat berhasil ditambahkan.');
+        return redirect()->route('checkout.index')->with('success', 'Alamat berhasil ditambahkan.');
     }
+
+    return redirect()->route('address.index')->with('success', 'Alamat berhasil ditambahkan.');
+}
 
     public function select($id)
     {
@@ -109,17 +113,22 @@ public function update(Request $request, $id)
     }
 
     public function destroy($id)
-    {
-        $address = Auth::user()->addresses()->findOrFail($id);
+{
+    $address = Auth::user()->addresses()->findOrFail($id);
 
-        if ($address->is_default) {
-            $address->delete();
-            $next = Auth::user()->addresses()->first();
-            if ($next) $next->update(['is_default' => true]);
-        } else {
-            $address->delete();
-        }
+    if ($address->is_default) {
+        $address->delete();
+        $next = Auth::user()->addresses()->first();
+        if ($next) $next->update(['is_default' => true]);
+    } else {
+        $address->delete();
+    }
 
-        return redirect()->back()->with('success', 'Alamat dihapus.');
+    // Kalau request dari JS (fetch/ajax), return JSON
+    if (request()->expectsJson() || request()->ajax()) {
+        return response()->json(['success' => true]);
+    }
+
+    return redirect()->back()->with('success', 'Alamat dihapus.');
     }
 }
