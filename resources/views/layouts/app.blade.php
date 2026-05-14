@@ -167,7 +167,7 @@
             @endauth
 
             {{-- ── CONTENT AREA ── --}}
-            <div class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+            <div class="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto">
 
                 {{-- ── HEADER ── --}}
                 <header class="flex-shrink-0 sticky top-0 z-30"
