@@ -83,11 +83,18 @@ class ProfileController extends Controller
         // ----------------------------------------------------------------
         if (app()->environment('local')) {
             return response()->json([
-                'success'  => true,
-                'status'   => 'ON PROCESS',
-                'last'     => '[SANDBOX] WITH DELIVERY COURIER [JAKARTA]',
-                '_sandbox' => true,
-                'history'  => [
+                'success'      => true,
+                'status'       => 'ON PROCESS',
+                'last'         => '[SANDBOX] WITH DELIVERY COURIER [JAKARTA]',
+                'pod_status'   => 'ON PROCESS',
+                'shipper'      => 'FARHANA OFFICIAL',
+                'shipper_city' => 'DEPOK',
+                'receiver'     => 'PELANGGAN TEST',
+                'receiver_city'=> 'JAKARTA SELATAN',
+                'service'      => 'REG',
+                'estimate'     => '1-2 Hari',
+                '_sandbox'     => true,
+                'history'      => [
                     [
                         'date' => now()->format('d-m-Y H:i'),
                         'desc' => '[SANDBOX] WITH DELIVERY COURIER [JAKARTA]',
@@ -158,12 +165,20 @@ class ProfileController extends Controller
 
             // Success
             if (isset($data['cnote'])) {
+                $cnote  = $data['cnote'];
+                $detail = $data['detail'][0] ?? [];
                 return response()->json([
-                    'success'  => true,
-                    'status'   => $data['cnote']['pod_status']         ?? 'ON PROCESS',
-                    'last'     => $data['cnote']['last_status']        ?? '',
-                    'receiver' => $data['cnote']['cnote_pod_receiver'] ?? '',
-                    'history'  => $data['history'] ?? [],
+                    'success'       => true,
+                    'status'        => $cnote['pod_status']                ?? 'ON PROCESS',
+                    'last'          => $cnote['last_status']               ?? '',
+                    'pod_status'    => $cnote['pod_status']                ?? '',
+                    'shipper'       => $detail['cnote_shipper_name']       ?? '',
+                    'shipper_city'  => $detail['cnote_shipper_city']       ?? '',
+                    'receiver'      => $cnote['cnote_receiver_name']       ?? '',
+                    'receiver_city' => $cnote['city_name']                 ?? '',
+                    'service'       => $cnote['cnote_services_code']       ?? '',
+                    'estimate'      => $cnote['estimate_delivery']         ?? '',
+                    'history'       => $data['history']                   ?? [],
                 ]);
             }
 

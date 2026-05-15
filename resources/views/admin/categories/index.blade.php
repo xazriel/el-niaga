@@ -43,13 +43,13 @@
                         </div>
                     </div>
                     
-                    <a href="{{ route('admin.categories.create') }}" 
-                       class="inline-flex justify-center items-center bg-black text-white px-5 py-3 rounded text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-gray-800 transition shadow-lg shadow-gray-200 active:scale-95">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4" />
-                        </svg>
-                        Tambah Kategori
-                    </a>
+                  <a href="{{ route('admin.categories.create') }}" 
+                class="inline-flex justify-center items-center bg-[#2F3526] text-white px-5 py-3 rounded-[10px] text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-[#4A5043] transition shadow-lg shadow-gray-200 active:scale-95">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Tambah Kategori
+                </a>
                 </div>
 
                 {{-- Table Section --}}

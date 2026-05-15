@@ -122,7 +122,7 @@
                             </button>
 
                             {{-- Link Login (Padding bottom dikurangi) --}}
-                            <p class="text-left text-[10px] tracking-[0.2em] text-gray-400 uppercase mt-2 pb-6">
+                            <p class="text-center text-[10px] tracking-[0.2em] text-gray-400 uppercase mt-2 pb-6">
                                 Already have an account? <a href="{{ route('login') }}" class="text-[#2F3526] font-bold border-b border-[#2F3526]/20 ml-1">Log In</a>
                             </p>
                         </form>

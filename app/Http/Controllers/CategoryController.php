@@ -39,7 +39,7 @@ class CategoryController extends Controller
             'slug' => Str::slug($request->name),
         ]);
 
-        return redirect()->route('categories.index')->with('success', 'Kategori berhasil ditambahkan!');
+        return redirect()->route('admin.categories.index')->with('success', 'Kategori berhasil ditambahkan!');
     }
 
     /**
@@ -66,7 +66,7 @@ class CategoryController extends Controller
             'slug' => Str::slug($request->name),
         ]);
 
-        return redirect()->route('categories.index')->with('success', 'Kategori berhasil diperbarui!');
+        return redirect()->route('admin.categories.index')->with('success', 'Kategori berhasil diperbarui!');
     }
 
     /**
@@ -76,6 +76,6 @@ class CategoryController extends Controller
     {
         $category->delete();
 
-        return redirect()->route('categories.index')->with('success', 'Kategori berhasil dihapus!');
+        return redirect()->route('admin.categories.index')->with('success', 'Kategori berhasil dihapus!');
     }
 }

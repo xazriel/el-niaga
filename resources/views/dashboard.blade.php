@@ -102,9 +102,53 @@
         .btn-primary:hover { opacity: 0.9; transform: scale(1.02); }
 
         .modal-backdrop {
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            background: rgba(0, 0, 0, 0.3);
+            background: transparent;
+        }
+
+        /* Tracking modal premium styles */
+        .track-status-badge {
+            display: inline-flex; align-items: center;
+            padding: 6px 16px; border-radius: 99px;
+            font-size: 9px; font-weight: 800;
+            letter-spacing: .15em; text-transform: uppercase;
+        }
+        .track-status-badge.delivered { background:#dcfce7; color:#15803d; }
+        .track-status-badge.on-process { background:#1c1c1c; color:#fff; }
+
+        .track-ping {
+            width: 8px; height: 8px; border-radius: 50%;
+            display: inline-block; margin-right: 6px;
+        }
+        .track-ping.ping { background: #facc15; animation: ping .9s cubic-bezier(0,0,.2,1) infinite; }
+        .track-ping.solid { background: #22c55e; }
+        @keyframes ping {
+            0%,100%{opacity:1;transform:scale(1)}
+            50%{opacity:.6;transform:scale(1.3)}
+        }
+
+        .track-info-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+            padding: 24px 0; border-top: 1px solid #F3F4F6;
+        }
+        .track-info-label { font-size: 9px; font-weight:700; letter-spacing:.15em; text-transform:uppercase; color:#9ca3af; margin-bottom:4px; }
+        .track-info-val   { font-size: 14px; font-weight:700; color:#111; }
+        .track-info-sub   { font-size: 11px; color:#6b7280; margin-top:2px; }
+
+        .track-timeline-wrap { position: relative; padding-left: 28px; }
+        .track-timeline-line {
+            position: absolute; left: 8px; top: 6px; bottom: 6px;
+            width: 2px;
+            background: linear-gradient(to bottom, #1c1c1c, #e5e7eb, #f3f4f6);
+        }
+        .track-dot-wrap  { position: absolute; left: -20px; top: 2px; }
+        .track-dot-active {
+            width: 16px; height: 16px; border-radius: 50%;
+            background: #1c1c1c; border: 3px solid #d1d5db;
+            display:flex;align-items:center;justify-content:center;
+        }
+        .track-dot-idle {
+            width: 10px; height: 10px; border-radius: 50%;
+            background: #d1d5db; margin: 3px;
         }
 
         @keyframes fadeUp {
@@ -170,12 +214,7 @@
                                 </svg>
                                 Order History
                             </button>
-                            <button @click="tab = 'delivery'" :class="tab === 'delivery' ? 'active' : ''" class="tab-btn">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                                </svg>
-                                Shipping Address
-                            </button>
+                            
                         </div>
                     </div>
                 </div>
@@ -317,7 +356,7 @@
         {{-- ── TRACKING MODAL — di luar max-w container agar fixed bisa full screen ── --}}
         <div x-show="modalOpen"
              x-cloak
-             class="modal-backdrop fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-4 sm:p-8"
+             class="modal-backdrop fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-4 sm:p-6"
              x-transition:enter="transition ease-out duration-300"
              x-transition:enter-start="opacity-0"
              x-transition:enter-end="opacity-100"
@@ -326,8 +365,8 @@
              x-transition:leave-end="opacity-0">
 
             <div @click.away="modalOpen = false"
-                 class="w-full max-w-xl bg-white rounded-[2.5rem] shadow-2xl flex flex-col"
-                 style="max-height: 88vh; overflow: hidden;"
+                 class="w-full max-w-2xl bg-white rounded-[2.5rem] shadow-2xl flex flex-col"
+                 style="max-height: 92vh; overflow: hidden;"
                  x-transition:enter="transition ease-out duration-300"
                  x-transition:enter-start="opacity-0 translate-y-8 scale-95"
                  x-transition:enter-end="opacity-100 translate-y-0 scale-100"
@@ -335,12 +374,12 @@
                  x-transition:leave-start="opacity-100 translate-y-0 scale-100"
                  x-transition:leave-end="opacity-0 translate-y-8 scale-95">
 
-                {{-- Modal Header --}}
-                <div class="px-10 py-8 border-b border-gray-100 flex justify-between items-center flex-shrink-0">
+                {{-- ── Modal Header ── --}}
+                <div class="px-8 py-6 border-b border-gray-100 flex justify-between items-center flex-shrink-0">
                     <div>
-                        <h3 class="text-[12px] font-black uppercase tracking-[.4em]">Shipment Data</h3>
-                        <p class="text-[10px] mt-1.5 text-gray-400 uppercase tracking-widest">
-                            AWB <span class="text-black font-mono" x-text="activeAwb"></span>
+                        <p class="text-[9px] uppercase tracking-[.35em] font-black" style="color:var(--olive-tint);">Lacak Pengiriman</p>
+                        <p class="text-[11px] mt-1 text-gray-400 uppercase tracking-widest font-mono">
+                            AWB: <span class="text-black font-bold" x-text="activeAwb"></span>
                         </p>
                     </div>
                     <button @click="modalOpen = false"
@@ -349,55 +388,124 @@
                     </button>
                 </div>
 
-                {{-- Modal Body --}}
-                <div class="px-10 py-8 overflow-y-auto custom-scrollbar flex-1">
+                {{-- ── Modal Body ── --}}
+                <div class="px-8 py-6 overflow-y-auto custom-scrollbar flex-1 space-y-6">
 
                     {{-- Loading --}}
                     <div x-show="loading" class="py-20 flex flex-col items-center gap-4">
                         <div class="spinner"></div>
-                        <p class="text-[10px] uppercase tracking-[.3em] opacity-40">Contacting Logistics...</p>
+                        <p class="text-[10px] uppercase tracking-[.3em] opacity-40">Menghubungi Logistik...</p>
                     </div>
 
-                    {{-- Tracking Data --}}
-                    <div x-show="!loading && trackingData">
-                        <div class="mb-10 p-8 rounded-3xl" style="background: #F9F9F8;">
-                            <p class="text-[8px] uppercase tracking-widest text-gray-400 mb-2">Current Status</p>
-                            <p class="text-lg font-bold uppercase tracking-tight" style="color: var(--primary);" x-text="trackingData?.status"></p>
-                            <p class="text-[11px] mt-2 opacity-60" x-text="trackingData?.last"></p>
+                    {{-- ── Tracking Data ── --}}
+                    <div x-show="!loading && trackingData" class="space-y-6">
+
+                        {{-- Status Card --}}
+                        <div class="rounded-3xl p-6" style="background:#F9F9F8;">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                <div>
+                                    <p class="text-[9px] uppercase tracking-widest text-gray-400 font-bold mb-1">Status Saat Ini</p>
+                                    <p class="text-base font-bold leading-snug" style="color:var(--primary);" x-text="trackingData?.status"></p>
+                                    <p class="text-[11px] mt-1 text-gray-500" x-text="trackingData?.last"></p>
+                                </div>
+                                <div class="flex-shrink-0">
+                                    <span :class="trackingData?.podStatus === 'DELIVERED'
+                                        ? 'track-status-badge delivered'
+                                        : 'track-status-badge on-process'">
+                                        <span :class="trackingData?.podStatus === 'DELIVERED'
+                                            ? 'track-ping solid'
+                                            : 'track-ping ping'"></span>
+                                        <span x-text="trackingData?.podStatus || 'On Process'"></span>
+                                    </span>
+                                </div>
+                            </div>
+
+                            {{-- Info Grid --}}
+                            <div class="track-info-grid" x-show="trackingData?.shipper || trackingData?.receiver">
+                                <div x-show="trackingData?.shipper">
+                                    <p class="track-info-label">Pengirim</p>
+                                    <p class="track-info-val" x-text="trackingData?.shipper"></p>
+                                    <p class="track-info-sub" x-text="trackingData?.shipperCity"></p>
+                                </div>
+                                <div x-show="trackingData?.receiver">
+                                    <p class="track-info-label">Penerima</p>
+                                    <p class="track-info-val" x-text="trackingData?.receiver"></p>
+                                    <p class="track-info-sub" x-text="trackingData?.receiverCity"></p>
+                                </div>
+                                <div x-show="trackingData?.service">
+                                    <p class="track-info-label">Layanan</p>
+                                    <p class="track-info-val">
+                                        <span style="background:#f3f4f6;padding:2px 8px;border-radius:4px;font-size:11px;font-style:italic;margin-right:4px;">JNE</span>
+                                        <span x-text="trackingData?.service"></span>
+                                    </p>
+                                </div>
+                                <div x-show="trackingData?.estimate">
+                                    <p class="track-info-label">Estimasi Tiba</p>
+                                    <p class="track-info-val" x-text="trackingData?.estimate"></p>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="relative pl-10 space-y-8">
-                            <div class="absolute left-[3px] top-2 bottom-2 w-[1px] bg-gray-100"></div>
-                            <template x-for="(h, index) in trackingData?.history" :key="index">
-                                <div class="relative">
-                                    <div :class="index === 0
-                                            ? 'bg-black w-2.5 h-2.5 -left-[11px]'
-                                            : 'bg-gray-200 w-1.5 h-1.5 -left-[9px]'"
-                                         class="absolute top-1 rounded-full z-10 transition-all"></div>
-                                    <div>
-                                        <p class="text-[9px] font-bold uppercase tracking-widest mb-1"
-                                           :class="index === 0 ? 'text-black' : 'text-gray-400'"
-                                           x-text="h.date"></p>
-                                        <p class="text-[11px] leading-relaxed opacity-70" x-text="h.desc"></p>
+                        {{-- Timeline History --}}
+                        <div x-show="trackingData?.history?.length > 0">
+                            <div class="flex items-center justify-between mb-5">
+                                <p class="text-[9px] uppercase tracking-[.35em] font-black" style="color:var(--primary);">Riwayat Perjalanan</p>
+                                <span class="text-[10px] text-gray-400">Diperbarui baru saja</span>
+                            </div>
+                            <div class="track-timeline-wrap space-y-6">
+                                <div class="track-timeline-line"></div>
+                                <template x-for="(h, index) in trackingData?.history" :key="index">
+                                    <div class="relative flex gap-5">
+                                        {{-- Dot --}}
+                                        <div class="relative z-10 flex-shrink-0">
+                                            <div :class="index === 0
+                                                    ? 'track-dot-active'
+                                                    : 'w-10 h-10 rounded-full flex items-center justify-center bg-white border-2 border-gray-100'">
+                                                <template x-if="index === 0">
+                                                    <svg style="width:8px;height:8px;color:white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                                </template>
+                                                <template x-if="index !== 0">
+                                                    <div class="track-dot-idle"></div>
+                                                </template>
+                                            </div>
+                                        </div>
+                                        {{-- Text --}}
+                                        <div class="flex-1 pb-2">
+                                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                                                <p class="text-[12px] font-bold leading-snug"
+                                                   :class="index === 0 ? 'text-black' : 'text-gray-500'"
+                                                   x-text="h.desc"></p>
+                                                <span class="text-[10px] font-bold whitespace-nowrap"
+                                                      :class="index === 0 ? 'text-black' : 'text-gray-400'"
+                                                      x-text="h.date"></span>
+                                            </div>
+                                            <template x-if="index === 0">
+                                                <span style="font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;background:#f5f5f4;color:#78716c;padding:2px 8px;border-radius:4px;margin-top:4px;display:inline-block;">Posisi Terakhir</span>
+                                            </template>
+                                        </div>
                                     </div>
-                                </div>
-                            </template>
+                                </template>
+                            </div>
                         </div>
+
                     </div>
 
                     {{-- Error --}}
-                    <div x-show="!loading && !trackingData" class="py-16 text-center">
-                        <p class="text-[10px] font-bold uppercase tracking-widest text-red-400"
-                           x-text="errorMessage || 'Logistics ID not found'"></p>
+                    <div x-show="!loading && !trackingData" class="py-16 text-center space-y-4">
+                        <div style="width:64px;height:64px;background:#f9fafb;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto;">
+                            <svg style="width:32px;height:32px;color:#d1d5db" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                        </div>
+                        <p class="text-[11px] font-bold uppercase tracking-widest text-gray-400"
+                           x-text="errorMessage || 'Data tidak ditemukan'"></p>
                     </div>
 
                 </div>{{-- end modal body --}}
 
-                {{-- Modal Footer --}}
-                <div class="px-10 py-6 flex-shrink-0" style="border-top: 1px solid #F3F4F6;">
+                {{-- ── Modal Footer ── --}}
+                <div class="px-8 py-5 flex-shrink-0" style="border-top: 1px solid #F3F4F6;">
                     <button @click="modalOpen = false"
-                            class="btn-primary w-full py-5 text-[10px] font-bold uppercase tracking-widest">
-                        Close Record
+                            class="btn-primary w-full py-4 text-[10px] font-bold uppercase tracking-widest">
+                        Tutup
                     </button>
                 </div>
 
@@ -429,9 +537,16 @@
 
                     if (result.success) {
                         this.trackingData = {
-                            status:  result.status,
-                            last:    result.last || '',
-                            history: result.history || [],
+                            status:      result.status,
+                            last:        result.last       || '',
+                            podStatus:   result.pod_status || '',
+                            shipper:     result.shipper    || '',
+                            shipperCity: result.shipper_city || '',
+                            receiver:    result.receiver   || '',
+                            receiverCity:result.receiver_city || '',
+                            service:     result.service    || '',
+                            estimate:    result.estimate   || '',
+                            history:     result.history    || [],
                         };
                     } else {
                         this.errorMessage = result.message || 'Data tidak ditemukan.';

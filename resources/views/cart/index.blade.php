@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
     <meta name="theme-color" content="#2F3526">
     <title>Keranjang — Farhana</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('farhana.svg') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         :root {

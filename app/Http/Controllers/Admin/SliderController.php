@@ -134,7 +134,7 @@ class SliderController extends Controller
                 'order'             => Slider::count() + 1,
             ]);
 
-            return redirect()->back()->with('success', '✅ Konten berhasil diunggah!');
+            return redirect()->back()->with('success', 'Konten berhasil diunggah!');
 
         } catch (\RuntimeException $e) {
             Log::error('Runtime error saat upload: ' . $e->getMessage());
@@ -176,7 +176,7 @@ class SliderController extends Controller
 
             Log::info('Slider dihapus', ['id' => $slider->id, 'title' => $slider->title]);
 
-            return redirect()->back()->with('success', '✅ Banner berhasil dihapus!');
+            return redirect()->back()->with('success', 'Banner berhasil dihapus!');
 
         } catch (\Exception $e) {
             Log::error('Gagal menghapus slider', [

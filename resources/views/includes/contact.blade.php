@@ -16,20 +16,6 @@
     .fc-title strong { font-weight: 900; color: #000; }
     .fc-divider { width: 36px; height: 1.5px; background: #2F3526; }
 
-    /* ── GRID LAYOUT ── */
-    .fc-grid {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 2.5rem;
-        align-items: start;
-    }
-    @media (min-width: 1024px) {
-        .fc-grid {
-            grid-template-columns: 5fr 7fr;
-            gap: 4rem;
-        }
-    }
-
     /* ── INFO PANEL ── */
     .fc-tagline {
         font-size: 13px; color: #6B705C;
@@ -75,58 +61,14 @@
         background: #2F3526; color: #FFFFFF; border-color: #2F3526;
     }
 
-    /* ── FORM CARD ── */
-    .fc-card {
-        background: #FFFFFF;
-        border: 1px solid #E9E9E9;
-        border-radius: 24px;
-        padding: 2rem;
+    /* ── CENTER LAYOUT (tanpa form) ── */
+    .fc-center-wrap {
+        display: flex;
+        justify-content: center;
     }
-    @media (min-width: 768px) { .fc-card { padding: 2.5rem; } }
-
-    .fc-card-title {
-        font-size: 1.2rem; font-weight: 300;
-        letter-spacing: .06em; text-transform: uppercase;
-        color: #2F3526; margin: 0 0 .3rem;
-    }
-    .fc-card-sub {
-        font-size: 9px; font-weight: 700;
-        letter-spacing: .22em; text-transform: uppercase;
-        color: rgba(47,53,38,.3); margin: 0 0 1.75rem;
-    }
-
-    /* ── FORM FIELDS ── */
-    .fc-form { display: flex; flex-direction: column; gap: 1.25rem; }
-    .fc-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-    @media (max-width: 400px) { .fc-row { grid-template-columns: 1fr; } }
-
-    .fc-field { display: flex; flex-direction: column; }
-    .fc-input {
-        width: 100%; background: transparent;
-        border: none; border-bottom: 1px solid rgba(47,53,38,.15);
-        padding: 10px 0; font-size: 13px;
-        font-family: Helvetica, Arial, sans-serif;
-        outline: none; color: #000;
-        transition: border-color .3s ease;
-    }
-    .fc-input::placeholder { color: rgba(47,53,38,.3); font-size: 12px; }
-    .fc-input:focus { border-bottom-color: #2F3526; }
-    textarea.fc-input { resize: none; line-height: 1.7; }
-
-    .fc-submit {
-        display: flex; align-items: center;
-        justify-content: center; gap: 8px;
-        width: 100%; padding: 14px 28px;
-        background: #2F3526; color: #FFFFFF;
-        border: none; border-radius: 10px;
-        font-family: Helvetica, Arial, sans-serif;
-        font-size: 10px; font-weight: 700;
-        letter-spacing: .28em; text-transform: uppercase;
-        cursor: pointer; margin-top: .25rem;
-        transition: background .2s ease, transform .2s ease;
-    }
-    .fc-submit:hover {
-        background: #3b4430; transform: translateY(-1px);
+    .fc-info-inner {
+        max-width: 520px;
+        width: 100%;
     }
 </style>
 
@@ -139,10 +81,9 @@
         <div class="fc-divider" style="margin: 1.1rem auto 0;"></div>
     </div>
 
-    <div class="fc-grid">
+    <div class="fc-center-wrap">
+        <div class="fc-info-inner">
 
-        {{-- ── LEFT: Info ── --}}
-        <div>
             <span class="fc-label">Contact Information</span>
             <p class="fc-tagline">
                 Have questions about products or collaborations?<br>
@@ -205,43 +146,9 @@
                     TikTok
                 </a>
             </div>
+
         </div>
-
-        {{-- ── RIGHT: Form ── --}}
-        <div class="fc-card">
-            <h3 class="fc-card-title">Drop a Message</h3>
-            <p class="fc-card-sub">We usually reply within 24 hours</p>
-
-            <form action="#" method="POST" class="fc-form">
-                @csrf
-
-                <div class="fc-row">
-                    <div class="fc-field">
-                        <label class="fc-label" for="contact_first_name">First Name</label>
-                        <input class="fc-input" type="text" id="contact_first_name" name="first_name" placeholder="Enter first name">
-                    </div>
-                    <div class="fc-field">
-                        <label class="fc-label" for="contact_last_name">Last Name</label>
-                        <input class="fc-input" type="text" id="contact_last_name" name="last_name" placeholder="Enter last name">
-                    </div>
-                </div>
-
-                <div class="fc-field">
-                    <label class="fc-label" for="contact_email">Email Address</label>
-                    <input class="fc-input" type="email" id="contact_email" name="email" placeholder="username@gmail.com">
-                </div>
-
-                <div class="fc-field">
-                    <label class="fc-label" for="contact_message">Your Message</label>
-                    <textarea class="fc-input" id="contact_message" name="message" rows="4" placeholder="Write your message..."></textarea>
-                </div>
-
-                <button type="submit" class="fc-submit">
-                    Send Message
-                </button>
-            </form>
-        </div>
-
     </div>
+
 </div>
 </section>

@@ -88,33 +88,6 @@
                 </div>
             </section>
 
-            {{-- Order Details --}}
-            <section class="pt-8 border-t border-gray-100">
-                <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-8 underline decoration-gray-200 underline-offset-8">Order Details</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-                    {{-- Column 1: Recipient --}}
-                    <div class="text-sm space-y-2">
-                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Recipient</p>
-                        <p class="font-black uppercase tracking-tight leading-none text-gray-900">{{ auth()->user()->name }}</p>
-                        <p class="text-gray-500 font-bold text-[13px]">{{ auth()->user()->phone }}</p>
-                        <p class="text-gray-400 text-[11px] mt-1 font-medium tracking-tight">{{ auth()->user()->email }}</p>
-                    </div>
-
-                    {{-- Column 2: Address --}}
-                    <div class="text-sm space-y-2">
-                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Shipping Address</p>
-                        <div class="bg-gray-50/50 p-4 rounded-sm">
-                            <p class="text-[13px] leading-relaxed text-gray-600 font-medium uppercase tracking-tight">
-                                {{ auth()->user()->address }}
-                            </p>
-                        </div>
-                        <p class="text-[10px] font-black pt-2 uppercase tracking-widest text-gray-900 underline underline-offset-4 decoration-gray-200">
-                            {{ auth()->user()->destination_name }}
-                        </p>
-                    </div>
-                </div>
-            </section>
-
             {{-- CTA --}}
             <div class="pt-20 flex flex-col items-center gap-8 text-center border-t border-gray-50">
                 <a href="{{ route('dashboard') }}" 
