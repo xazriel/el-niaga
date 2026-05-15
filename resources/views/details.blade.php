@@ -157,6 +157,7 @@
         .product-price {
             font-size:1rem; font-weight:400; letter-spacing:.1em;
             color:var(--black); margin-bottom:1.5rem;
+            transition: all .2s ease;
         }
         hr.div { border:none; border-top:1px solid var(--gray); margin:1.25rem 0 }
 
@@ -194,18 +195,12 @@
         .v-opt input:checked + span {
             border-color:var(--primary); background:var(--primary); color:var(--white);
         }
-        /* disabled */
         .v-opt.off span {
             opacity:.32; cursor:not-allowed; text-decoration:line-through;
             background:var(--gray); pointer-events:none;
         }
-        /* size — square */
         .sz-opt span { min-width:46px; height:46px; padding:0 8px; font-weight:500 }
 
-        /* ══════════════════════════════════════════════
-           VALIDATION UX — HIGHLIGHT BORDER
-           Berikan outline merah pada section yang belum dipilih
-        ══════════════════════════════════════════════ */
         .form-sec.needs-attention {
             padding: .75rem;
             border: 1.5px solid var(--red);
@@ -213,11 +208,8 @@
             border-radius: 2px;
             transition: border-color .3s ease, background .3s ease;
         }
-        .form-sec.needs-attention .sec-label {
-            color: var(--red);
-        }
+        .form-sec.needs-attention .sec-label { color: var(--red); }
 
-        /* ── SHAKE ANIMATION ── */
         @keyframes hintShake {
             0%,100% { transform:translateX(0) }
             15%      { transform:translateX(-5px) }
@@ -228,22 +220,15 @@
         }
         .hint-shake { animation:hintShake .45s ease }
 
-        /* ── INLINE HINT (next to heading) ── */
         .inline-hint {
             font-size:9px; letter-spacing:.15em; text-transform:uppercase;
             color:var(--red); display:none; align-items:center; gap:4px;
-            opacity: 0;
-            transform: translateX(6px);
+            opacity: 0; transform: translateX(6px);
             transition: opacity .2s ease, transform .2s ease;
         }
-        .inline-hint.show {
-            display: inline-flex;
-            opacity: 1;
-            transform: translateX(0);
-        }
+        .inline-hint.show { display: inline-flex; opacity: 1; transform: translateX(0); }
         .inline-hint svg { flex-shrink:0 }
 
-        /* ── FLOATING TOAST — muncul di bawah buttons, lebih impactful ── */
         @keyframes toastIn {
             from { opacity:0; transform:translateY(8px) }
             to   { opacity:1; transform:translateY(0) }
@@ -253,23 +238,14 @@
             to   { opacity:0; transform:translateY(6px) }
         }
         .v-msg {
-            display: flex;
-            align-items: center;
-            gap: .6rem;
-            font-size: 10px;
-            font-weight: 700;
-            letter-spacing: .14em;
-            text-transform: uppercase;
-            padding: .8rem 1rem;
+            display: flex; align-items: center; gap: .6rem;
+            font-size: 10px; font-weight: 700; letter-spacing: .14em;
+            text-transform: uppercase; padding: .8rem 1rem;
             border-left: 3px solid var(--red);
-            background: rgba(192,57,43,.08);
-            color: var(--red);
-            margin-top: .75rem;
-            animation: toastIn .2s ease forwards;
+            background: rgba(192,57,43,.08); color: var(--red);
+            margin-top: .75rem; animation: toastIn .2s ease forwards;
         }
-        .v-msg.hiding {
-            animation: toastOut .25s ease forwards;
-        }
+        .v-msg.hiding { animation: toastOut .25s ease forwards; }
         .v-msg.hidden { display: none !important }
         .v-msg-icon { flex-shrink: 0; width:14px; height:14px }
 
@@ -326,7 +302,6 @@
         .btn-outline { background:var(--white); color:var(--primary); border:1px solid var(--primary) }
         .btn-outline:hover:not(:disabled) { background:var(--p10) }
 
-        /* Button shake on failed submit */
         @keyframes btnShake {
             0%,100% { transform:translateX(0) }
             20%      { transform:translateX(-5px) }
@@ -357,52 +332,21 @@
         .r-card-price { font-size:10px; letter-spacing:.09em; color:var(--olive) }
 
         /* ── FOOTER ── */
-        footer {
-            padding: 4rem 0 0;
-            background: #2F3526;
-            color: #fff;
-        }
-        .footer-inner {
-            max-width: 1400px; margin: 0 auto; padding: 0 1.5rem 3.5rem;
-        }
-        .footer-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 4rem;
-            text-align: left;
-        }
+        footer { padding: 4rem 0 0; background: #2F3526; color: #fff; }
+        .footer-inner { max-width: 1400px; margin: 0 auto; padding: 0 1.5rem 3.5rem; }
+        .footer-grid { display: grid; grid-template-columns: 1fr; gap: 4rem; text-align: left; }
         @media(min-width:600px) { .footer-grid { grid-template-columns: 1fr 1fr } }
         @media(min-width:1024px) { .footer-grid { grid-template-columns: 1.5fr 1fr 1fr } }
-        .f-title {
-            font-size: 10px; font-weight: 700; letter-spacing: .3em;
-            text-transform: uppercase; color: #f7f7f7; margin-bottom: 1.5rem;
-        }
-        .f-text {
-            font-size: 11px; color: rgba(255,255,255,.8);
-            line-height: 1.9; letter-spacing: .07em; text-transform: uppercase;
-        }
+        .f-title { font-size: 10px; font-weight: 700; letter-spacing: .3em; text-transform: uppercase; color: #f7f7f7; margin-bottom: 1.5rem; }
+        .f-text { font-size: 11px; color: rgba(255,255,255,.8); line-height: 1.9; letter-spacing: .07em; text-transform: uppercase; }
         .f-links { display:flex; flex-direction:column; gap:.75rem }
         .f-link {
             font-size: 11px; letter-spacing: .11em; text-transform: uppercase;
-            color: rgba(255,255,255,.8);
-            transition: color var(--t), transform var(--t);
-            background: none; border: none; cursor: pointer; padding: 0; text-align: left;
-            font-family: inherit;
+            color: rgba(255,255,255,.8); transition: color var(--t), transform var(--t);
+            background: none; border: none; cursor: pointer; padding: 0; text-align: left; font-family: inherit;
         }
         .f-link:hover { color: #fff; transform: translateX(4px) }
-        .f-social { display:flex; align-items:center; gap:1rem }
-        .f-icon {
-            width:36px; height:36px; border-radius:50%; background:#fff;
-            color:#2F3526; display:flex; align-items:center; justify-content:center;
-            flex-shrink:0; transition:background var(--t);
-        }
-        .f-icon:hover { background:var(--gray) }
-        .f-icon svg { width:20px; height:20px }
-        .f-handle { font-size:10px; letter-spacing:.11em; text-transform:uppercase; color:rgba(255,255,255,.8) }
-        .f-bottom {
-            border-top: 1px solid rgba(255,255,255,.1);
-            padding: .9rem 1.5rem; text-align: center; margin-top: 5rem;
-        }
+        .f-bottom { border-top: 1px solid rgba(255,255,255,.1); padding: .9rem 1.5rem; text-align: center; margin-top: 5rem; }
         .f-copy { font-size:9px; letter-spacing:.4em; text-transform:uppercase; color:rgba(255,255,255,.4) }
 
         /* ── MODAL ── */
@@ -411,35 +355,25 @@
             backdrop-filter:blur(5px); display:flex; align-items:center;
             justify-content:center; padding:1rem;
         }
-        .modal-box {
-            background:var(--white); max-width:460px; width:100%;
-            max-height:92vh; overflow-y:auto; scrollbar-width:thin;
-        }
+        .modal-box { background:var(--white); max-width:460px; width:100%; max-height:92vh; overflow-y:auto; scrollbar-width:thin; }
         .modal-head {
             position:sticky; top:0; background:var(--white);
             border-bottom:1px solid var(--gray); padding:.9rem 1.25rem;
             display:flex; align-items:center; justify-content:space-between; z-index:1;
         }
         .modal-title { font-size:10px; font-weight:700; letter-spacing:.28em; text-transform:uppercase; color:var(--primary) }
-        .modal-close {
-            width:30px; height:30px; display:flex; align-items:center; justify-content:center;
-            color:var(--primary); font-size:22px; font-weight:300; line-height:1; transition:opacity var(--t);
-        }
+        .modal-close { width:30px; height:30px; display:flex; align-items:center; justify-content:center; color:var(--primary); font-size:22px; font-weight:300; line-height:1; transition:opacity var(--t); }
         .modal-close:hover { opacity:.5 }
         .modal-body { padding:1.25rem }
         .modal-body img { width:100%; height:auto }
 
-        /* Footer modal */
         .footer-modal-overlay {
-            position:fixed; inset:0; z-index:999;
-            display:flex; align-items:center; justify-content:center;
+            position:fixed; inset:0; z-index:999; display:flex; align-items:center; justify-content:center;
             padding:1.5rem; background:rgba(0,0,0,.4); backdrop-filter:blur(4px);
         }
         .footer-modal-box {
-            background:#fff; width:100%; max-width:900px;
-            max-height:90vh; overflow-y:auto; position:relative;
-            border-radius:2.5rem; box-shadow:0 25px 60px rgba(0,0,0,.25);
-            scrollbar-width:none;
+            background:#fff; width:100%; max-width:900px; max-height:90vh; overflow-y:auto;
+            position:relative; border-radius:2.5rem; box-shadow:0 25px 60px rgba(0,0,0,.25); scrollbar-width:none;
         }
         .footer-modal-box::-webkit-scrollbar { display:none }
         .footer-modal-close {
@@ -455,7 +389,6 @@
 </head>
 <body x-data="{ openModal: null }">
 
-    <!-- Top-level Alpine Modal -->
     <template x-if="openModal">
         <div class="fixed inset-0 z-[400] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" @click.self="openModal = null">
             <div class="bg-white w-full max-w-[1000px] max-h-[85vh] overflow-y-auto rounded-[2rem] shadow-2xl relative text-gray-800" style="scrollbar-width: none;">
@@ -496,13 +429,13 @@
                          class="h-20 w-auto object-contain">
                 </a>
             </div>
-        </div>{{-- /navbar-inner --}}
+        </div>
     </header>
+
     @if(session('success'))
         <div class="success-toast" role="alert">{{ session('success') }}</div>
     @endif
 
-    {{-- Main --}}
     <main class="page" role="main">
         <div class="product-grid">
 
@@ -556,7 +489,10 @@
                     </div>
 
                     <h1 class="product-name">{{ $product->name }}</h1>
-                    <p class="product-price">IDR {{ number_format($product->price, 0, ',', '.') }}</p>
+
+                    {{-- ── FIX: Tambah id="displayPrice" ── --}}
+                    <p class="product-price" id="displayPrice">IDR {{ number_format($product->price, 0, ',', '.') }}</p>
+
                     <hr class="div">
 
                     {{-- Countdown --}}
@@ -586,7 +522,7 @@
                             $hasColor = $uniqueColors->count() > 0;
                         @endphp
 
-                        {{-- ── COLOR SECTION ── --}}
+                        {{-- COLOR SECTION --}}
                         @if($hasColor)
                         <div class="form-sec" id="colorSection">
                             <div class="form-sec-head">
@@ -610,7 +546,7 @@
                         </div>
                         @endif
 
-                        {{-- ── SIZE SECTION ── --}}
+                        {{-- SIZE SECTION --}}
                         <div class="form-sec" id="sizeSection">
                             <div class="form-sec-head">
                                 <span class="sec-label" id="sizeLabel">Pilih Ukuran</span>
@@ -684,7 +620,7 @@
             </div>
         </div>
 
-        {{-- ── RELATED ── --}}
+        {{-- RELATED --}}
         @if(isset($relatedProducts) && $relatedProducts->count() > 0)
             <section class="related-sec" aria-label="Produk serupa">
                 <h2 class="related-h">You May Also Like</h2>
@@ -706,9 +642,8 @@
         @endif
     </main>
 
-    {{-- ── FOOTER ── --}}
-    <footer id="about" role="contentinfo"
-            x-data="{ footerModal: null }">
+    {{-- FOOTER --}}
+    <footer id="about" role="contentinfo" x-data="{ footerModal: null }">
 
         <div x-show="footerModal"
              x-transition:enter="transition ease-out duration-300"
@@ -737,16 +672,16 @@
         <div class="footer-inner">
             <div class="footer-grid">
                 <div>
-                <h4 class="text-[10px] font-bold tracking-[0.3em] uppercase mb-6">About Farhana</h4>
-                <p class="text-[11px] text-white/80 leading-loose tracking-widest uppercase">
-                    Farhana hadir melalui kesederhanaan yang terasa tenang, anggun, dan bermakna.
-                    Kami percaya bahwa modesty bukan sekadar cara berpakaian, tetapi juga cara membawa diri dengan iman, ketenangan, dan keindahan yang tidak berlebihan.
-                    Setiap koleksi dirancang dengan perhatian pada detail, kenyamanan, dan siluet yang elegan untuk menemani perempuan muslimah dalam setiap langkahnya.
-                    <br><br>
-                    Luxury in Modesty.<br>
-                    Elegance with Iman.
-                </p>
-            </div>
+                    <h4 class="text-[10px] font-bold tracking-[0.3em] uppercase mb-6">About Farhana</h4>
+                    <p class="text-[11px] text-white/80 leading-loose tracking-widest uppercase">
+                        Farhana hadir melalui kesederhanaan yang terasa tenang, anggun, dan bermakna.
+                        Kami percaya bahwa modesty bukan sekadar cara berpakaian, tetapi juga cara membawa diri dengan iman, ketenangan, dan keindahan yang tidak berlebihan.
+                        Setiap koleksi dirancang dengan perhatian pada detail, kenyamanan, dan siluet yang elegan untuk menemani perempuan muslimah dalam setiap langkahnya.
+                        <br><br>
+                        Luxury in Modesty.<br>
+                        Elegance with Iman.
+                    </p>
+                </div>
                 <div>
                     <h4 class="f-title">Customer Care</h4>
                     <div class="f-links">
@@ -756,34 +691,29 @@
                         <button @click="footerModal = 'faqs'"     class="f-link">FAQs</button>
                     </div>
                 </div>
-                 {{-- Follow Us --}}
-            <div>
-                <h4 class="text-[10px] font-bold tracking-[0.3em] uppercase mb-6">Follow Us</h4>
-                <div class="flex flex-col items-start gap-4">
-
-                    {{-- Instagram --}}
-                    <div class="flex items-center gap-3">
-                        <a href="https://www.instagram.com/farhanas.id"
-                           class="w-9 h-9 rounded-full bg-white flex items-center justify-center text-[#2F3526] hover:bg-[#E9E9E9] transition flex-shrink-0"
-                           target="_blank" rel="noopener" aria-label="Instagram Farhana">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                            </svg>
-                        </a>
-                        <span class="text-[10px] tracking-widest uppercase text-white/80">@farhanas.id</span>
-                    </div>
-
-                    {{-- TikTok --}}
-                    <div class="flex items-center gap-3">
-                        <a href="https://www.tiktok.com/@farhanas.id"
-                           class="w-9 h-9 rounded-full bg-white flex items-center justify-center text-[#2F3526] hover:bg-[#E9E9E9] transition flex-shrink-0"
-                           target="_blank" rel="noopener" aria-label="TikTok Farhana">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.17-2.86-.6-4.12-1.31a8.52 8.52 0 0 1-1.87-1.43v6.24c-.03 2.34-.79 4.7-2.6 6.13-1.81 1.43-4.39 1.83-6.57 1.15-2.18-.68-4.05-2.48-4.66-4.67-.61-2.19-.19-4.78 1.25-6.58 1.44-1.8 3.84-2.74 6.11-2.43v4.18c-1.13-.19-2.36.03-3.23.82-.87.79-1.2 2.06-.85 3.19.35 1.13 1.43 1.99 2.61 2.08 1.18.09 2.4-.42 3.01-1.43.25-.42.36-.91.36-1.4V0z"/>
-                            </svg>
-                        </a>
-                        <span class="text-[10px] tracking-widest uppercase text-white/80">@farhanas.id</span>
-                    </div>
+                <div>
+                    <h4 class="text-[10px] font-bold tracking-[0.3em] uppercase mb-6">Follow Us</h4>
+                    <div class="flex flex-col items-start gap-4">
+                        <div class="flex items-center gap-3">
+                            <a href="https://www.instagram.com/farhanas.id"
+                               class="w-9 h-9 rounded-full bg-white flex items-center justify-center text-[#2F3526] hover:bg-[#E9E9E9] transition flex-shrink-0"
+                               target="_blank" rel="noopener" aria-label="Instagram Farhana">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                                </svg>
+                            </a>
+                            <span class="text-[10px] tracking-widest uppercase text-white/80">@farhanas.id</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <a href="https://www.tiktok.com/@farhanas.id"
+                               class="w-9 h-9 rounded-full bg-white flex items-center justify-center text-[#2F3526] hover:bg-[#E9E9E9] transition flex-shrink-0"
+                               target="_blank" rel="noopener" aria-label="TikTok Farhana">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.17-2.86-.6-4.12-1.31a8.52 8.52 0 0 1-1.87-1.43v6.24c-.03 2.34-.79 4.7-2.6 6.13-1.81 1.43-4.39 1.83-6.57 1.15-2.18-.68-4.05-2.48-4.66-4.67-.61-2.19-.19-4.78 1.25-6.58 1.44-1.8 3.84-2.74 6.11-2.43v4.18c-1.13-.19-2.36.03-3.23.82-.87.79-1.2 2.06-.85 3.19.35 1.13 1.43 1.99 2.61 2.08 1.18.09 2.4-.42 3.01-1.43.25-.42.36-.91.36-1.4V0z"/>
+                                </svg>
+                            </a>
+                            <span class="text-[10px] tracking-widest uppercase text-white/80">@farhanas.id</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -819,6 +749,7 @@
     const imgUrls    = @json($product->images->values()->map(fn($i) => asset('storage/'.$i->image_path)));
     const hasColor   = {{ $hasColor ? 'true' : 'false' }};
     const isLoggedIn = {{ auth()->check() ? 'true' : 'false' }};
+    const basePrice  = {{ $product->price }}; // ── FIX: simpan harga dasar
     let   curIdx     = 0;
     let   maxStock   = 0;
 
@@ -851,22 +782,15 @@
 
     /* ══════════════════════════════════════════════
        VALIDATION UX HELPERS
-       — Tiga lapis feedback: border merah, inline hint, banner bawah —
     ══════════════════════════════════════════════ */
-
-    /**
-     * Tambahkan border merah + shake pada sebuah form-sec
-     * Auto-hilang setelah 3.5 detik atau saat user berinteraksi
-     */
     function _highlightSection(sectionId) {
         const sec = document.getElementById(sectionId);
         if (!sec) return;
         sec.classList.add('needs-attention');
         sec.classList.remove('hint-shake');
-        void sec.offsetWidth; // reflow untuk restart animation
+        void sec.offsetWidth;
         sec.classList.add('hint-shake');
         sec.addEventListener('animationend', () => sec.classList.remove('hint-shake'), { once:true });
-        // auto-clear
         clearTimeout(sec._highlightTid);
         sec._highlightTid = setTimeout(() => sec.classList.remove('needs-attention'), 3500);
     }
@@ -879,9 +803,6 @@
         }
     }
 
-    /**
-     * Tampilkan inline hint di sebelah label heading
-     */
     function showColorHint(msg) {
         const el = document.getElementById('colorHint');
         if (!el) return;
@@ -908,18 +829,13 @@
         if (el) { el.classList.remove('show'); clearTimeout(el._tid); }
     }
 
-    /**
-     * Banner merah di bawah tombol
-     */
     let _bannerTimer = null;
     function showBanner(msg) {
         const el  = document.getElementById('vMsg');
         const txt = document.getElementById('vMsgText');
         if (!el || !txt) return;
-
         el.classList.remove('hidden', 'hiding');
         txt.textContent = msg;
-
         clearTimeout(_bannerTimer);
         _bannerTimer = setTimeout(() => {
             el.classList.add('hiding');
@@ -932,9 +848,6 @@
         if (el) el.classList.add('hidden');
     }
 
-    /**
-     * Shake tombol submit — agar terasa ada "penolakan"
-     */
     function shakeBtn(id) {
         const btn = document.getElementById(id);
         if (!btn) return;
@@ -944,14 +857,29 @@
         btn.addEventListener('animationend', () => btn.classList.remove('btn-shake'), { once:true });
     }
 
-    /**
-     * Scroll ke section yang bermasalah (mobile friendly)
-     */
     function scrollToSection(sectionId) {
         const el = document.getElementById(sectionId);
         if (!el) return;
         const top = el.getBoundingClientRect().top + window.scrollY - 100;
         window.scrollTo({ top, behavior:'smooth' });
+    }
+
+    /* ══════════════════════════════════════════════
+       UPDATE HARGA DINAMIS
+    ══════════════════════════════════════════════ */
+    function updateDisplayPrice(additionalPrice) {
+        const finalPrice = basePrice + (parseFloat(additionalPrice) || 0);
+        const priceEl    = document.getElementById('displayPrice');
+        if (priceEl) {
+            priceEl.textContent = 'IDR ' + finalPrice.toLocaleString('id-ID');
+        }
+    }
+
+    function resetDisplayPrice() {
+        const priceEl = document.getElementById('displayPrice');
+        if (priceEl) {
+            priceEl.textContent = 'IDR ' + basePrice.toLocaleString('id-ID');
+        }
     }
 
     /* ══════════════════════════════════════════════
@@ -965,7 +893,6 @@
         const inp = labelEl.querySelector('input');
         if (inp && inp.disabled) {
             event.preventDefault();
-            /* User coba klik size padahal warna belum dipilih */
             _highlightSection('colorSection');
             showColorHint('Pilih warna dulu');
             scrollToSection('colorSection');
@@ -1000,12 +927,13 @@
 
         document.getElementById('variantId').value = '';
         resetStockBadge();
+        resetDisplayPrice(); // ── FIX: reset harga saat warna berubah
         resetQty();
         onSizeChange();
     }
 
     /* ══════════════════════════════════════════════
-       SIZE CHANGE
+       SIZE CHANGE — FIX: update harga dinamis
     ══════════════════════════════════════════════ */
     function onSizeChange() {
         const color = document.querySelector('input[name="color"]:checked')?.value;
@@ -1028,6 +956,9 @@
         maxStock = stock;
         setStockBadge(stock);
         resetQty();
+
+        // ── FIX: Update harga sesuai additional_price varian yang dipilih ──
+        updateDisplayPrice(v.additional_price ?? 0);
     }
 
     /* ══════════════════════════════════════════════
@@ -1089,14 +1020,7 @@
     }
 
     /* ══════════════════════════════════════════════
-       HANDLE ORDER — validasi + UX 3 lapis
-       (Sengaja TIDAK dinamai "submit" karena itu
-        reserved keyword di context form element)
-       1. Border merah + shake pada section bermasalah
-       2. Inline hint di samping label heading
-       3. Banner pesan di bawah tombol
-       4. Shake tombol
-       5. Scroll ke section pertama yang bermasalah
+       HANDLE ORDER
     ══════════════════════════════════════════════ */
     function handleOrder(type) {
         hideBanner();
@@ -1108,7 +1032,6 @@
         const colorEl = document.querySelector('input[name="color"]:checked');
         const sizeEl  = document.querySelector('input[name="size"]:checked');
 
-        /* ── Kasus 1: Tidak ada yang dipilih sama sekali ── */
         if (hasColor && !colorEl && !sizeEl) {
             _highlightSection('colorSection');
             _highlightSection('sizeSection');
@@ -1121,7 +1044,6 @@
             return;
         }
 
-        /* ── Kasus 2: Tidak ada yang dipilih (tanpa color variant) ── */
         if (!hasColor && !sizeEl) {
             _highlightSection('sizeSection');
             showSizeHint('Pilih ukuran dulu');
@@ -1132,7 +1054,6 @@
             return;
         }
 
-        /* ── Kasus 3: Warna sudah dipilih tapi ukuran belum ── */
         if (!sizeEl) {
             _highlightSection('sizeSection');
             showSizeHint('Pilih ukuran dulu');
@@ -1143,7 +1064,6 @@
             return;
         }
 
-        /* ── Kasus 4: Ukuran dipilih tapi warna belum (edge case) ── */
         if (hasColor && !colorEl) {
             _highlightSection('colorSection');
             showColorHint('Pilih warna dulu');
@@ -1154,7 +1074,6 @@
             return;
         }
 
-        /* ── Cari variant & cek stok ── */
         const isPreorder = {{ $product->is_preorder ? 'true' : 'false' }};
         const v = variants.find(v =>
             (!hasColor || v.color === colorEl.value) && v.size === sizeEl.value
@@ -1167,7 +1086,6 @@
             return;
         }
 
-        /* ── Semua valid — kirim form ── */
         const form = document.getElementById('cartForm');
         const existing = form.querySelector('input[name="buy_now"]');
         if (existing) existing.remove();
@@ -1182,12 +1100,11 @@
             form.appendChild(inp);
         }
 
-        /* Gunakan prototype langsung agar tidak bentrok dengan nama function */
         HTMLFormElement.prototype.submit.call(form);
     }
 
     /* ══════════════════════════════════════════════
-       MODAL (size guide)
+       MODAL
     ══════════════════════════════════════════════ */
     function openModal(id) {
         const m = document.getElementById(id);
@@ -1209,7 +1126,6 @@
         document.body.style.overflow = '';
     });
 
-    /* Block accidental form submit via Enter */
     document.getElementById('cartForm').addEventListener('keydown', e => {
         if (e.key === 'Enter') e.preventDefault();
     });

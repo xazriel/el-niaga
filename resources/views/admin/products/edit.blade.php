@@ -138,6 +138,7 @@
                                 @foreach($categories as $cat)
                                     <option value="{{ $cat->id }}"
                                         data-slug="{{ Str::slug($cat->name) }}"
+                                        data-type="{{ $cat->type }}"
                                         {{ $product->category_id == $cat->id ? 'selected' : '' }}>
                                         {{ $cat->name }}
                                     </option>
@@ -213,7 +214,7 @@
                     <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
                         <div>
                             <p class="section-title">④ Varian & Stok</p>
-                            <p class="section-sub">Warna, ukuran, stok & harga tambahan</p>
+                            <p class="section-sub">Warna, ukuran, stok & harga tambahan per varian</p>
                         </div>
                         <button type="button" onclick="addVariantRow()"
                             style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; padding: 8px 18px; border-radius: 8px; border: none; cursor: pointer;"
@@ -227,14 +228,17 @@
                             <div class="grid grid-cols-1 md:grid-cols-12 gap-3 variant-row items-end">
                                 <input type="hidden" name="variant_ids[]" value="{{ $variant->id }}">
 
+                                {{-- Warna --}}
                                 <div class="md:col-span-3">
                                     <label class="field-label">Warna</label>
-                                    <input type="text" name="variant_color[]" value="{{ $variant->color }}"
+                                    <input type="text" name="variant_color[]"
+                                        value="{{ old('variant_color.' . $loop->index, $variant->color) }}"
                                         oninput="updateColorOptions()"
                                         class="variant-color-input form-input" required>
                                 </div>
 
-                                <div class="md:col-span-3">
+                                {{-- Ukuran --}}
+                                <div class="md:col-span-2">
                                     <label class="field-label">Ukuran</label>
                                     <select name="variant_size[]"
                                         class="variant-size-select form-input"
@@ -242,21 +246,29 @@
                                     </select>
                                 </div>
 
+                                {{-- Stok --}}
                                 <div class="md:col-span-2">
                                     <label class="field-label">Stok</label>
-                                    <input type="number" name="variant_stock[]" value="{{ $variant->stock }}"
+                                    <input type="number" name="variant_stock[]"
+                                        value="{{ old('variant_stock.' . $loop->index, $variant->stock) }}"
                                         class="form-input" required>
                                 </div>
 
-                                <div class="md:col-span-3">
-                                    <label class="field-label">+ Harga</label>
+                                {{-- Harga Tambahan — FIX UTAMA --}}
+                                <div class="md:col-span-4">
+                                    <label class="field-label">Harga Tambahan (+Rp)</label>
                                     <div style="position: relative;">
-                                        <span style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 10px; color: var(--olive);">Rp</span>
-                                        <input type="number" name="additional_price[]" value="{{ $variant->additional_price ?? 0 }}"
-                                            class="form-input" style="padding-left: 30px;">
+                                        <span style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 10px; color: var(--olive); font-weight: 600;">+Rp</span>
+                                        <input type="number"
+                                            name="additional_price[]"
+                                            value="{{ old('additional_price.' . $loop->index, $variant->additional_price ?? 0) }}"
+                                            class="additional-price-input form-input"
+                                            style="padding-left: 40px;"
+                                            min="0">
                                     </div>
                                 </div>
 
+                                {{-- Hapus --}}
                                 <div class="md:col-span-1" style="display: flex; justify-content: center; padding-bottom: 2px;">
                                     <button type="button" onclick="removeVariantRow(this)" class="remove-btn">×</button>
                                 </div>
@@ -393,12 +405,16 @@
         if (form) form.submit();
     }
 
-    function toggleSizeOptions() {
+    function getSizeList() {
         const categorySelect = document.getElementById('category_id');
         const selectedOption = categorySelect.options[categorySelect.selectedIndex];
         const slug = selectedOption.getAttribute('data-slug') || '';
-        const sizeList = (slug.includes('kids') || slug.includes('anak')) ? KIDS_SIZES : ADULT_SIZES;
+        const type = selectedOption.getAttribute('data-type') || '';
+        return (type === 'kids' || slug.includes('kids') || slug.includes('anak')) ? KIDS_SIZES : ADULT_SIZES;
+    }
 
+    function toggleSizeOptions() {
+        const sizeList = getSizeList();
         document.querySelectorAll('.variant-size-select').forEach(select => {
             const currentVal = select.getAttribute('data-selected') || select.value;
             select.innerHTML = '';
@@ -415,6 +431,9 @@
 
     function addVariantRow() {
         const container = document.getElementById('variant-container');
+        const sizeList = getSizeList();
+        const sizeOptions = sizeList.map(s => `<option value="${s}">${s}</option>`).join('');
+
         const html = `
             <div class="grid grid-cols-1 md:grid-cols-12 gap-3 variant-row items-end">
                 <input type="hidden" name="variant_ids[]" value="">
@@ -423,19 +442,22 @@
                     <input type="text" name="variant_color[]" oninput="updateColorOptions()" placeholder="Warna"
                         class="variant-color-input form-input" required>
                 </div>
-                <div class="md:col-span-3">
+                <div class="md:col-span-2">
                     <label class="field-label">Ukuran</label>
-                    <select name="variant_size[]" class="variant-size-select form-input"></select>
+                    <select name="variant_size[]" class="variant-size-select form-input">
+                        ${sizeOptions}
+                    </select>
                 </div>
                 <div class="md:col-span-2">
                     <label class="field-label">Stok</label>
-                    <input type="number" name="variant_stock[]" placeholder="0" class="form-input" required>
+                    <input type="number" name="variant_stock[]" placeholder="0" class="form-input" min="0" required>
                 </div>
-                <div class="md:col-span-3">
-                    <label class="field-label">+ Harga</label>
+                <div class="md:col-span-4">
+                    <label class="field-label">Harga Tambahan (+Rp)</label>
                     <div style="position: relative;">
-                        <span style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 10px; color: var(--olive);">Rp</span>
-                        <input type="number" name="additional_price[]" value="0" class="form-input" style="padding-left: 30px;">
+                        <span style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 10px; color: var(--olive); font-weight: 600;">+Rp</span>
+                        <input type="number" name="additional_price[]" value="0"
+                            class="additional-price-input form-input" style="padding-left: 40px;" min="0">
                     </div>
                 </div>
                 <div class="md:col-span-1" style="display: flex; justify-content: center; padding-bottom: 2px;">
@@ -443,7 +465,6 @@
                 </div>
             </div>`;
         container.insertAdjacentHTML('beforeend', html);
-        toggleSizeOptions();
         updateColorOptions();
     }
 
@@ -463,7 +484,6 @@
         const newRow = firstRow.cloneNode(true);
         newRow.querySelector('input[type="file"]').value = '';
         const select = newRow.querySelector('select');
-        // Salin opsi warna yang sudah ada
         const refSelect = document.querySelector('#new-image-container .color-selector');
         select.innerHTML = refSelect.innerHTML;
         select.value = '';
@@ -474,7 +494,6 @@
     function updateColorOptions() {
         const colorInputs = document.querySelectorAll('.variant-color-input');
         let colors = [];
-
         colorInputs.forEach(input => {
             const val = input.value.trim();
             if (val && !colors.includes(val)) colors.push(val);
@@ -485,10 +504,8 @@
             const userChoice = select.value;
             const initialVal = select.getAttribute('data-selected');
             const activeValue = userChoice || initialVal;
-
             const isNewImage = select.name === 'image_colors_new[]';
             select.innerHTML = `<option value="">${isNewImage ? '— Pilih Warna Foto —' : 'Global / No Color'}</option>`;
-
             colors.forEach(color => {
                 const option = document.createElement('option');
                 option.value = color;
@@ -503,7 +520,6 @@
         toggleSizeOptions();
         updateColorOptions();
 
-        // Simpan pilihan user di data-selected supaya tidak hilang saat updateColorOptions
         document.addEventListener('change', function (e) {
             if (e.target.classList.contains('color-selector')) {
                 e.target.setAttribute('data-selected', e.target.value);

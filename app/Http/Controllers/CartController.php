@@ -68,6 +68,9 @@ class CartController extends Controller
                 : ($product->images->first()->image_path ?? null);
         }
 
+        // ── FIX: Harga = harga dasar + additional_price varian ──
+        $finalPrice = $product->price + ($variant->additional_price ?? 0);
+
         // 5. Cek buy_now DULU sebelum menyentuh session cart
         if ($request->input('buy_now') == '1') {
             Log::info('CART.ADD: buy_now detected');
@@ -86,7 +89,7 @@ class CartController extends Controller
                     'name'         => $product->name,
                     'variant_id'   => $variant->id,
                     'quantity'     => $quantityToAdd,
-                    'price'        => $product->price,
+                    'price'        => $finalPrice, // ← FIX
                     'size'         => $variant->size,
                     'color'        => $variant->color,
                     'image'        => $imageToDisplay,
@@ -114,7 +117,7 @@ class CartController extends Controller
                 'name'         => $product->name,
                 'variant_id'   => $variant->id,
                 'quantity'     => $quantityToAdd,
-                'price'        => $product->price,
+                'price'        => $finalPrice, // ← FIX
                 'size'         => $variant->size,
                 'color'        => $variant->color,
                 'image'        => $imageToDisplay,
