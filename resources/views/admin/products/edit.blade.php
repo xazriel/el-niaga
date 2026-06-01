@@ -134,7 +134,7 @@
                         </div>
                         <div>
                             <label class="field-label">Kategori</label>
-                            <select name="category_id" id="category_id" onchange="toggleSizeOptions()" class="form-input">
+                            <select name="category_id" id="category_id" onchange="toggleSizeOptions(); toggleDefectFields();" class="form-input">
                                 @foreach($categories as $cat)
                                     <option value="{{ $cat->id }}"
                                         data-slug="{{ Str::slug($cat->name) }}"
@@ -205,6 +205,27 @@
                             <input type="datetime-local" name="release_date"
                                 value="{{ $product->release_date ? \Carbon\Carbon::parse($product->release_date)->format('Y-m-d\TH:i') : '' }}"
                                 class="form-input" style="font-size: 12px;">
+                        </div>
+                    </div>
+                {{-- 3.5 Defect Options --}}
+                <div class="section-card" id="defect_section" style="display: none;">
+                    <p class="section-title" style="color: #ef4444;">⚠ Opsi Produk Defect</p>
+                    <p class="section-sub" style="margin-bottom: 16px;">Tentukan jenis defect dan harga coret (harga sebelum diskon)</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div>
+                            <label class="field-label">Kelas Defect</label>
+                            <select name="defect_type" class="form-input">
+                                <option value="">-- Pilih Kelas Defect --</option>
+                                <option value="minor" {{ old('defect_type', $product->defect_type) === 'minor' ? 'selected' : '' }}>Defect Minor</option>
+                                <option value="major" {{ old('defect_type', $product->defect_type) === 'major' ? 'selected' : '' }}>Defect Major</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="field-label">Harga Coret Sebelum Diskon (Rp) <span style="font-weight: 400; opacity: 0.6;">(Opsional)</span></label>
+                            <div style="position: relative;">
+                                <span style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 11px; color: var(--olive); font-weight: 600;">Rp</span>
+                                <input type="number" name="original_price" value="{{ old('original_price', $product->original_price) }}" placeholder="200000" class="form-input" style="padding-left: 36px;">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -346,12 +367,12 @@
                             <div class="flex flex-col md:flex-row gap-4 image-row items-center">
                                 <div style="flex: 1;">
                                     <label class="field-label">File Foto</label>
-                                    <input type="file" name="images[]" accept="image/*"
+                                    <input type="file" name="images[0]" accept="image/*"
                                         style="width: 100%; font-size: 11px; color: var(--olive);" />
                                 </div>
                                 <div style="width: 220px; min-width: 180px;">
                                     <label class="field-label">Mapping Warna</label>
-                                    <select name="image_colors_new[]" class="color-selector form-input" style="font-size: 12px;">
+                                    <select name="image_colors_new[0]" class="color-selector form-input" style="font-size: 12px;">
                                         <option value="">— Pilih Warna Foto —</option>
                                     </select>
                                 </div>
@@ -399,6 +420,7 @@
 <script>
     const ADULT_SIZES = ['S', 'M', 'L', 'XL', 'XXL', 'All Size'];
     const KIDS_SIZES = ['3 - 4 Years', '5 - 6 Years', '7 - 8 Years', '9 - 10 Years', '11 - 12 Years'];
+    const KHIBAN_SIZES = ['Mini', 'Midi'];
 
     function submitHiddenForm(formId) {
         const form = document.getElementById(formId);
@@ -410,7 +432,13 @@
         const selectedOption = categorySelect.options[categorySelect.selectedIndex];
         const slug = selectedOption.getAttribute('data-slug') || '';
         const type = selectedOption.getAttribute('data-type') || '';
-        return (type === 'kids' || slug.includes('kids') || slug.includes('anak')) ? KIDS_SIZES : ADULT_SIZES;
+        
+        if (type === 'kids' || slug.includes('kids') || slug.includes('anak')) {
+            return KIDS_SIZES;
+        } else if (type === 'khiban' || slug.includes('khiban')) {
+            return KHIBAN_SIZES;
+        }
+        return ADULT_SIZES;
     }
 
     function toggleSizeOptions() {
@@ -478,17 +506,25 @@
         }
     }
 
+    let newImageIndex = 1;
     function addNewImageRow() {
         const container = document.getElementById('new-image-container');
         const firstRow = container.querySelector('.image-row');
         const newRow = firstRow.cloneNode(true);
-        newRow.querySelector('input[type="file"]').value = '';
+        
+        const fileInput = newRow.querySelector('input[type="file"]');
+        fileInput.value = '';
+        fileInput.name = `images[${newImageIndex}]`;
+        
         const select = newRow.querySelector('select');
+        select.name = `image_colors_new[${newImageIndex}]`;
+        
         const refSelect = document.querySelector('#new-image-container .color-selector');
         select.innerHTML = refSelect.innerHTML;
         select.value = '';
         select.removeAttribute('data-selected');
         container.appendChild(newRow);
+        newImageIndex++;
     }
 
     function updateColorOptions() {
@@ -516,9 +552,35 @@
         });
     }
 
+    // ─── TOGGLE DEFECT FIELDS ──────────────────────────────────────────
+    function toggleDefectFields() {
+        const categorySelect = document.getElementById('category_id');
+        if (!categorySelect) return;
+        const selectedOption = categorySelect.options[categorySelect.selectedIndex];
+        const type = selectedOption ? selectedOption.getAttribute('data-type') : 'standard';
+        const slug = selectedOption ? selectedOption.getAttribute('data-slug') : '';
+
+        const isDefect = type === 'defect' || (slug && slug.includes('defect'));
+        const defectSection = document.getElementById('defect_section');
+
+        if (defectSection) {
+            if (isDefect) {
+                defectSection.style.display = 'block';
+            } else {
+                defectSection.style.display = 'none';
+                // Clear inputs when hidden
+                const select = defectSection.querySelector('select[name="defect_type"]');
+                const input = defectSection.querySelector('input[name="original_price"]');
+                if (select) select.value = '';
+                if (input) input.value = '';
+            }
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
         toggleSizeOptions();
         updateColorOptions();
+        toggleDefectFields();
 
         document.addEventListener('change', function (e) {
             if (e.target.classList.contains('color-selector')) {

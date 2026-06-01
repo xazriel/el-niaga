@@ -148,6 +148,12 @@
                            style="{{ request()->routeIs('admin.sliders.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
                             Kelola Banner
                         </a>
+
+                        <a href="{{ route('admin.size-guides.index') }}"
+                           class="nav-link {{ request()->routeIs('admin.size-guides.*') ? 'active' : '' }}"
+                           style="{{ request()->routeIs('admin.size-guides.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
+                            Kelola Size Guide
+                        </a>
                     </nav>
 
                     {{-- Logout --}}
@@ -284,6 +290,11 @@
                            class="nav-link {{ request()->routeIs('admin.sliders.*') ? 'active' : '' }}"
                            style="{{ request()->routeIs('admin.sliders.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
                             Kelola Banner
+                        </a>
+                        <a href="{{ route('admin.size-guides.index') }}"
+                           class="nav-link {{ request()->routeIs('admin.size-guides.*') ? 'active' : '' }}"
+                           style="{{ request()->routeIs('admin.size-guides.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
+                            Kelola Size Guide
                         </a>
                     </nav>
 

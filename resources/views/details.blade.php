@@ -482,6 +482,9 @@
                         @if($product->is_preorder)
                             <span class="badge badge-po">Pre-Order</span>
                         @endif
+                        @if($product->defect_type)
+                            <span class="badge badge-defect" style="background: #ef4444; color: white;">Defect {{ $product->defect_type }}</span>
+                        @endif
                         @if($product->custom_tag)
                             <span class="badge badge-tag">{{ $product->custom_tag }}</span>
                         @endif
@@ -490,8 +493,15 @@
 
                     <h1 class="product-name">{{ $product->name }}</h1>
 
-                    {{-- ── FIX: Tambah id="displayPrice" ── --}}
-                    <p class="product-price" id="displayPrice">IDR {{ number_format($product->price, 0, ',', '.') }}</p>
+                    {{-- ── PRICE BLOCK — sama persis dengan welcome.blade ── --}}
+                    <div class="flex items-center gap-3 mb-6 flex-wrap" style="display: flex; align-items: center; gap: 12px; margin-bottom: 1.5rem;">
+                        @if($product->original_price && $product->original_price > $product->price)
+                            <span id="originalPrice" style="text-decoration: line-through; color: #9ca3af; font-size: 0.875rem;">
+                                IDR {{ number_format($product->original_price, 0, ',', '.') }}
+                            </span>
+                        @endif
+                        <p class="product-price" id="displayPrice" style="margin-bottom: 0;">IDR {{ number_format($product->price, 0, ',', '.') }}</p>
+                    </div>
 
                     <hr class="div">
 
@@ -749,7 +759,7 @@
     const imgUrls    = @json($product->images->values()->map(fn($i) => asset('storage/'.$i->image_path)));
     const hasColor   = {{ $hasColor ? 'true' : 'false' }};
     const isLoggedIn = {{ auth()->check() ? 'true' : 'false' }};
-    const basePrice  = {{ $product->price }}; // ── FIX: simpan harga dasar
+    const basePrice  = {{ $product->price }};
     let   curIdx     = 0;
     let   maxStock   = 0;
 
@@ -927,13 +937,13 @@
 
         document.getElementById('variantId').value = '';
         resetStockBadge();
-        resetDisplayPrice(); // ── FIX: reset harga saat warna berubah
+        resetDisplayPrice();
         resetQty();
         onSizeChange();
     }
 
     /* ══════════════════════════════════════════════
-       SIZE CHANGE — FIX: update harga dinamis
+       SIZE CHANGE
     ══════════════════════════════════════════════ */
     function onSizeChange() {
         const color = document.querySelector('input[name="color"]:checked')?.value;
@@ -957,7 +967,6 @@
         setStockBadge(stock);
         resetQty();
 
-        // ── FIX: Update harga sesuai additional_price varian yang dipilih ──
         updateDisplayPrice(v.additional_price ?? 0);
     }
 

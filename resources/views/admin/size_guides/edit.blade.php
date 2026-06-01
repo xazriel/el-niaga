@@ -1,0 +1,87 @@
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight tracking-tight">
+            {{ __('Edit Size Guide') }}
+        </h2>
+    </x-slot>
+
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            {{-- Header Section --}}
+            <div class="mb-8 flex items-center justify-between px-4 sm:px-0">
+                <div>
+                    <h3 class="text-2xl font-bold text-gray-900 uppercase tracking-widest">Edit Template</h3>
+                    <p class="text-[10px] uppercase tracking-widest text-[#5A5A00] mt-1 font-bold">{{ $template->name }}</p>
+                    <div class="h-1 w-12 bg-[#5A5A00] mt-4"></div>
+                </div>
+                <a href="{{ route('admin.size-guides.index') }}" class="text-xs font-bold text-gray-500 hover:text-black transition uppercase tracking-widest">&larr; Back</a>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="p-8">
+                    <form action="{{ route('admin.size-guides.update', $template->id) }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        @method('PUT')
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                            <div class="space-y-6">
+                                <div>
+                                    <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-900 mb-2">Template Name</label>
+                                    <input type="text" name="name" value="{{ old('name', $template->name) }}" class="w-full border-gray-200 focus:border-[#5A5A00] focus:ring-0 text-sm py-3 px-4 rounded-lg" required>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-900 mb-2">Category Type</label>
+                                    <select name="type" class="w-full border-gray-200 focus:border-[#5A5A00] focus:ring-0 text-sm py-3 px-4 rounded-lg" required>
+                                        <option value="general" {{ $template->type === 'general' ? 'selected' : '' }}>General</option>
+                                        <option value="abaya" {{ $template->type === 'abaya' ? 'selected' : '' }}>Abaya</option>
+                                        <option value="khimar" {{ $template->type === 'khimar' ? 'selected' : '' }}>Khimar</option>
+                                        <option value="kids" {{ $template->type === 'kids' ? 'selected' : '' }}>Kids</option>
+                                        <option value="khiban" {{ $template->type === 'khiban' ? 'selected' : '' }}>Khiban</option>
+                                    </select>
+                                </div>
+                                <div class="pt-4">
+                                    <button type="submit" class="w-full bg-black text-white py-4 text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-[#5A5A00] transition duration-300 shadow-lg rounded-xl">Update Template</button>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-900 mb-2">Size Guide Image</label>
+                                <div class="relative h-64 border-2 border-dashed border-gray-100 rounded-2xl bg-gray-50 flex flex-col items-center justify-center overflow-hidden">
+                                    <input type="file" name="image" id="imageInput" class="absolute inset-0 opacity-0 cursor-pointer z-20">
+                                    
+                                    <div id="placeholder" class="text-center {{ $template->image ? 'hidden' : '' }}">
+                                        <p class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">Click to upload new image</p>
+                                    </div>
+
+                                    @if($template->image)
+                                        <img id="imagePreview" src="{{ asset('storage/' . $template->image) }}" class="absolute inset-0 w-full h-full object-contain z-10 bg-white">
+                                    @else
+                                        <img id="imagePreview" class="hidden absolute inset-0 w-full h-full object-contain z-10 bg-white">
+                                    @endif
+                                </div>
+                                <p class="text-[9px] text-gray-400 italic mt-3 uppercase tracking-wider text-center">* Biarkan kosong jika tidak ingin mengubah gambar.</p>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('imageInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const preview = document.getElementById('imagePreview');
+            const placeholder = document.getElementById('placeholder');
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.classList.remove('hidden');
+                    if (placeholder) {
+                        placeholder.classList.add('hidden');
+                    }
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+</x-app-layout>

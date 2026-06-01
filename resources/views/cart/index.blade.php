@@ -55,16 +55,6 @@
         .back-btn svg { transition: transform var(--t); flex-shrink: 0 }
         .back-btn:hover { color: var(--primary) }
         .back-btn:hover svg { transform: translateX(-3px) }
-        .brand {
-            font-size: 1.25rem; font-weight: 400; letter-spacing: .45em;
-            text-transform: uppercase; color: var(--primary);
-            position: absolute; left: 50%; transform: translateX(-50%);
-            white-space: nowrap;
-        }
-        .nav-right {
-            font-size: 10px; letter-spacing: .18em; text-transform: uppercase;
-            color: var(--o60); min-width: 80px; text-align: right;
-        }
 
         /* ── PAGE ── */
         .page { max-width: 1100px; margin: 0 auto; padding: 3rem 1.25rem 6rem }
@@ -72,7 +62,7 @@
         /* ── PAGE HEADER ── */
         .page-head {
             display: flex; align-items: center; gap: 1.5rem; margin-bottom: 3rem;
-            padding-bottom: 1.5rem; 
+            padding-bottom: 1.5rem;
         }
         .page-title {
             font-size: clamp(0.9rem, 2vw, 1.2rem); font-weight: 300;
@@ -93,7 +83,6 @@
             gap: 1rem;
             padding: 0 0 .75rem;
             border-bottom: 1px solid var(--gray);
-            margin-bottom: 0;
         }
         @media (max-width: 768px) { .cart-head { display: none } }
         .cart-head span {
@@ -104,7 +93,7 @@
         .cart-head .col-sub  { text-align: right }
         .cart-head .col-act  { text-align: right }
 
-        /* ── CART ROW ── */
+        /* ── CART ROW — DESKTOP ── */
         .cart-row {
             display: grid;
             grid-template-columns: 100px 1fr 140px 120px 80px;
@@ -116,22 +105,62 @@
         }
         .cart-row.updating { opacity: .4; pointer-events: none }
 
+        /* ── CART ROW — MOBILE ── */
         @media (max-width: 768px) {
             .cart-row {
-                grid-template-columns: 80px 1fr;
-                grid-template-rows: auto auto auto;
-                gap: .75rem;
+                display: grid;
+                grid-template-columns: 90px 1fr auto;
+                grid-template-rows: auto auto;
+                column-gap: .85rem;
+                row-gap: 0;
                 padding: 1.25rem 0;
+                align-items: start;
             }
-            .col-img  { grid-row: 1 / 4; grid-column: 1 }
-            .col-info { grid-row: 1; grid-column: 2 }
-            .col-qty  { grid-row: 2; grid-column: 2 }
-            .col-sub  { grid-row: 3; grid-column: 2; justify-self: start }
-            .col-act  { display: none }
-            .mobile-remove { display: block }
-        }
-        @media (min-width: 769px) {
-            .mobile-remove { display: none }
+
+            /* Gambar: span 2 baris */
+            .col-img {
+                grid-column: 1;
+                grid-row: 1 / 3;
+                align-self: start;
+            }
+
+            /* Info: nama, meta, harga satuan — baris 1, kolom 2 */
+            .col-info {
+                grid-column: 2;
+                grid-row: 1;
+                padding-top: 2px;
+            }
+
+            /* Hapus — baris 1, kolom 3 (pojok kanan atas) */
+            .col-act {
+                grid-column: 3;
+                grid-row: 1;
+                display: flex;
+                justify-content: flex-end;
+                align-items: flex-start;
+                padding-top: 2px;
+            }
+
+            /* Baris 2: qty kiri, subtotal kanan — sebaris */
+            .col-qty {
+                grid-column: 2;
+                grid-row: 2;
+                justify-content: flex-start;
+                margin-top: .7rem;
+                align-self: center;
+            }
+
+            .col-sub {
+                grid-column: 3;
+                grid-row: 2;
+                text-align: right;
+                margin-top: .7rem;
+                font-size: 11px;
+                font-weight: 500;
+                letter-spacing: .04em;
+                color: var(--primary);
+                align-self: center;
+            }
         }
 
         /* Product image */
@@ -140,18 +169,18 @@
             background: var(--gray); flex-shrink: 0;
         }
         @media (max-width: 768px) {
-            .prod-img { width: 80px; height: 106px }
+            .prod-img { width: 90px; height: 118px }
         }
         .prod-img img { width: 100%; height: 100%; object-fit: cover }
 
         /* Info */
         .prod-name {
             font-size: 11px; font-weight: 700; letter-spacing: .15em;
-            text-transform: uppercase; color: var(--primary); margin-bottom: .35rem;
+            text-transform: uppercase; color: var(--primary); margin-bottom: .3rem;
         }
         .prod-meta {
             font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
-            color: var(--o60); margin-bottom: .35rem;
+            color: var(--o60); margin-bottom: .3rem;
         }
         .prod-price {
             font-size: 10px; letter-spacing: .08em; color: var(--olive);
@@ -169,38 +198,42 @@
 
         .qty-wrap {
             display: inline-flex; align-items: center;
-            border: 1px solid var(--gray); height: 38px;
+            border: 1px solid var(--gray); height: 34px;
         }
+        @media (min-width: 769px) { .qty-wrap { height: 38px } }
         .qty-btn {
-            width: 38px; height: 100%; display: flex; align-items: center; justify-content: center;
-            font-size: 18px; font-weight: 300; color: var(--olive);
+            width: 34px; height: 100%; display: flex; align-items: center; justify-content: center;
+            font-size: 16px; font-weight: 300; color: var(--olive);
             transition: color var(--t), background var(--t); flex-shrink: 0;
             user-select: none;
         }
+        @media (min-width: 769px) { .qty-btn { width: 38px; font-size: 18px } }
         .qty-btn:hover:not(:disabled) { color: var(--primary); background: var(--p10) }
         .qty-btn:disabled { opacity: .3; cursor: not-allowed }
         .qty-val {
-            width: 42px; text-align: center;
+            width: 38px; text-align: center;
             font-size: 12px; color: var(--black);
             border-left: 1px solid var(--gray);
             border-right: 1px solid var(--gray);
-            line-height: 38px; user-select: none;
+            line-height: 34px; user-select: none;
         }
+        @media (min-width: 769px) { .qty-val { width: 42px; line-height: 38px } }
 
-        /* Subtotal */
+        /* Subtotal — desktop */
         .col-sub {
             font-size: 12px; font-weight: 400; letter-spacing: .06em;
             color: var(--black); text-align: right;
         }
-        @media (max-width: 768px) { .col-sub { text-align: left } }
 
         /* Action */
         .col-act { display: flex; justify-content: flex-end; align-items: center }
+
+        /* Remove button */
         .remove-btn {
             font-size: 9px; letter-spacing: .2em; text-transform: uppercase;
             color: var(--gray); border-bottom: 1px solid transparent;
             transition: color var(--t), border-color var(--t);
-            padding-bottom: 1px;
+            padding-bottom: 1px; line-height: 1;
         }
         .remove-btn:hover { color: var(--red); border-color: var(--red) }
 
@@ -261,13 +294,8 @@
         }
 
         /* ── EMPTY STATE ── */
-        .empty-state {
-            text-align: center; padding: 6rem 1rem;
-        }
-        .empty-icon {
-            width: 48px; height: 48px; margin: 0 auto 2rem;
-            opacity: .15;
-        }
+        .empty-state { text-align: center; padding: 6rem 1rem }
+        .empty-icon { width: 48px; height: 48px; margin: 0 auto 2rem; opacity: .15 }
         .empty-text {
             font-size: 11px; letter-spacing: .35em; text-transform: uppercase;
             color: var(--o60); margin-bottom: 2.5rem; font-style: italic;
@@ -312,10 +340,10 @@
                 <span>Collection</span>
             </a>
             <a href="{{ route('home') }}">
-            <img src="{{ Storage::url('LOGO-FARHANA-NEW-TRANSPARENT.png') }}"
-                alt="Farhana"
-                class="h-20 w-auto object-contain">
-                </a>
+                <img src="{{ Storage::url('LOGO-FARHANA-NEW-TRANSPARENT.png') }}"
+                    alt="Farhana"
+                    class="h-20 w-auto object-contain">
+            </a>
         </div>
     </header>
 
@@ -332,7 +360,7 @@
 
         @if(session('cart') && count(session('cart')) > 0)
 
-            {{-- Table Header --}}
+            {{-- Table Header (desktop only) --}}
             <div class="cart-head">
                 <span></span>
                 <span>Produk</span>
@@ -367,11 +395,6 @@
                             @if(!empty($details['is_preorder']) && $details['is_preorder'])
                                 <span class="preorder-tag">Pre-Order</span>
                             @endif
-                            {{-- Mobile remove --}}
-                            <form action="{{ route('cart.remove', $id) }}" method="POST" class="mobile-remove" style="margin-top:.6rem">
-                                @csrf @method('DELETE')
-                                <button type="submit" class="remove-btn">Hapus</button>
-                            </form>
                         </div>
 
                         {{-- Quantity --}}
@@ -395,11 +418,11 @@
                             </span>
                         </div>
 
-                        {{-- Remove (desktop) --}}
+                        {{-- Remove --}}
                         <div class="col-act">
                             <form action="{{ route('cart.remove', $id) }}" method="POST">
                                 @csrf @method('DELETE')
-                                <button type="submit" class="remove-btn">Hapus</button>
+                                <button type="submit" class="remove-btn" aria-label="Hapus produk">Hapus</button>
                             </form>
                         </div>
 

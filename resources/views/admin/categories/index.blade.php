@@ -59,6 +59,7 @@
                             <tr class="bg-gray-50/50">
                                 <th class="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest w-16">No</th>
                                 <th class="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Nama Kategori</th>
+                                <th class="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Tipe</th>
                                 <th class="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Slug</th>
                                 <th class="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-right">Aksi</th>
                             </tr>
@@ -71,6 +72,25 @@
                                         <span class="text-sm font-bold text-gray-900 tracking-tight group-hover:text-black transition-colors">
                                             {{ $category->name }}
                                         </span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        @if($category->type === 'khiban')
+                                            <span class="text-[9px] bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded font-bold uppercase tracking-wider">
+                                                Khiban
+                                            </span>
+                                        @elseif($category->type === 'kids')
+                                            <span class="text-[9px] bg-blue-50 text-blue-700 border border-blue-200 px-2.5 py-1 rounded font-bold uppercase tracking-wider">
+                                                Kids
+                                            </span>
+                                        @elseif($category->type === 'defect')
+                                            <span class="text-[9px] bg-rose-50 text-rose-700 border border-rose-200 px-2.5 py-1 rounded font-bold uppercase tracking-wider">
+                                                Defect
+                                            </span>
+                                        @else
+                                            <span class="text-[9px] bg-gray-50 text-gray-600 border border-gray-200 px-2.5 py-1 rounded font-bold uppercase tracking-wider">
+                                                Standard
+                                            </span>
+                                        @endif
                                     </td>
                                     <td class="px-6 py-4">
                                         <span class="text-[10px] bg-gray-100 text-gray-500 px-2.5 py-1 rounded font-mono lowercase">

@@ -8,20 +8,22 @@ use Illuminate\Support\Facades\Log;
 
 class JneService
 {
-    // ✅ Nullable agar tidak crash saat config return null
-    protected ?string $baseUrl;
+    protected ?string $urlTracking;
+    protected ?string $urlAirwaybill;
+    protected ?string $urlTariff;
     protected ?string $username;
     protected ?string $apiKey;
 
     public function __construct()
     {
-        // ✅ Fallback hardcode jika config/env tidak terbaca
-        $this->baseUrl  = config('jne.base_url',  'https://apiv2.jne.co.id:10202');
-        $this->username = config('jne.username',   'TESTAPI');
-        $this->apiKey   = config('jne.api_key',    '');
+        $this->urlTracking   = config('jne.url_tracking',   'https://apiv2.jne.co.id:10205');
+        $this->urlAirwaybill = config('jne.url_airwaybill', 'https://apiv2.jne.co.id:10206');
+        $this->urlTariff     = config('jne.url_tariff',     'https://apiv2.jne.co.id:10205');
+        $this->username      = config('jne.username',       'FARHANAS');
+        $this->apiKey        = config('jne.api_key',        '');
     }
 
-    // ─── CEK TARIF (dipakai JneController) ───────────────────
+    // ─── CEK TARIF ────────────────────────────────────────────
     public function getPrice(string $from, string $thru, int $weight): array
     {
         $cacheKey = "jne_price_{$from}_{$thru}_{$weight}";
@@ -30,7 +32,7 @@ class JneService
         $response = Http::withoutVerifying()
             ->asForm()
             ->withHeaders(['Accept' => 'application/json'])
-            ->post($this->baseUrl . '/tracing/api/pricedev', [
+            ->post($this->urlTariff . '/tracing/api/pricedev', [
                 'username' => $this->username,
                 'api_key'  => $this->apiKey,
                 'from'     => $from,
@@ -39,7 +41,7 @@ class JneService
             ]);
 
         Log::info('[JNE] getPrice Request', [
-            'url'      => $this->baseUrl . '/tracing/api/pricedev',
+            'url'      => $this->urlTariff . '/tracing/api/pricedev',
             'username' => $this->username,
             'api_key'  => substr($this->apiKey ?? '', 0, 6) . '***',
             'from'     => $from,
@@ -65,7 +67,7 @@ class JneService
         return $data['price'] ?? [];
     }
 
-    // ─── ALIAS getTariff (dipakai CheckoutController) ─────────
+    // ─── ALIAS getTariff ──────────────────────────────────────
     public function getTariff(string $destCode, int $weight): array
     {
         $originCode = config('jne.origin_code', 'CGK10000');
@@ -73,18 +75,18 @@ class JneService
         return ['price' => $prices];
     }
 
-    // ─── GENERATE AIRWAYBILL (dipakai JneController) ──────────
+    // ─── GENERATE AIRWAYBILL ──────────────────────────────────
     public function generateAirwaybill(array $params): array
     {
         Log::info('[JNE] generateAirwaybill Request', [
-            'url'    => $this->baseUrl . '/tracing/api/generatecnote',
+            'url'    => $this->urlAirwaybill . '/tracing/api/generatecnote',
             'params' => $params,
         ]);
 
         $response = Http::withoutVerifying()
             ->asForm()
             ->withHeaders(['Accept' => 'application/json'])
-            ->post($this->baseUrl . '/tracing/api/generatecnote', array_merge([
+            ->post($this->urlAirwaybill . '/tracing/api/generatecnote', array_merge([
                 'username' => $this->username,
                 'api_key'  => $this->apiKey,
             ], $params));
@@ -107,18 +109,18 @@ class JneService
         return $data['detail'][0] ?? [];
     }
 
-    // ─── ALIAS createAirwaybill (dipakai CheckoutController) ──
+    // ─── ALIAS createAirwaybill ───────────────────────────────
     public function createAirwaybill(array $params): array
     {
         Log::info('[JNE] createAirwaybill Request', [
-            'url'    => $this->baseUrl . '/tracing/api/generatecnote',
+            'url'    => $this->urlAirwaybill . '/tracing/api/generatecnote',
             'params' => $params,
         ]);
 
         $response = Http::withoutVerifying()
             ->asForm()
             ->withHeaders(['Accept' => 'application/json'])
-            ->post($this->baseUrl . '/tracing/api/generatecnote', array_merge([
+            ->post($this->urlAirwaybill . '/tracing/api/generatecnote', array_merge([
                 'username' => $this->username,
                 'api_key'  => $this->apiKey,
             ], $params));
@@ -143,7 +145,7 @@ class JneService
         $response = Http::withoutVerifying()
             ->asForm()
             ->withHeaders(['Accept' => 'application/json'])
-            ->post($this->baseUrl . '/tracing/api/list/v1/cnote/' . $awb, [
+            ->post($this->urlTracking . '/tracing/api/list/v1/cnote/' . $awb, [
                 'username' => $this->username,
                 'api_key'  => $this->apiKey,
             ]);

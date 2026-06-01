@@ -16,6 +16,8 @@ class Product extends Model
         'slug', 
         'description', 
         'price',
+        'defect_type',
+        'original_price',
         'is_preorder',
         'is_limited',
         'release_date',
@@ -31,6 +33,7 @@ class Product extends Model
         'release_date' => 'datetime',
         'is_preorder' => 'boolean',
         'is_limited' => 'boolean',
+        'original_price' => 'decimal:2',
     ];
 
     // Relasi ke Kategori

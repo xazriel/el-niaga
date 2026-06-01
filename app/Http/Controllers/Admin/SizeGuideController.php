@@ -21,27 +21,27 @@ class SizeGuideController extends Controller
     }
 
     public function store(Request $request)
-{
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'type' => 'required',
-        'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-    ]);
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'type' => 'required|string|in:general,abaya,khimar,kids,khiban',
+            'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
 
-    $imagePath = null;
-    if ($request->hasFile('image')) {
-        $imagePath = $request->file('image')->store('size_guides', 'public');
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('size_guides', 'public');
+        }
+
+        SizeGuideTemplate::create([
+            'name'  => $request->name,
+            'image' => $imagePath,
+            'type'  => $request->type,
+            'data'  => json_encode([]),
+        ]);
+
+        return redirect()->route('admin.size-guides.index')->with('success', 'Template Size Guide berhasil ditambahkan.');
     }
-
-    SizeGuideTemplate::create([
-        'name'  => $request->name,
-        'image' => $imagePath,
-        'type'  => $request->type,
-        'data'  => json_encode([]),
-    ]);
-
-    return redirect()->route('size-guides.index')->with('success', 'Template Size Guide berhasil ditambahkan.');
-}
 
     public function edit($id)
     {
@@ -55,10 +55,14 @@ class SizeGuideController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
+            'type' => 'required|string|in:general,abaya,khimar,kids,khiban',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        $data = ['name' => $request->name];
+        $data = [
+            'name' => $request->name,
+            'type' => $request->type,
+        ];
 
         if ($request->hasFile('image')) {
             if ($template->image) {
@@ -67,12 +71,9 @@ class SizeGuideController extends Controller
             $data['image'] = $request->file('image')->store('size_guides', 'public');
         }
 
-        // Jika ingin update type juga (opsional)
-        // $data['type'] = 'general'; 
-
         $template->update($data);
 
-        return redirect()->route('size-guides.index')->with('success', 'Template Size Guide berhasil diperbarui.');
+        return redirect()->route('admin.size-guides.index')->with('success', 'Template Size Guide berhasil diperbarui.');
     }
 
     public function destroy($id)
@@ -85,6 +86,6 @@ class SizeGuideController extends Controller
 
         $template->delete();
 
-        return redirect()->route('size-guides.index')->with('success', 'Template Size Guide berhasil dihapus.');
+        return redirect()->route('admin.size-guides.index')->with('success', 'Template Size Guide berhasil dihapus.');
     }
 }

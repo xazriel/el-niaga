@@ -59,11 +59,14 @@ class OrderController extends Controller
 
     public function trackResi($resi)
     {
-        $url = "https://apiv2.jne.co.id:10202/tracing/api/list/v1/cnote/" . $resi;
+    $url = config('jne.url_tracking') . '/tracing/api/list/v1/cnote/' . $resi;
 
-        $response = Http::asForm()->post($url, [
-            'username' => 'TESTAPI',
-            'api_key'  => '25c898a9faea1a100859ecd9ef674548',
+    $response = Http::withoutVerifying()
+        ->asForm()
+        ->withHeaders(['Accept' => 'application/json'])
+        ->post($url, [
+            'username' => config('jne.username'),
+            'api_key'  => config('jne.api_key'),
         ]);
 
         $data = $response->json();

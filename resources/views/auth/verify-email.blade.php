@@ -1,187 +1,270 @@
 <x-guest-layout>
 <style>
-    .ve-wrap {
+
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+        --bg:        #FFFFFF;
+        --surface:   #FFFFFF;
+        --dark:      #1C1E19;
+        --mid:       #5A5E52;
+        --light:     #9A9E92;
+        --border:    #E4E2DC;
+        --accent:    #2F3526;
+        --success-bg:#EDF4EE;
+        --success-fg:#3A7D44;
+    }
+
+    body {
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        background: var(--bg);
         min-height: 100vh;
-        background: #FAFAF8;
         display: flex;
         align-items: center;
         justify-content: center;
         padding: 2rem;
     }
-    .ve-card {
-        background: #FFFFFF;
-        border: 1px solid #E9E9E9;
-        border-radius: 24px;
-        padding: 3rem 2.5rem;
-        max-width: 480px;
+
+
+
+    .ve-wrap {
+        position: relative;
+        z-index: 1;
         width: 100%;
-        text-align: center;
+        max-width: 460px;
     }
-    .ve-label {
+
+    .ve-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 2.5rem 2.5rem 2rem;
+        box-shadow:
+            0 1px 2px rgba(0,0,0,.04),
+            0 8px 32px rgba(0,0,0,.06);
+        animation: fadeUp .5s ease both;
+    }
+
+    @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(16px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* icon */
+    .ve-icon-wrap {
+        width: 56px;
+        height: 56px;
+        margin: 0 auto 1.75rem;
+        background: #F0EEE8;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--border);
+    }
+
+    /* heading */
+    .ve-eyebrow {
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
         font-size: 9px;
-        font-weight: 700;
+        font-weight: 600;
         letter-spacing: .3em;
         text-transform: uppercase;
-        color: #6B705C;
+        color: var(--light);
+        text-align: center;
         display: block;
-        margin-bottom: .4rem;
+        margin-bottom: .6rem;
     }
-    .ve-title {
-        font-size: clamp(1.4rem, 4vw, 1.9rem);
+
+    .ve-heading {
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        font-size: 1.6rem;
+        font-weight: 600;
+        color: var(--dark);
+        text-align: center;
+        line-height: 1.2;
+        margin-bottom: 1.25rem;
+        letter-spacing: -.01em;
+    }
+
+    .ve-heading em {
+        font-style: normal;
         font-weight: 300;
-        letter-spacing: .08em;
-        text-transform: uppercase;
-        color: #2F3526;
-        margin: 0 0 .5rem;
     }
-    .ve-title strong { font-weight: 900; color: #000; }
-    .ve-divider {
-        width: 36px; height: 1.5px;
-        background: #2F3526;
-        margin: 0 auto 1.75rem;
+
+    /* divider */
+    .ve-rule {
+        border: none;
+        border-top: 1px solid var(--border);
+        margin: 1.5rem 0;
     }
-    .ve-icon {
-        width: 64px; height: 64px;
-        border-radius: 18px;
-        background: rgba(47,53,38,.06);
-        display: flex; align-items: center;
-        justify-content: center;
-        margin: 0 auto 1.5rem;
-    }
+
+    /* description */
     .ve-desc {
-        font-size: 13px;
-        color: #6B705C;
-        line-height: 1.85;
-        margin: 0 0 1.75rem;
+        font-size: 13.5px;
+        color: var(--mid);
+        line-height: 1.8;
+        text-align: center;
+        margin-bottom: 1.25rem;
     }
-    .ve-desc strong { color: #2F3526; }
+
+    .ve-desc strong {
+        color: var(--dark);
+        font-weight: 500;
+    }
+
+    /* success status */
+    .ve-status {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12.5px;
+        color: var(--success-fg);
+        background: var(--success-bg);
+        border-radius: 10px;
+        padding: 10px 14px;
+        margin-bottom: 1.25rem;
+        font-weight: 500;
+    }
+
+    /* buttons */
     .ve-btn-primary {
-        display: inline-flex;
+        display: flex;
         align-items: center;
         justify-content: center;
         gap: 8px;
         width: 100%;
-        padding: 14px 28px;
-        background: #2F3526;
-        color: #FFFFFF;
+        padding: 14px 24px;
+        background: var(--accent);
+        color: #fff;
         border: none;
         border-radius: 10px;
-        font-family: inherit;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
         font-size: 10px;
-        font-weight: 700;
-        letter-spacing: .28em;
+        font-weight: 600;
+        letter-spacing: .25em;
         text-transform: uppercase;
         cursor: pointer;
-        transition: background .2s ease, transform .2s ease;
+        transition: background .2s, transform .15s;
         text-decoration: none;
+        margin-bottom: 1.5rem;
     }
+
     .ve-btn-primary:hover {
         background: #3b4430;
         transform: translateY(-1px);
     }
-    .ve-divider-line {
-        border: none;
-        border-top: 1px solid #E9E9E9;
-        margin: 1.5rem 0;
-    }
-    .ve-resend {
+
+    .ve-resend-label {
         font-size: 12px;
-        color: #6B705C;
-        margin: 0 0 .75rem;
+        color: var(--light);
+        text-align: center;
+        margin-bottom: .75rem;
     }
+
     .ve-btn-ghost {
-        display: inline-flex;
+        display: flex;
         align-items: center;
         justify-content: center;
-        gap: 6px;
+        gap: 8px;
         width: 100%;
-        padding: 12px 24px;
+        padding: 13px 24px;
         background: transparent;
-        color: #2F3526;
-        border: 1px solid rgba(47,53,38,.2);
+        color: var(--accent);
+        border: 1px solid var(--border);
         border-radius: 10px;
-        font-family: inherit;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
         font-size: 10px;
-        font-weight: 700;
-        letter-spacing: .24em;
+        font-weight: 600;
+        letter-spacing: .22em;
         text-transform: uppercase;
         cursor: pointer;
-        transition: background .2s ease, color .2s ease, border-color .2s ease;
+        transition: background .2s, color .2s, border-color .2s;
     }
+
     .ve-btn-ghost:hover {
-        background: #2F3526;
-        color: #FFFFFF;
-        border-color: #2F3526;
+        background: var(--accent);
+        color: #fff;
+        border-color: var(--accent);
     }
+
+    /* logout */
+    .ve-footer {
+        text-align: center;
+        margin-top: 1.5rem;
+    }
+
     .ve-logout {
-        display: block;
-        margin-top: 1.25rem;
         font-size: 11px;
-        color: rgba(47,53,38,.4);
+        color: var(--light);
         text-decoration: none;
-        letter-spacing: .05em;
-        transition: color .2s ease;
+        letter-spacing: .06em;
+        transition: color .2s;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
-    .ve-logout:hover { color: #2F3526; }
-    .ve-status {
-        font-size: 12px;
-        color: #4a7c59;
-        background: rgba(74,124,89,.08);
-        border-radius: 8px;
-        padding: 10px 16px;
-        margin-bottom: 1rem;
-    }
+
+    .ve-logout:hover { color: var(--dark); }
 </style>
 
 <div class="ve-wrap">
+
     <div class="ve-card">
 
         {{-- Icon --}}
-        <div class="ve-icon">
-            <svg width="28" height="28" fill="none" stroke="#2F3526" viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <div class="ve-icon-wrap">
+            <svg width="22" height="22" fill="none" stroke="#2F3526" viewBox="0 0 24 24" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
             </svg>
         </div>
 
-        {{-- Header --}}
-        <span class="ve-label">Satu Langkah Lagi</span>
-        <h1 class="ve-title">Verifikasi <strong>Email</strong></h1>
-        <div class="ve-divider"></div>
+        {{-- Heading --}}
+        <span class="ve-eyebrow">Satu Langkah Lagi</span>
+        <h1 class="ve-heading">Verifikasi <em>Email</em> Kamu</h1>
 
-        {{-- Status sukses kirim ulang --}}
+        {{-- Status --}}
         @if (session('status') == 'verification-link-sent')
             <div class="ve-status">
-                ✓ Link verifikasi baru telah dikirim ke email kamu.
+                <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                Link verifikasi baru telah dikirim ke email kamu.
             </div>
         @endif
 
-        {{-- Deskripsi --}}
+        {{-- Description --}}
         <p class="ve-desc">
             Kami telah mengirim link verifikasi ke <strong>email kamu</strong>.<br>
-            Silakan buka email dan klik tombol verifikasi untuk mengaktifkan akun kamu.
+            Buka email tersebut dan klik tombol verifikasi untuk mengaktifkan akun.
         </p>
 
-        <hr class="ve-divider-line">
+        <hr class="ve-rule">
 
         {{-- Resend --}}
-        <p class="ve-resend">Tidak menerima email? Cek folder <strong>Spam</strong> atau kirim ulang.</p>
+        <p class="ve-resend-label">Tidak menerima email? Cek folder <strong>Spam</strong> atau kirim ulang.</p>
 
         <form method="POST" action="{{ route('verification.send') }}">
             @csrf
             <button type="submit" class="ve-btn-ghost">
-                <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/>
                 </svg>
-                Kirim Ulang Email Verifikasi
+                Kirim Ulang Verifikasi
             </button>
         </form>
 
         {{-- Logout --}}
-        <form method="POST" action="{{ route('logout') }}" style="display:inline;">
-            @csrf
-            <button type="submit" class="ve-logout">Keluar dari akun</button>
-        </form>
+        <div class="ve-footer">
+            <form method="POST" action="{{ route('logout') }}" style="display:inline;">
+                @csrf
+                <button type="submit" class="ve-logout">Keluar dari akun</button>
+            </form>
+        </div>
 
     </div>
 </div>
+
 </x-guest-layout>

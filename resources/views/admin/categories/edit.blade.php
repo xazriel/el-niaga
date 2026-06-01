@@ -10,9 +10,19 @@
             <div class="bg-white p-6 shadow-sm rounded-lg">
                 <form action="{{ route('admin.categories.update', $category->id) }}" method="POST">
                     @csrf
-                    @method('PUT') <div class="mb-4">
+                    @method('PUT')
+                    <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700">Nama Kategori</label>
                         <input type="text" name="name" value="{{ $category->name }}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-black focus:border-black" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700">Tipe Kategori</label>
+                        <select name="type" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-black focus:border-black" required>
+                            <option value="standard" {{ $category->type === 'standard' ? 'selected' : '' }}>Standard (S, M, L, XL, XXL, All Size)</option>
+                            <option value="kids" {{ $category->type === 'kids' ? 'selected' : '' }}>Kids (3-4 Years, 5-6 Years, etc.)</option>
+                            <option value="khiban" {{ $category->type === 'khiban' ? 'selected' : '' }}>Khiban (Mini, Midi)</option>
+                            <option value="defect" {{ $category->type === 'defect' ? 'selected' : '' }}>Defect (Minor, Major)</option>
+                        </select>
                     </div>
 
                     <div class="flex justify-end gap-2">

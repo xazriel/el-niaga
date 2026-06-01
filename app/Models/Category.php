@@ -13,6 +13,8 @@ class Category extends Model
     // Mendefinisikan konstanta agar lebih rapi dan konsisten
     const TYPE_STANDARD = 'standard';
     const TYPE_KIDS     = 'kids';
+    const TYPE_KHIBAN   = 'khiban';
+    const TYPE_DEFECT   = 'defect';
 
     protected $fillable = [
         'name', 
@@ -40,6 +42,24 @@ class Category extends Model
     public function isKids(): bool
     {
         return $this->type === self::TYPE_KIDS;
+    }
+
+    /**
+     * Helper untuk cek apakah kategori ini bertipe Khiban.
+     * Penggunaan: if($category->isKhiban()) { ... }
+     */
+    public function isKhiban(): bool
+    {
+        return $this->type === self::TYPE_KHIBAN;
+    }
+
+    /**
+     * Helper untuk cek apakah kategori ini bertipe Defect.
+     * Penggunaan: if($category->isDefect()) { ... }
+     */
+    public function isDefect(): bool
+    {
+        return $this->type === self::TYPE_DEFECT;
     }
 
     /**

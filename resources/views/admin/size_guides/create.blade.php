@@ -32,6 +32,7 @@
                                         <option value="abaya">Abaya</option>
                                         <option value="khimar">Khimar</option>
                                         <option value="kids">Kids</option>
+                                        <option value="khiban">Khiban</option>
                                     </select>
                                 </div>
                                 <div class="pt-4">

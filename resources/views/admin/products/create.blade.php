@@ -139,7 +139,7 @@
                                 </div>
                                 <div>
                                     <label class="field-label">Kategori</label>
-                                    <select name="category_id" id="category_select" onchange="updateAllSizeSelectors()" class="form-input">
+                                    <select name="category_id" id="category_select" onchange="updateAllSizeSelectors(); toggleDefectFields();" class="form-input">
                                         @foreach($categories as $cat)
                                             <option value="{{ $cat->id }}" data-type="{{ $cat->type }}" data-slug="{{ Str::slug($cat->name) }}">{{ $cat->name }}</option>
                                         @endforeach
@@ -180,6 +180,29 @@
                                 <div>
                                     <label class="field-label">Tanggal Rilis (Countdown)</label>
                                     <input type="datetime-local" name="release_date" class="form-input" style="font-size: 12px;">
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- 2.5 Defect Options --}}
+                        <div class="section-card" id="defect_section" style="display: none;">
+                            <p class="section-title" style="color: #ef4444;">⚠ Opsi Produk Defect</p>
+                            <p class="section-sub" style="margin-bottom: 16px;">Tentukan jenis defect dan harga coret (harga sebelum diskon)</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <div>
+                                    <label class="field-label">Kelas Defect</label>
+                                    <select name="defect_type" class="form-input">
+                                        <option value="">-- Pilih Kelas Defect --</option>
+                                        <option value="minor">Defect Minor</option>
+                                        <option value="major">Defect Major</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="field-label">Harga Coret Sebelum Diskon (Rp) <span style="font-weight: 400; opacity: 0.6;">(Opsional)</span></label>
+                                    <div style="position: relative;">
+                                        <span style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 11px; color: var(--olive); font-weight: 600;">Rp</span>
+                                        <input type="number" name="original_price" placeholder="200000" class="form-input" style="padding-left: 36px;">
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -265,14 +288,13 @@
                                 <div class="flex flex-col md:flex-row gap-4 image-row items-center">
                                     <div style="flex: 1;">
                                         <label class="field-label">File Foto</label>
-                                        <input type="file" name="images[]" accept="image/*"
+                                        <input type="file" name="images[0]" accept="image/*"
                                             style="width: 100%; font-size: 11px; color: var(--olive);"
                                             required />
                                     </div>
                                     <div style="width: 220px; min-width: 180px;">
                                         <label class="field-label">Mapping Warna Foto</label>
-                                        {{-- PERBAIKAN: Pastikan name="image_colors[]" ada dan class color-selector benar --}}
-                                        <select name="image_colors[]" class="color-selector form-input">
+                                        <select name="image_colors[0]" class="color-selector form-input">
                                             <option value="">— Pilih Warna Foto —</option>
                                         </select>
                                     </div>
@@ -304,7 +326,8 @@
             // ─── KONFIGURASI UKURAN ───────────────────────────────────────────
             const sizes = {
                 standard: ['S', 'M', 'L', 'XL', 'XXL', 'All Size'],
-                kids: ['3 - 4 Years', '5 - 6 Years', '7 - 8 Years', '9 - 10 Years', '11 - 12 Years']
+                kids: ['3 - 4 Years', '5 - 6 Years', '7 - 8 Years', '9 - 10 Years', '11 - 12 Years'],
+                khiban: ['Mini', 'Midi']
             };
 
             // ─── AUTO HARGA TAMBAHAN (KIDS) ───────────────────────────────────
@@ -331,7 +354,14 @@
                 const type = selectedOption ? selectedOption.getAttribute('data-type') : 'standard';
 
                 const isKids = type === 'kids' || (slug && (slug.includes('kids') || slug.includes('anak')));
-                const currentSizes = isKids ? sizes.kids : sizes.standard;
+                const isKhiban = type === 'khiban' || (slug && slug.includes('khiban'));
+
+                let currentSizes = sizes.standard;
+                if (isKids) {
+                    currentSizes = sizes.kids;
+                } else if (isKhiban) {
+                    currentSizes = sizes.khiban;
+                }
 
                 document.querySelectorAll('.size-selector').forEach(select => {
                     const prevValue = select.value;
@@ -396,19 +426,27 @@
 
                 const selectors = document.querySelectorAll('.color-selector');
                 selectors.forEach(select => {
-                    const currentValue = select.value;
+                    const currentValue = select.getAttribute('data-selected') || select.value;
                     select.innerHTML = '<option value="">— Pilih Warna Foto —</option>';
                     colors.forEach(color => {
                         const option = document.createElement('option');
                         option.value = color;
                         option.textContent = color;
-                        if (color === currentValue) option.selected = true;
                         select.appendChild(option);
                     });
+                    // Restore value after all options are appended
+                    if (currentValue && colors.includes(currentValue)) {
+                        select.value = currentValue;
+                        select.setAttribute('data-selected', currentValue);
+                    } else {
+                        select.value = "";
+                        select.removeAttribute('data-selected');
+                    }
                 });
             }
 
             // ─── TAMBAH / HAPUS BARIS FOTO ───────────────────────────────────
+            let imageIndex = 1;
             function addImageRow() {
                 const container = document.getElementById('image-container');
                 const rows = container.querySelectorAll('.image-row');
@@ -419,10 +457,12 @@
                 const fileInput = newRow.querySelector('input[type="file"]');
                 fileInput.value = '';
                 fileInput.removeAttribute('required');
+                fileInput.name = `images[${imageIndex}]`;
 
                 // Reset select mapping warna dan pastikan name-nya benar
                 const newSelect = newRow.querySelector('.color-selector');
-                newSelect.name = 'image_colors[]'; // Re-confirm name
+                newSelect.name = `image_colors[${imageIndex}]`;
+                newSelect.removeAttribute('data-selected'); // Clear cloned attribute!
                 
                 // Salin opsi warna yang tersedia saat ini ke baris baru
                 const refSelect = document.querySelector('.color-selector');
@@ -430,6 +470,7 @@
                 newSelect.value = '';
 
                 container.appendChild(newRow);
+                imageIndex++;
             }
 
             function removeImageRow(btn) {
@@ -441,6 +482,29 @@
                 }
             }
 
+            // ─── TOGGLE DEFECT FIELDS ──────────────────────────────────────────
+            function toggleDefectFields() {
+                const categorySelect = document.getElementById('category_select');
+                if (!categorySelect) return;
+                const selectedOption = categorySelect.options[categorySelect.selectedIndex];
+                const type = selectedOption ? selectedOption.getAttribute('data-type') : 'standard';
+                const slug = selectedOption ? selectedOption.getAttribute('data-slug') : '';
+
+                const isDefect = type === 'defect' || (slug && slug.includes('defect'));
+                const defectSection = document.getElementById('defect_section');
+
+                if (isDefect) {
+                    defectSection.style.display = 'block';
+                } else {
+                    defectSection.style.display = 'none';
+                    // Clear inputs when hidden
+                    const select = defectSection.querySelector('select[name="defect_type"]');
+                    const input = defectSection.querySelector('input[name="original_price"]');
+                    if (select) select.value = '';
+                    if (input) input.value = '';
+                }
+            }
+
             // ─── INISIALISASI ─────────────────────────────────────────────────
             document.getElementById('variant-container').addEventListener('input', function(e) {
                 if (e.target.classList.contains('variant-color-input')) {
@@ -448,9 +512,16 @@
                 }
             });
 
+            document.addEventListener('change', function (e) {
+                if (e.target.classList.contains('color-selector')) {
+                    e.target.setAttribute('data-selected', e.target.value);
+                }
+            });
+
             document.addEventListener('DOMContentLoaded', function () {
                 updateAllSizeSelectors();
                 updateColorOptions();
+                toggleDefectFields();
             });
         </script>
     </x-app-layout>

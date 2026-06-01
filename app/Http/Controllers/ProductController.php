@@ -51,6 +51,8 @@ class ProductController extends Controller
             'variant_stock'          => 'required|array',
             'release_date'           => 'nullable|date',
             'size_guide_template_id' => 'nullable|exists:size_guide_templates,id',
+            'defect_type'            => 'nullable|string|in:minor,major',
+            'original_price'         => 'nullable|numeric|min:0',
         ]);
 
         DB::beginTransaction();
@@ -63,6 +65,8 @@ class ProductController extends Controller
                 'slug'                   => Str::slug($request->name),
                 'description'            => $request->description,
                 'price'                  => $request->price,
+                'defect_type'            => $request->defect_type,
+                'original_price'         => $request->original_price,
                 'is_preorder'            => $request->has('is_preorder'),
                 'is_limited'             => $request->has('is_limited'),
                 'release_date'           => $request->release_date,
@@ -82,22 +86,21 @@ class ProductController extends Controller
             }
 
             if ($request->hasFile('images')) {
-                // FIX UTAMA: re-index supaya key selalu 0,1,2,... meski ada slot kosong
-                $uploadedFiles = array_values($request->file('images'));
-                // image_colors dikirim flat array dari form, re-index juga
-                $imageColors = array_values($request->input('image_colors', []));
+                $files = $request->file('images');
+                $imageColors = $request->input('image_colors', []);
 
-                foreach ($uploadedFiles as $key => $image) {
+                $isPrimary = true;
+                foreach ($files as $key => $image) {
                     if (!$image || !$image->isValid()) continue;
 
                     $path = $image->store('products', 'public');
                     ProductImage::create([
                         'product_id' => $product->id,
                         'image_path' => $path,
-                        // Ambil color di index yang sama; fallback null jika tidak ada
                         'color'      => !empty($imageColors[$key]) ? $imageColors[$key] : null,
-                        'is_primary' => $key === 0,
+                        'is_primary' => $isPrimary,
                     ]);
+                    $isPrimary = false;
                 }
             }
 
@@ -128,6 +131,8 @@ class ProductController extends Controller
             'description'            => 'required',
             'release_date'           => 'nullable|date',
             'size_guide_template_id' => 'nullable|exists:size_guide_templates,id',
+            'defect_type'            => 'nullable|string|in:minor,major',
+            'original_price'         => 'nullable|numeric|min:0',
         ]);
 
         DB::beginTransaction();
@@ -139,6 +144,8 @@ class ProductController extends Controller
                 'name'                   => $request->name,
                 'slug'                   => Str::slug($request->name),
                 'price'                  => $request->price,
+                'defect_type'            => $request->defect_type,
+                'original_price'         => $request->original_price,
                 'description'            => $request->description,
                 'is_preorder'            => $request->has('is_preorder'),
                 'is_limited'             => $request->has('is_limited'),
@@ -178,11 +185,10 @@ class ProductController extends Controller
             }
 
             if ($request->hasFile('images')) {
-                // FIX: re-index sama seperti store()
-                $uploadedFiles = array_values($request->file('images'));
-                $imageColors   = array_values($request->input('image_colors_new', []));
+                $files = $request->file('images');
+                $imageColors = $request->input('image_colors_new', []);
 
-                foreach ($uploadedFiles as $key => $image) {
+                foreach ($files as $key => $image) {
                     if (!$image || !$image->isValid()) continue;
 
                     $path = $image->store('products', 'public');

@@ -14,6 +14,15 @@
                         <label class="block text-sm font-medium text-gray-700">Nama Kategori</label>
                         <input type="text" name="name" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-black focus:border-black" placeholder="Contoh: Pashmina" required>
                     </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700">Tipe Kategori</label>
+                        <select name="type" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-black focus:border-black" required>
+                            <option value="standard" selected>Standard (S, M, L, XL, XXL, All Size)</option>
+                            <option value="kids">Kids (3-4 Years, 5-6 Years, etc.)</option>
+                            <option value="khiban">Khiban (Mini, Midi)</option>
+                            <option value="defect">Defect (Minor, Major)</option>
+                        </select>
+                    </div>
                     <div class="flex justify-end gap-2">
                         <a href="{{ route('admin.categories.index') }}" class="bg-gray-200 px-4 py-2 rounded-md">Batal</a>
                         <button type="submit" class="bg-black text-white px-4 py-2 rounded-md">Simpan Kategori</button>
