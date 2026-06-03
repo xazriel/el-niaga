@@ -88,83 +88,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::delete('/product-images/{id}',            [ProductController::class, 'destroyImage'])->name('products.images.destroy');
     Route::patch('/product-images/{id}/set-primary', [ProductController::class, 'setPrimary'])->name('products.images.setPrimary');
 
-    // ↓ export HARUS di atas /{order_number} agar tidak ditangkap sebagai wildcard
+    // export HARUS di atas /{order_number} agar tidak ditangkap sebagai wildcard
     Route::get('/orders/export',                  [AdminOrderController::class, 'export'])->name('orders.export');
     Route::get('/orders',                         [AdminOrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order_number}',          [AdminOrderController::class, 'show'])->name('orders.show');
     Route::patch('/orders/{order_number}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.updateStatus');
-});
-
-/*
-|--------------------------------------------------------------------------
-| DEV ONLY — Hapus sebelum production!
-|--------------------------------------------------------------------------
-*/
-Route::get('/dev/simulate-payment/{order_number}', function ($order_number) {
-    $order = \App\Models\Order::where('order_number', $order_number)
-                ->with('items.product')
-                ->firstOrFail();
-
-    if ($order->tracking_number) {
-        return redirect()->route('checkout.success', $order->order_number);
-    }
-
-    $order->update(['status' => 'success']);
-
-    $jne       = app(\App\Services\JneService::class);
-    $goodsDesc = $order->items
-        ->map(fn($i) => optional($i->product)->name ?? 'Produk Farhana')
-        ->implode(', ');
-
-    preg_match('/^([A-Z]+)/', strtoupper($order->service_code ?? 'REG'), $m);
-    $serviceCode = $m[1] ?? 'REG';
-    $dest        = $order->destination_id;
-    $origin      = config('jne.origin_code', 'DPK10000');
-
-    if (empty($dest) || $dest === $origin) {
-        return redirect()->route('checkout.success', $order->order_number)
-            ->with('warning', 'AWB tidak dibuat: destination tidak valid.');
-    }
-
-    try {
-        $res    = $jne->createAirwaybill([
-            'OLSHOP_BRANCH'         => config('jne.branch'),
-            'OLSHOP_CUST'           => config('jne.cust_no'),
-            'OLSHOP_ORDERID'        => $order->order_number,
-            'OLSHOP_SHIPPER_NAME'   => 'FARHANA OFFICIAL',
-            'OLSHOP_SHIPPER_ADDR1'  => 'Jl. Margonda Raya No. 1',
-            'OLSHOP_SHIPPER_ADDR2'  => '-',
-            'OLSHOP_SHIPPER_CITY'   => 'DEPOK',
-            'OLSHOP_SHIPPER_ZIP'    => '16411',
-            'OLSHOP_SHIPPER_PHONE'  => '08123456789',
-            'OLSHOP_RECEIVER_NAME'  => $order->receiver_name,
-            'OLSHOP_RECEIVER_ADDR1' => $order->receiver_address,
-            'OLSHOP_RECEIVER_ADDR2' => '-',
-            'OLSHOP_RECEIVER_CITY'  => $order->receiver_city  ?? '-',
-            'OLSHOP_RECEIVER_ZIP'   => $order->receiver_zip   ?? '00000',
-            'OLSHOP_RECEIVER_PHONE' => $order->receiver_phone,
-            'OLSHOP_QTY'            => $order->items->sum('quantity'),
-            'OLSHOP_WEIGHT'         => 1,
-            'OLSHOP_GOODSDESC'      => substr($goodsDesc, 0, 60),
-            'OLSHOP_GOODSVALUE'     => (int) $order->total_amount,
-            'OLSHOP_GOODSTYPE'      => '2',
-            'OLSHOP_INST'           => '',
-            'OLSHOP_INS_FLAG'       => 'N',
-            'OLSHOP_ORIG'           => $origin,
-            'OLSHOP_DEST'           => $dest,
-            'OLSHOP_SERVICE'        => $serviceCode,
-            'OLSHOP_COD_FLAG'       => 'N',
-            'OLSHOP_COD_AMOUNT'     => 0,
-        ]);
-        $status = trim($res['detail'][0]['status'] ?? '', "' ");
-        if (isset($res['detail'][0]['cnote_no']) && strtolower($status) === 'sukses') {
-            $order->update(['tracking_number' => $res['detail'][0]['cnote_no']]);
-        }
-    } catch (\Exception $e) {
-        \Illuminate\Support\Facades\Log::warning('DEV AWB gagal: ' . $e->getMessage());
-    }
-
-    return redirect()->route('checkout.success', $order->order_number);
 });
 
 require __DIR__.'/auth.php';

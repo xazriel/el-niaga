@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Midtrans\Config as MidtransConfig;
 use Midtrans\Snap;
-use Midtrans\Notification;
 
 class CheckoutController extends Controller
 {
@@ -34,7 +33,6 @@ class CheckoutController extends Controller
                              ->with('info', 'Selesaikan pembayaran pesanan Anda sebelumnya.');
         }
 
-        // ✅ Bedakan sumber item: buy_now atau cart biasa
         $isBuyNow = $request->query('mode') === 'buy_now';
 
         if ($isBuyNow) {
@@ -107,7 +105,6 @@ class CheckoutController extends Controller
             'receiver_zip'     => 'nullable|string|max:10',
         ]);
 
-        // ✅ Ambil dari session yang tepat sesuai mode
         $isBuyNow = $request->boolean('buy_now_mode');
         $cart     = $isBuyNow
             ? session()->get('buy_now', [])
@@ -212,7 +209,6 @@ class CheckoutController extends Controller
                 return $order;
             });
 
-            // ✅ Hapus session yang tepat
             if ($isBuyNow) {
                 session()->forget('buy_now');
             } else {
@@ -277,10 +273,25 @@ class CheckoutController extends Controller
         $this->setupMidtrans();
 
         try {
-            $notif       = new Notification();
-            $orderId     = $notif->order_id;
-            $transaction = $notif->transaction_status;
-            $fraud       = $notif->fraud_status;
+            // Baca langsung dari request body (tidak hit Midtrans API)
+            $payload     = $request->all();
+            $orderId     = $payload['order_id'] ?? null;
+            $transaction = $payload['transaction_status'] ?? null;
+            $fraud       = $payload['fraud_status'] ?? 'accept';
+
+            // Verifikasi signature key
+            $serverKey    = config('midtrans.server_key');
+            $signatureKey = hash('sha512',
+                $orderId .
+                ($payload['status_code'] ?? '') .
+                ($payload['gross_amount'] ?? '') .
+                $serverKey
+            );
+
+            if ($signatureKey !== ($payload['signature_key'] ?? '')) {
+                Log::warning('Midtrans invalid signature', ['order_id' => $orderId]);
+                return response()->json(['message' => 'Invalid signature'], 403);
+            }
 
             Log::info('Midtrans callback received', [
                 'order_id'    => $orderId,
@@ -305,7 +316,7 @@ class CheckoutController extends Controller
             }
 
             if ($status === 'success' && $order->status !== 'success') {
-                if (! $order->is_preorder) {
+                if (!$order->is_preorder) {
                     $this->generateAwb($order);
                 }
                 $order->update(['status' => 'success']);
