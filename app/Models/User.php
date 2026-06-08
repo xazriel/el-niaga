@@ -29,6 +29,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'address',          // Tambahkan ini
         'destination_id',   // Tambahkan ini
         'destination_name', // Tambahkan ini
+        'points',           // Tambahkan ini untuk CRM
     ];
 
     /**
@@ -55,19 +56,37 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     public function addresses()
-{
-    return $this->hasMany(UserAddress::class);
-}
+    {
+        return $this->hasMany(UserAddress::class);
+    }
 
-public function defaultAddress()
-{
-    return $this->hasOne(UserAddress::class)->where('is_default', true);
-}
+    public function defaultAddress()
+    {
+        return $this->hasOne(UserAddress::class)->where('is_default', true);
+    }
 
-public function orders()
+    public function orders()
     {
         // Pastikan mengarah ke model Order yang sudah kamu buat tadi
         return $this->hasMany(Order::class);
+    }
+
+    public function loyaltyTransactions(): HasMany
+    {
+        return $this->hasMany(LoyaltyPointTransaction::class);
+    }
+
+    public function adjustPoints($amount, $type, $description, $orderId = null)
+    {
+        $this->points += $amount;
+        $this->save();
+
+        return $this->loyaltyTransactions()->create([
+            'order_id' => $orderId,
+            'points' => $amount,
+            'type' => $type,
+            'description' => $description,
+        ]);
     }
 
 }

@@ -5,8 +5,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Farhana Web') }}</title>
-        <link rel="icon" type="image/svg+xml" href="{{ asset('farhana.svg') }}">
+        <title>{{ config('app.name', 'Ssubsclub Web') }}</title>
+        <link rel="icon" type="image/svg+xml" href="{{ asset('sclublogo.png') }}">
 
         <style>
             [x-cloak] { display: none !important; }
@@ -16,11 +16,11 @@
             }
 
             :root {
-                --primary:    #2F3526;
+                --primary:    #1E1E24;
                 --white:      #FFFFFF;
                 --black:      #000000;
-                --olive-tint: #6B705C;
-                --light-gray: #E9E9E9;
+                --olive-tint: #9A8C73;
+                --light-gray: #F4F3EF;
             }
 
             /* ── Scrollbar ── */
@@ -94,68 +94,113 @@
 
             {{-- ── SIDEBAR: ADMIN ONLY ── --}}
             @auth
-                @if(auth()->user()->role === 'admin' && !request()->routeIs('admin.dashboard'))
+                @if(auth()->user()->role === 'admin')
                 <aside class="w-64 hidden md:flex flex-col flex-shrink-0"
                        style="background: var(--primary); min-height: 100vh;">
-
+ 
                     {{-- Logo --}}
                     <div class="px-7 py-7 flex-shrink-0" style="border-bottom: 1px solid rgba(255,255,255,.08);">
                         <span class="text-[13px] font-black tracking-[.35em] uppercase" style="color: var(--white);">
-                            Farhana
+                            Ssubsclub
                         </span>
                         <span class="block text-[8px] tracking-[.4em] uppercase mt-0.5"
                               style="color: rgba(255,255,255,.4);">Admin Panel</span>
                     </div>
-
+ 
                     {{-- Nav --}}
                     <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
-
+ 
                         <p class="text-[8px] font-black uppercase tracking-[.35em] px-3 mb-3"
                            style="color: rgba(255,255,255,.35);">Utama</p>
-
+ 
                         <a href="{{ route('admin.dashboard') }}"
                            class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
                            style="{{ request()->routeIs('admin.dashboard') ? '' : 'color: rgba(255,255,255,.6);' }}">
                             Dashboard
                         </a>
-
+ 
                         <p class="text-[8px] font-black uppercase tracking-[.35em] px-3 mt-6 mb-3"
-                           style="color: rgba(255,255,255,.35);">Transaksi</p>
-
+                           style="color: rgba(255,255,255,.35);">Transaksi & Pelanggan</p>
+ 
                         <a href="{{ route('admin.orders.index') }}"
                            class="nav-link {{ request()->routeIs('admin.orders.*') ? 'active' : '' }}"
                            style="{{ request()->routeIs('admin.orders.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
                             Kelola Order
                         </a>
-
+ 
+                        <a href="{{ route('admin.customers.index') }}"
+                           class="nav-link {{ request()->routeIs('admin.customers.*') ? 'active' : '' }}"
+                           style="{{ request()->routeIs('admin.customers.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
+                            Kelola Pelanggan
+                        </a>
+ 
+                        <a href="{{ route('admin.loyalty.index') }}"
+                           class="nav-link {{ request()->routeIs('admin.loyalty.*') || request()->routeIs('admin.loyalty') ? 'active' : '' }}"
+                           style="{{ request()->routeIs('admin.loyalty.*') || request()->routeIs('admin.loyalty') ? '' : 'color: rgba(255,255,255,.6);' }}">
+                            Loyalty Point
+                        </a>
+ 
+                        <p class="text-[8px] font-black uppercase tracking-[.35em] px-3 mt-6 mb-3"
+                           style="color: rgba(255,255,255,.35);">Analisis & Laporan</p>
+ 
+                        <a href="{{ route('admin.analysis.index') }}"
+                           class="nav-link {{ request()->routeIs('admin.analysis.*') ? 'active' : '' }}"
+                           style="{{ request()->routeIs('admin.analysis.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
+                            Analisis Penjualan
+                        </a>
+ 
+                        <a href="{{ route('admin.reports.index') }}"
+                           class="nav-link {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}"
+                           style="{{ request()->routeIs('admin.reports.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
+                            Laporan Penjualan
+                        </a>
+ 
                         <p class="text-[8px] font-black uppercase tracking-[.35em] px-3 mt-6 mb-3"
                            style="color: rgba(255,255,255,.35);">Katalog</p>
-
+ 
                         <a href="{{ route('admin.categories.index') }}"
                            class="nav-link {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}"
                            style="{{ request()->routeIs('admin.categories.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
                             Kelola Kategori
                         </a>
-
+ 
                         <a href="{{ route('admin.products.index') }}"
                            class="nav-link {{ request()->routeIs('admin.products.*') ? 'active' : '' }}"
                            style="{{ request()->routeIs('admin.products.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
                             Kelola Produk
                         </a>
-
+ 
                         <a href="{{ route('admin.sliders.index') }}"
                            class="nav-link {{ request()->routeIs('admin.sliders.*') ? 'active' : '' }}"
                            style="{{ request()->routeIs('admin.sliders.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
                             Kelola Banner
                         </a>
-
+ 
                         <a href="{{ route('admin.size-guides.index') }}"
                            class="nav-link {{ request()->routeIs('admin.size-guides.*') ? 'active' : '' }}"
                            style="{{ request()->routeIs('admin.size-guides.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
                             Kelola Size Guide
                         </a>
+ 
+                        <p class="text-[8px] font-black uppercase tracking-[.35em] px-3 mt-6 mb-3"
+                           style="color: rgba(255,255,255,.35);">Konten</p>
+ 
+                        <a href="{{ route('admin.articles.index') }}"
+                           class="nav-link {{ request()->routeIs('admin.articles.*') ? 'active' : '' }}"
+                           style="{{ request()->routeIs('admin.articles.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
+                            Artikel CMS
+                        </a>
+ 
+                        <p class="text-[8px] font-black uppercase tracking-[.35em] px-3 mt-6 mb-3"
+                           style="color: rgba(255,255,255,.35);">Sistem</p>
+ 
+                        <a href="{{ route('admin.settings.index') }}"
+                           class="nav-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}"
+                           style="{{ request()->routeIs('admin.settings.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
+                            Pengaturan Toko
+                        </a>
                     </nav>
-
+ 
                     {{-- Logout --}}
                     <div class="px-4 py-5 flex-shrink-0" style="border-top: 1px solid rgba(255,255,255,.08);">
                         <form method="POST" action="{{ route('logout') }}">
@@ -214,7 +259,7 @@
 
             {{-- ── MOBILE DRAWER: ADMIN ONLY ── --}}
             @auth
-                @if(auth()->user()->role === 'admin' && !request()->routeIs('admin.dashboard'))
+                @if(auth()->user()->role === 'admin')
 
                 {{-- Backdrop --}}
                 <div x-show="mobileMenuOpen" x-cloak
@@ -243,7 +288,7 @@
                     <div class="px-7 py-7 flex items-center justify-between flex-shrink-0"
                          style="border-bottom: 1px solid rgba(255,255,255,.08);">
                         <div>
-                            <span class="text-[13px] font-black tracking-[.35em] uppercase" style="color: var(--white);">Farhana</span>
+                            <span class="text-[13px] font-black tracking-[.35em] uppercase" style="color: var(--white);">Ssubsclub</span>
                             <span class="block text-[8px] tracking-[.4em] uppercase mt-0.5" style="color: rgba(255,255,255,.4);">Admin Panel</span>
                         </div>
                         <button @click="mobileMenuOpen = false"
@@ -265,12 +310,39 @@
                         </a>
 
                         <p class="text-[8px] font-black uppercase tracking-[.35em] px-3 mt-6 mb-3"
-                           style="color: rgba(255,255,255,.35);">Transaksi</p>
+                           style="color: rgba(255,255,255,.35);">Transaksi & Pelanggan</p>
 
                         <a href="{{ route('admin.orders.index') }}"
                            class="nav-link {{ request()->routeIs('admin.orders.*') ? 'active' : '' }}"
                            style="{{ request()->routeIs('admin.orders.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
                             Kelola Order
+                        </a>
+
+                        <a href="{{ route('admin.customers.index') }}"
+                           class="nav-link {{ request()->routeIs('admin.customers.*') ? 'active' : '' }}"
+                           style="{{ request()->routeIs('admin.customers.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
+                            Kelola Pelanggan
+                        </a>
+
+                        <a href="{{ route('admin.loyalty.index') }}"
+                           class="nav-link {{ request()->routeIs('admin.loyalty.*') || request()->routeIs('admin.loyalty') ? 'active' : '' }}"
+                           style="{{ request()->routeIs('admin.loyalty.*') || request()->routeIs('admin.loyalty') ? '' : 'color: rgba(255,255,255,.6);' }}">
+                            Loyalty Point
+                        </a>
+
+                        <p class="text-[8px] font-black uppercase tracking-[.35em] px-3 mt-6 mb-3"
+                           style="color: rgba(255,255,255,.35);">Analisis & Laporan</p>
+
+                        <a href="{{ route('admin.analysis.index') }}"
+                           class="nav-link {{ request()->routeIs('admin.analysis.*') ? 'active' : '' }}"
+                           style="{{ request()->routeIs('admin.analysis.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
+                            Analisis Penjualan
+                        </a>
+
+                        <a href="{{ route('admin.reports.index') }}"
+                           class="nav-link {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}"
+                           style="{{ request()->routeIs('admin.reports.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
+                            Laporan Penjualan
                         </a>
 
                         <p class="text-[8px] font-black uppercase tracking-[.35em] px-3 mt-6 mb-3"
@@ -281,20 +353,41 @@
                            style="{{ request()->routeIs('admin.categories.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
                             Kelola Kategori
                         </a>
+
                         <a href="{{ route('admin.products.index') }}"
                            class="nav-link {{ request()->routeIs('admin.products.*') ? 'active' : '' }}"
                            style="{{ request()->routeIs('admin.products.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
                             Kelola Produk
                         </a>
+
                         <a href="{{ route('admin.sliders.index') }}"
                            class="nav-link {{ request()->routeIs('admin.sliders.*') ? 'active' : '' }}"
                            style="{{ request()->routeIs('admin.sliders.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
                             Kelola Banner
                         </a>
+
                         <a href="{{ route('admin.size-guides.index') }}"
                            class="nav-link {{ request()->routeIs('admin.size-guides.*') ? 'active' : '' }}"
                            style="{{ request()->routeIs('admin.size-guides.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
                             Kelola Size Guide
+                        </a>
+
+                        <p class="text-[8px] font-black uppercase tracking-[.35em] px-3 mt-6 mb-3"
+                           style="color: rgba(255,255,255,.35);">Konten</p>
+
+                        <a href="{{ route('admin.articles.index') }}"
+                           class="nav-link {{ request()->routeIs('admin.articles.*') ? 'active' : '' }}"
+                           style="{{ request()->routeIs('admin.articles.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
+                            Artikel CMS
+                        </a>
+
+                        <p class="text-[8px] font-black uppercase tracking-[.35em] px-3 mt-6 mb-3"
+                           style="color: rgba(255,255,255,.35);">Sistem</p>
+
+                        <a href="{{ route('admin.settings.index') }}"
+                           class="nav-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}"
+                           style="{{ request()->routeIs('admin.settings.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
+                            Pengaturan Toko
                         </a>
                     </nav>
 

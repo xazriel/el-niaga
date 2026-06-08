@@ -136,7 +136,7 @@
             {{-- Footer Branding --}}
             <div class="mt-8 flex flex-col items-center">
                 <div class="h-px w-20 bg-gray-100"></div>
-                <p class="mt-4 text-[8px] text-gray-300 uppercase tracking-[0.5em]">Farhana System v1.0</p>
+                <p class="mt-4 text-[8px] text-gray-300 uppercase tracking-[0.5em]">Ssubsclub System v1.0</p>
             </div>
         </div>
     </div>

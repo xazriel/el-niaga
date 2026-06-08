@@ -8,13 +8,13 @@
         }
 
         :root {
-            --primary:    #2F3526;
+            --primary:    #1E1E24;
             --white:      #FFFFFF;
             --black:      #000000;
-            --olive-tint: #6B705C;
-            --light-gray: #E9E9E9;
-            --p8:  rgba(47,53,38,.05);
-            --p15: rgba(47,53,38,.12);
+            --olive-tint: #9A8C73;
+            --light-gray: #F4F3EF;
+            --p8:  rgba(30,30,36,.05);
+            --p15: rgba(30,30,36,.12);
         }
 
         body { background-color: var(--white); color: var(--black); }
@@ -214,7 +214,26 @@
                                 </svg>
                                 Order History
                             </button>
-                            
+                            <button @click="tab = 'loyalty'" :class="tab === 'loyalty' ? 'active' : ''" class="tab-btn">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                Loyalty Points
+                            </button>
+                            <button @click="tab = 'delivery'" :class="tab === 'delivery' ? 'active' : ''" class="tab-btn">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                </svg>
+                                Addresses
+                            </button>
+                            <a href="{{ route('profile.edit') }}" class="tab-btn">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                </svg>
+                                Edit Profile
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -346,6 +365,185 @@
                                 <p class="text-[11px] uppercase tracking-widest text-gray-400 mb-4">No addresses saved</p>
                             </div>
                             @endforelse
+                        </div>
+                    </div>
+
+                    {{-- TAB: LOYALTY --}}
+                    <div x-show="tab === 'loyalty'"
+                         style="display:none"
+                         x-transition:enter="transition ease-out duration-500"
+                         x-transition:enter-start="opacity-0 translate-y-4">
+                        
+                        <div class="mb-12">
+                            <h4 class="text-[11px] font-black uppercase tracking-[.4em] mb-2">Loyalty Points Program</h4>
+                            <p class="text-[11px] text-gray-500 tracking-wider">Kumpulkan poin dari setiap pembelanjaan Anda dan tukarkan dengan diskon atau voucher eksklusif.</p>
+                        </div>
+
+                        {{-- Points card --}}
+                        <div class="rounded-[2rem] p-10 mb-12 flex flex-col md:flex-row justify-between items-start md:items-center gap-8 shadow-sm" 
+                             style="background: linear-gradient(135deg, #2F3526 0%, #464F39 100%); color: var(--white);">
+                            <div class="space-y-4">
+                                <span class="text-[9px] font-black uppercase tracking-[0.3em] opacity-75">Saldo Poin Anda</span>
+                                <div class="flex items-baseline gap-2">
+                                    <span class="text-6xl font-light tracking-tight">{{ auth()->user()->points ?? 0 }}</span>
+                                    <span class="text-sm font-bold uppercase tracking-widest">Poin</span>
+                                </div>
+                                <p class="text-[10px] opacity-75 tracking-wider">Nilai tukar: 1 Poin = Rp 1.000 diskon checkout</p>
+                            </div>
+                            <div class="border-t md:border-t-0 md:border-l border-white/10 pt-6 md:pt-0 md:pl-10 space-y-2 text-[10px] tracking-wider opacity-90 max-w-sm">
+                                <p class="font-bold uppercase tracking-widest text-xs mb-2 text-white">Cara Mendapatkan & Menggunakan Poin:</p>
+                                <p>🛒 <strong>Belanja & Dapatkan</strong>: Dapatkan 10 Poin setiap pembelanjaan Rp 100.000 (berlaku kelipatan).</p>
+                                <p>💰 <strong>Potongan Langsung</strong>: Tukarkan poin secara langsung saat checkout untuk memotong total transaksi.</p>
+                                <p>🎫 <strong>Voucher Belanja</strong>: Tukarkan poin dengan kode voucher diskon khusus di katalog bawah ini.</p>
+                            </div>
+                        </div>
+
+                        {{-- Tabs inside Loyalty --}}
+                        <div x-data="{ loyaltySubTab: 'vouchers' }" class="space-y-8">
+                            <div class="flex gap-8 border-b border-gray-100 pb-4">
+                                <button @click="loyaltySubTab = 'vouchers'" 
+                                        :class="loyaltySubTab === 'vouchers' ? 'text-black border-b border-black font-bold' : 'text-gray-400 font-medium hover:text-black'"
+                                        class="text-[10px] uppercase tracking-widest pb-2 transition-colors">
+                                    Katalog Voucher Poin
+                                </button>
+                                <button @click="loyaltySubTab = 'history'" 
+                                        :class="loyaltySubTab === 'history' ? 'text-black border-b border-black font-bold' : 'text-gray-400 font-medium hover:text-black'"
+                                        class="text-[10px] uppercase tracking-widest pb-2 transition-colors">
+                                    Riwayat Poin
+                                </button>
+                            </div>
+
+                            {{-- Subtab: Vouchers Catalog --}}
+                            <div x-show="loyaltySubTab === 'vouchers'" class="space-y-6">
+                                <div class="grid md:grid-cols-2 gap-8">
+                                    @php
+                                        $pointVouchers = $vouchersAvailable->where('points_cost', '>', 0);
+                                    @endphp
+                                    @forelse($pointVouchers as $voucher)
+                                        <div class="rounded-3xl border border-gray-150 p-8 flex flex-col justify-between gap-6 hover:shadow-md transition-shadow relative overflow-hidden bg-white">
+                                            <div class="absolute top-1/2 -left-3 w-6 h-6 rounded-full bg-white border border-gray-150 -translate-y-1/2"></div>
+                                            <div class="absolute top-1/2 -right-3 w-6 h-6 rounded-full bg-white border border-gray-150 -translate-y-1/2"></div>
+                                            
+                                            <div class="space-y-4 pl-4 pr-4">
+                                                <div class="flex justify-between items-start">
+                                                    <span class="inline-block text-[8px] font-black uppercase tracking-widest px-3 py-1 bg-[#6B705C]/10 text-[#2F3526] rounded-full">
+                                                        Voucher Poin
+                                                    </span>
+                                                    <span class="text-xs font-mono font-bold tracking-widest text-[#2F3526]">
+                                                        {{ $voucher->code }}
+                                                    </span>
+                                                </div>
+                                                
+                                                <div class="space-y-1">
+                                                    <h5 class="text-xl font-bold tracking-tight">
+                                                        @if($voucher->type === 'percent')
+                                                            Diskon {{ number_format($voucher->value, 0) }}%
+                                                        @else
+                                                            Potongan Rp {{ number_format($voucher->value, 0, ',', '.') }}
+                                                        @endif
+                                                    </h5>
+                                                    <p class="text-[10px] text-gray-500 tracking-wider">
+                                                        Minimal belanja Rp {{ number_format($voucher->min_spend, 0, ',', '.') }}
+                                                    </p>
+                                                    @if($voucher->expires_at)
+                                                        <p class="text-[9px] text-red-500 font-medium tracking-wide">
+                                                            Berlaku s/d {{ $voucher->expires_at->format('d M Y') }}
+                                                        </p>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="border-t border-dashed border-gray-100 pt-6 flex items-center justify-between pl-4 pr-4">
+                                                <div class="flex items-center gap-1">
+                                                    <svg class="w-3.5 h-3.5 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                                    </svg>
+                                                    <span class="text-[11px] font-black tracking-widest uppercase text-[#2F3526]">{{ $voucher->points_cost }} Poin</span>
+                                                </div>
+                                                
+                                                @if(auth()->user()->points >= $voucher->points_cost)
+                                                    <form action="{{ route('profile.redeem-voucher', $voucher->id) }}" method="POST">
+                                                        @csrf
+                                                        <button type="submit" 
+                                                                class="btn-primary px-8 py-3 rounded-full text-[9px] font-bold uppercase tracking-widest hover:scale-105 transition-transform">
+                                                            Tukar Poin
+                                                        </button>
+                                                    </form>
+                                                @else
+                                                    <button disabled 
+                                                            class="bg-gray-100 text-gray-400 cursor-not-allowed px-8 py-3 rounded-full text-[9px] font-bold uppercase tracking-widest">
+                                                        Poin Kurang
+                                                    </button>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    @empty
+                                        <div class="col-span-2 py-16 text-center border border-dashed border-gray-200 rounded-3xl">
+                                            <p class="text-[11px] uppercase tracking-widest text-gray-400">Tidak ada voucher poin yang tersedia saat ini.</p>
+                                        </div>
+                                    @endforelse
+                                </div>
+                            </div>
+
+                            {{-- Subtab: Points History --}}
+                            <div x-show="loyaltySubTab === 'history'" style="display:none" class="space-y-6">
+                                <div class="overflow-x-auto rounded-3xl border border-gray-100 bg-white">
+                                    <table class="w-full text-left border-collapse">
+                                        <thead>
+                                            <tr class="bg-gray-50 border-b border-gray-100">
+                                                <th class="px-8 py-4 text-[9px] uppercase tracking-widest font-black text-gray-400">Tanggal</th>
+                                                <th class="px-8 py-4 text-[9px] uppercase tracking-widest font-black text-gray-400">Tipe</th>
+                                                <th class="px-8 py-4 text-[9px] uppercase tracking-widest font-black text-gray-400">Keterangan</th>
+                                                <th class="px-8 py-4 text-[9px] uppercase tracking-widest font-black text-gray-400 text-right">Poin</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-gray-50">
+                                            @forelse($loyaltyTransactions as $transaction)
+                                                <tr class="hover:bg-gray-50/50 transition-colors">
+                                                    <td class="px-8 py-5 text-[11px] text-gray-500 font-medium tracking-wide">
+                                                        {{ $transaction->created_at->format('d M Y, H:i') }}
+                                                    </td>
+                                                    <td class="px-8 py-5">
+                                                        @php
+                                                            $badgeStyle = 'background: #f3f4f6; color: #374151;';
+                                                            if ($transaction->type === 'earn') {
+                                                                $badgeStyle = 'background: #dcfce7; color: #15803d;';
+                                                            } elseif ($transaction->type === 'redeem') {
+                                                                $badgeStyle = 'background: #fee2e2; color: #b91c1c;';
+                                                            } elseif ($transaction->type === 'refund') {
+                                                                $badgeStyle = 'background: #dbeafe; color: #1d4ed8;';
+                                                            }
+                                                        @endphp
+                                                        <span class="badge" style="{{ $badgeStyle }}">{{ $transaction->type }}</span>
+                                                    </td>
+                                                    <td class="px-8 py-5 text-[12px] font-medium text-black">
+                                                        {{ $transaction->description }}
+                                                        @if($transaction->order)
+                                                            <a href="{{ route('profile.orders.detail', $transaction->order->order_number) }}" 
+                                                               class="text-[9px] text-[#2F3526] font-bold underline ml-1 uppercase tracking-widest">
+                                                                Lihat Pesanan
+                                                            </a>
+                                                        @endif
+                                                    </td>
+                                                    <td class="px-8 py-5 text-[12px] font-bold text-right">
+                                                        @if($transaction->points > 0)
+                                                            <span class="text-green-600">+{{ $transaction->points }}</span>
+                                                        @else
+                                                            <span class="text-red-600">{{ $transaction->points }}</span>
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                            @empty
+                                                <tr>
+                                                    <td colspan="4" class="px-8 py-16 text-center text-[11px] uppercase tracking-widest text-gray-400">
+                                                        Belum ada riwayat transaksi poin.
+                                                    </td>
+                                                </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -517,7 +715,7 @@
     <script>
     function trackingSystem() {
         return {
-            tab: 'orders',
+            tab: '{{ session('success') || session('error') ? 'loyalty' : (request('tab') ?: 'orders') }}',
             modalOpen: false,
             loading: false,
             activeAwb: '',

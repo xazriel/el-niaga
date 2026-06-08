@@ -18,7 +18,7 @@
             <div class="max-w-7xl mx-auto relative z-10">
                 <div class="max-w-2xl">
                     <h3 class="text-4xl sm:text-5xl font-light text-brand-white tracking-wide leading-tight">Dashboard<br><span class="opacity-80">Overview.</span></h3>
-                    <p class="text-[10px] uppercase tracking-[0.3em] text-brand-white/60 mt-6 font-medium leading-relaxed">Farhana Inventory Control & Management</p>
+                    <p class="text-[10px] uppercase tracking-[0.3em] text-brand-white/60 mt-6 font-medium leading-relaxed">Ssubsclub Inventory Control & Management</p>
                     <div class="h-px w-16 bg-brand-white/20 mt-8"></div>
                 </div>
             </div>

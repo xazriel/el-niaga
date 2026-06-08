@@ -13,8 +13,8 @@
             {{-- LOGO & TAHUN --}}
             <div class="relative z-10">
                 <a href="/" class="block">
-                    <img src="{{ Storage::url('LOGO-FARHANA-NEW-TRANSPARENT.png') }}"
-                         alt="Farhana"
+                    <img src="{{ asset('sclublogo.png') }}"
+                         alt="Ssubsclub"
                          class="h-40 w-auto object-contain brightness-0 invert opacity-95 -ml-12 -mt-2">
                 </a>
                 <p class="text-[#6B705C] text-[10px] tracking-[0.4em] uppercase mt-0 ml-1">Est. MMXXVI</p>

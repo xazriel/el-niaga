@@ -3,13 +3,13 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Lacak Paket {{ $awb }} - Farhana</title>
+    <title>Lacak Paket {{ $awb }} - Ssubsclub</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
         
         :root {
-            --primary: #2F3526; /* Warna Olive Gelap khas Farhana */
+            --primary: #2F3526; /* Warna Olive Gelap khas Ssubsclub */
             --accent: #5A5A00;
             --bg-light: #F8F9F5;
         }
@@ -36,7 +36,7 @@
     {{-- Header --}}
     <div class="text-center space-y-4">
         <a href="{{ route('home') }}" class="inline-block">
-            <span class="text-[14px] font-black tracking-[0.6em] uppercase border-b-2 border-current pb-1">Farhana</span>
+            <span class="text-[14px] font-black tracking-[0.6em] uppercase border-b-2 border-current pb-1">Ssubsclub</span>
         </a>
         <div class="pt-4">
             <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight">Lacak Pengiriman</h1>

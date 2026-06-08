@@ -3,8 +3,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Menunggu Pembayaran - Farhana</title>
-    <link rel="icon" type="image/svg+xml" href="{{ asset('farhana.svg') }}">
+    <title>Menunggu Pembayaran - Ssubsclub</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('sclublogo.png') }}">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
@@ -256,8 +256,8 @@
 <header class="site-header fade-up">
 <div class="header-logo">
     <a href="{{ route('home') }}">
-        <img src="{{ Storage::url('LOGO-FARHANA-NEW-TRANSPARENT_WHITE.png') }}" 
-             alt="Farhana" 
+        <img src="{{ Storage::url('sclublogo.png') }}" 
+             alt="Ssubsclub" 
              class="h-14 md:h-20 w-auto object-contain">
     </a>
 </div></header>

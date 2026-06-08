@@ -11,10 +11,23 @@ use App\Http\Controllers\AddressController;
 use App\Http\Controllers\JneController;
 use App\Http\Controllers\Admin\SizeGuideController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Admin\AdminCustomerController;
+use App\Http\Controllers\Admin\AdminLoyaltyController;
+use App\Http\Controllers\Admin\SalesAnalysisController;
+use App\Http\Controllers\Admin\AdminArticleController;
+use App\Http\Controllers\Admin\AdminReportController;
+use App\Http\Controllers\Admin\AdminSettingController;
+use App\Http\Controllers\Customer\CustomerProductCatalogController;
+use App\Http\Controllers\Customer\CustomerArticleController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/product/{slug}', [HomeController::class, 'show'])->name('product.details');
+
+Route::get('/products',        [CustomerProductCatalogController::class, 'index'])->name('products.index');
+Route::get('/articles',        [CustomerArticleController::class, 'index'])->name('articles.index');
+Route::get('/articles/{slug}', [CustomerArticleController::class, 'show'])->name('articles.show');
+Route::view('/about-us',       'about')->name('about-us');
 
 Route::prefix('cart')->name('cart.')->group(function () {
     Route::get('/',               [CartController::class, 'index'])->name('index');
@@ -29,17 +42,7 @@ Route::post('/midtrans/callback', [CheckoutController::class, 'midtransCallback'
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
-    Route::get('/dashboard', function () {
-        if (auth()->user()->role === 'admin') {
-            return redirect()->route('admin.dashboard');
-        }
-        $orders = \App\Models\Order::where('user_id', auth()->id())
-            ->with(['items.product'])
-            ->orderBy('created_at', 'desc')
-            ->take(10)
-            ->get();
-        return view('dashboard', compact('orders'));
-    })->name('dashboard');
+    Route::get('/dashboard', [ProfileController::class, 'index'])->name('dashboard');
 
     Route::get('/profile',    [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile',  [ProfileController::class, 'update'])->name('profile.update');
@@ -72,13 +75,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/api/locations',      [JneController::class,      'searchLocation'])->name('api.locations');
     Route::post('/api/shipping-cost', [CheckoutController::class, 'calculateShipping'])->name('api.shipping');
+    Route::post('/profile/redeem-voucher/{id}', [ProfileController::class, 'redeemVoucher'])->name('profile.redeem-voucher');
+    Route::post('/api/check-voucher',           [CheckoutController::class, 'checkVoucher'])->name('api.check-voucher');
 });
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
 
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [SalesAnalysisController::class, 'index'])->name('dashboard');
 
     Route::resource('categories',  CategoryController::class);
     Route::resource('products',    ProductController::class);
@@ -93,6 +96,32 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/orders',                         [AdminOrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order_number}',          [AdminOrderController::class, 'show'])->name('orders.show');
     Route::patch('/orders/{order_number}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.updateStatus');
+
+    // Kelola Pelanggan (CRM)
+    Route::get('/customers',      [AdminCustomerController::class, 'index'])->name('customers.index');
+    Route::get('/customers/{id}', [AdminCustomerController::class, 'show'])->name('customers.show');
+
+    // Loyalty Points (CRM) & Vouchers CMS
+    Route::get('/loyalty',                  [AdminLoyaltyController::class, 'index'])->name('loyalty.index');
+    Route::post('/loyalty/adjust/{userId}', [AdminLoyaltyController::class, 'adjust'])->name('loyalty.adjust');
+    Route::get('/loyalty/vouchers',         [AdminLoyaltyController::class, 'vouchersIndex'])->name('loyalty.vouchers');
+    Route::post('/loyalty/vouchers',        [AdminLoyaltyController::class, 'vouchersStore'])->name('loyalty.vouchers.store');
+    Route::put('/loyalty/vouchers/{id}',    [AdminLoyaltyController::class, 'vouchersUpdate'])->name('loyalty.vouchers.update');
+    Route::delete('/loyalty/vouchers/{id}', [AdminLoyaltyController::class, 'vouchersDestroy'])->name('loyalty.vouchers.destroy');
+
+    // Sales Analysis & BI Dashboard
+    Route::get('/analysis',                [SalesAnalysisController::class, 'index'])->name('analysis.index');
+    Route::post('/analysis/clearance/{id}', [SalesAnalysisController::class, 'applyClearanceDiscount'])->name('analysis.clearance');
+
+    // Articles CMS
+    Route::resource('articles', AdminArticleController::class);
+
+    // Report Generator
+    Route::get('/reports', [AdminReportController::class, 'index'])->name('reports.index');
+
+    // Settings Editor
+    Route::get('/settings',  [AdminSettingController::class, 'index'])->name('settings.index');
+    Route::post('/settings', [AdminSettingController::class, 'update'])->name('settings.update');
 });
 
 require __DIR__.'/auth.php';

@@ -124,14 +124,14 @@
                     </div>
                     <div>
                         <p class="fc-detail-label">Email</p>
-                        <p class="fc-detail-val">mgmt.farhana@gmail.com</p>
+                        <p class="fc-detail-val">mgmt.ssubsclub@gmail.com</p>
                     </div>
                 </div>
             </div>
 
             {{-- Social --}}
             <div class="fc-social">
-                <a href="https://www.instagram.com/farhanas.id" class="fc-social-btn">
+                <a href="https://www.instagram.com/ssubsclubs.id" class="fc-social-btn">
                     <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                         <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
                         <circle cx="12" cy="12" r="4"/>
@@ -139,7 +139,7 @@
                     </svg>
                     Instagram
                 </a>
-                <a href="https://www.tiktok.com/@farhanas.id" class="fc-social-btn">
+                <a href="https://www.tiktok.com/@ssubsclubs.id" class="fc-social-btn">
                     <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.3 6.3 0 00-.79-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.34-6.34V8.69a8.24 8.24 0 004.84 1.56V6.79a4.85 4.85 0 01-1.08-.1z"/>
                     </svg>

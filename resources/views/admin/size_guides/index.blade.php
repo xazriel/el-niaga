@@ -11,7 +11,7 @@
             <div class="mb-8 flex flex-col md:flex-row md:items-center justify-between px-4 sm:px-0 gap-4">
                 <div>
                     <h3 class="text-xl font-bold text-gray-900 tracking-tight">Size Guides</h3>
-                    <p class="text-[10px] uppercase tracking-[0.2em] text-gray-400 mt-1 font-medium">Manajemen Tabel Ukuran Farhana</p>
+                    <p class="text-[10px] uppercase tracking-[0.2em] text-gray-400 mt-1 font-medium">Manajemen Tabel Ukuran Ssubsclub</p>
                     <div class="h-1 w-10 bg-[#2F3526] mt-3 rounded-full"></div>
                 </div>
                 

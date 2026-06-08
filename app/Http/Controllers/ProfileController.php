@@ -16,12 +16,30 @@ class ProfileController extends Controller
 {
     public function index()
     {
-        $orders = auth()->user()->orders()
+        $user = auth()->user();
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
+
+        $orders = $user->orders()
             ->with(['items.product'])
             ->latest()
             ->get();
 
-        return view('dashboard', compact('orders'));
+        $loyaltyTransactions = $user->loyaltyTransactions()
+            ->with('order')
+            ->latest()
+            ->get();
+
+        $vouchersAvailable = \App\Models\Voucher::where('is_active', true)
+            ->where(function ($q) {
+                $q->whereNull('expires_at')
+                  ->orWhere('expires_at', '>', now());
+            })
+            ->latest()
+            ->get();
+
+        return view('dashboard', compact('orders', 'loyaltyTransactions', 'vouchersAvailable'));
     }
 
     public function edit(Request $request): View
@@ -161,6 +179,22 @@ class ProfileController extends Controller
                 'message' => 'Terjadi kesalahan sistem.',
             ], 500);
         }
+    }
+
+    public function redeemVoucher($id)
+    {
+        $user = auth()->user();
+        $voucher = \App\Models\Voucher::where('is_active', true)
+            ->where('points_cost', '>', 0)
+            ->findOrFail($id);
+
+        if ($user->points < $voucher->points_cost) {
+            return back()->with('error', 'Poin Anda tidak mencukupi untuk menukarkan voucher ini.');
+        }
+
+        $user->adjustPoints(-$voucher->points_cost, 'redeem', "Tukar poin untuk voucher {$voucher->code}");
+
+        return back()->with('success', "Berhasil menukarkan voucher! Gunakan kode {$voucher->code} saat checkout.");
     }
 
     public function destroy(Request $request): RedirectResponse

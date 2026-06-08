@@ -4,8 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
     <meta name="theme-color" content="#2F3526">
-    <title>Keranjang — Farhana</title>
-    <link rel="icon" type="image/svg+xml" href="{{ asset('farhana.svg') }}">
+    <title>Keranjang — Ssubsclub</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('sclublogo.png') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         :root {
@@ -340,8 +340,8 @@
                 <span>Collection</span>
             </a>
             <a href="{{ route('home') }}">
-                <img src="{{ Storage::url('LOGO-FARHANA-NEW-TRANSPARENT.png') }}"
-                    alt="Farhana"
+                <img src="{{ asset('sclublogo.png') }}"
+                    alt="Ssubsclub"
                     class="h-20 w-auto object-contain">
             </a>
         </div>
@@ -469,7 +469,7 @@
     </main>
 
     <footer role="contentinfo">
-        <p class="f-copy">&copy; 2026 Farhana Official. All Rights Reserved.</p>
+        <p class="f-copy">&copy; 2026 Ssubsclub Official. All Rights Reserved.</p>
     </footer>
 
     {{-- Toast --}}

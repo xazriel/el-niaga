@@ -249,7 +249,7 @@
 
             {{-- Footer --}}
             <div class="flex justify-center pt-8">
-                <p class="text-[8px] font-black text-[#6B705C]/30 uppercase tracking-[0.4em]">Sistem Manajemen Konten Farhana</p>
+                <p class="text-[8px] font-black text-[#6B705C]/30 uppercase tracking-[0.4em]">Sistem Manajemen Konten Ssubsclub</p>
             </div>
 
         </div>

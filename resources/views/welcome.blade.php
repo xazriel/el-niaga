@@ -3,9 +3,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Farhana Web - Exclusive Moslem Wear</title>
+    <title>Ssubsclub Web - Exclusive Moslem Wear</title>
     
-    <link rel="icon" type="image/svg+xml" href="{{ asset('farhana.svg') }}">
+    <link rel="icon" type="image/svg+xml" href="{{ asset('sclublogo.png') }}">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -156,7 +156,7 @@
 <body class="antialiased bg-white text-gray-900" x-data="{ openModal: null }">
 
     {{-- WhatsApp FAB --}}
-    <a href="https://wa.me/6282260600099?text=Halo%20Farhana,%20saya%20ingin%20bertanya%20tentang%20produk%20Anda."
+    <a href="https://wa.me/6282260600099?text=Halo%20Ssubsclub,%20saya%20ingin%20bertanya%20tentang%20produk%20Anda."
        class="wa-fab" target="_blank" rel="noopener" aria-label="Chat WhatsApp">
         <i class="fab fa-whatsapp"></i>
     </a>
@@ -198,41 +198,18 @@
                         </div>
                         <div class="shrink-0 flex items-center relative">
                             <a href="{{ route('home') }}">
-                                <img src="{{ Storage::url('LOGO-FARHANA-NEW-TRANSPARENT.png') }}"
-                                     alt="Farhana"
+                                <img src="{{ asset('sclublogo.png') }}"
+                                     alt="Ssubsclub"
                                      class="h-14 md:h-20 w-auto object-contain">
                             </a>
                         </div>
                     </div>
 
                     <div class="hidden md:flex space-x-10 items-center">
-                        <a href="#koleksi" class="nav-link font-bold hover:text-gray-400 uppercase text-[11px] tracking-widest">Shop All</a>
-                        <div class="group relative">
-                            <button class="nav-link font-bold hover:text-gray-400 flex items-center uppercase text-[11px] tracking-widest">
-                                Collections
-                                <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-width="2" d="M19 9l-7 7-7-7"/>
-                                </svg>
-                            </button>
-                            <div class="mega-menu pt-10 pb-12 shadow-2xl animate-fade-in-down">
-                                <div class="max-w-7xl mx-auto px-8 grid grid-cols-4 gap-12">
-                                    @foreach($categories as $cat)
-                                    <div>
-                                        <h4 class="text-[11px] font-black tracking-widest text-gray-900 mb-5 uppercase border-b pb-2">{{ $cat->name }}</h4>
-                                        <ul class="space-y-3">
-                                            <li>
-                                                <button type="button" onclick="filterCategory('{{ $cat->slug }}')"
-                                                    class="text-[10px] text-gray-500 hover:text-black uppercase tracking-widest transition">
-                                                    {{ $cat->name }}
-                                                </button>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    @endforeach
-                                </div>
-                            </div>
-                        </div>
-                        <a href="#about" class="nav-link font-bold hover:text-gray-400 uppercase text-[11px] tracking-widest">About</a>
+                        <a href="{{ route('home') }}" class="nav-link font-bold hover:text-gray-400 uppercase text-[11px] tracking-widest">Home</a>
+                        <a href="{{ route('products.index') }}" class="nav-link font-bold hover:text-gray-400 uppercase text-[11px] tracking-widest">Produk</a>
+                        <a href="{{ route('articles.index') }}" class="nav-link font-bold hover:text-gray-400 uppercase text-[11px] tracking-widest">Artikel</a>
+                        <a href="{{ route('about-us') }}" class="nav-link font-bold hover:text-gray-400 uppercase text-[11px] tracking-widest">Tentang Kami</a>
                     </div>
 
                     <div class="flex items-center space-x-1 md:space-x-4">
@@ -305,19 +282,10 @@
             </button>
         </div>
         <nav class="flex flex-col space-y-6">
-            <a href="#koleksi" onclick="toggleMenu()" class="text-sm font-bold tracking-widest uppercase border-b pb-2">Shop All</a>
-            <div class="space-y-4">
-                <p class="text-[10px] text-gray-400 tracking-widest uppercase">Collections</p>
-                <div class="grid grid-cols-1 gap-4 pl-4">
-                    @foreach($categories as $cat)
-                    <button onclick="filterCategory('{{ $cat->slug }}'); toggleMenu();"
-                        class="text-left text-xs tracking-widest uppercase hover:text-gray-500">
-                        {{ $cat->name }}
-                    </button>
-                    @endforeach
-                </div>
-            </div>
-            <a href="#about" onclick="toggleMenu()" class="text-sm font-bold tracking-widest uppercase border-b pb-2">About</a>
+            <a href="{{ route('home') }}" onclick="toggleMenu()" class="text-sm font-bold tracking-widest uppercase border-b pb-2">Home</a>
+            <a href="{{ route('products.index') }}" onclick="toggleMenu()" class="text-sm font-bold tracking-widest uppercase border-b pb-2">Produk</a>
+            <a href="{{ route('articles.index') }}" onclick="toggleMenu()" class="text-sm font-bold tracking-widest uppercase border-b pb-2">Artikel</a>
+            <a href="{{ route('about-us') }}" onclick="toggleMenu()" class="text-sm font-bold tracking-widest uppercase border-b pb-2">Tentang Kami</a>
         </nav>
     </div>
 
@@ -430,9 +398,9 @@
 
                 {{-- About --}}
                 <div>
-                    <h4 class="text-[10px] font-bold tracking-[0.3em] uppercase mb-6">About Farhana</h4>
+                    <h4 class="text-[10px] font-bold tracking-[0.3em] uppercase mb-6">About Ssubsclub</h4>
                     <p class="text-[11px] text-white/80 leading-loose tracking-widest uppercase">
-                        Farhana hadir melalui kesederhanaan yang terasa tenang, anggun, dan bermakna.
+                        Ssubsclub hadir melalui kesederhanaan yang terasa tenang, anggun, dan bermakna.
                         Kami percaya bahwa modesty bukan sekadar cara berpakaian, tetapi juga cara membawa diri dengan iman, ketenangan, dan keindahan yang tidak berlebihan.
                         Setiap koleksi dirancang dengan perhatian pada detail, kenyamanan, dan siluet yang elegan untuk menemani perempuan muslimah dalam setiap langkahnya.
                         <br><br>
@@ -459,26 +427,26 @@
 
                         {{-- Instagram --}}
                         <div class="flex items-center gap-3">
-                            <a href="https://www.instagram.com/farhanas.id"
+                            <a href="https://www.instagram.com/ssubsclubs.id"
                                class="w-9 h-9 rounded-full bg-white flex items-center justify-center text-[#2F3526] hover:bg-[#E9E9E9] transition flex-shrink-0"
-                               target="_blank" rel="noopener" aria-label="Instagram Farhana">
+                               target="_blank" rel="noopener" aria-label="Instagram Ssubsclub">
                                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
                                 </svg>
                             </a>
-                            <span class="text-[10px] tracking-widest uppercase text-white/80">@farhanas.id</span>
+                            <span class="text-[10px] tracking-widest uppercase text-white/80">@ssubsclubs.id</span>
                         </div>
 
                         {{-- TikTok --}}
                         <div class="flex items-center gap-3">
-                            <a href="https://www.tiktok.com/@farhanas.id"
+                            <a href="https://www.tiktok.com/@ssubsclubs.id"
                                class="w-9 h-9 rounded-full bg-white flex items-center justify-center text-[#2F3526] hover:bg-[#E9E9E9] transition flex-shrink-0"
-                               target="_blank" rel="noopener" aria-label="TikTok Farhana">
+                               target="_blank" rel="noopener" aria-label="TikTok Ssubsclub">
                                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.17-2.86-.6-4.12-1.31a8.52 8.52 0 0 1-1.87-1.43v6.24c-.03 2.34-.79 4.7-2.6 6.13-1.81 1.43-4.39 1.83-6.57 1.15-2.18-.68-4.05-2.48-4.66-4.67-.61-2.19-.19-4.78 1.25-6.58 1.44-1.8 3.84-2.74 6.11-2.43v4.18c-1.13-.19-2.36.03-3.23.82-.87.79-1.2 2.06-.85 3.19.35 1.13 1.43 1.99 2.61 2.08 1.18.09 2.4-.42 3.01-1.43.25-.42.36-.91.36-1.4V0z"/>
                                 </svg>
                             </a>
-                            <span class="text-[10px] tracking-widest uppercase text-white/80">@farhanas.id</span>
+                            <span class="text-[10px] tracking-widest uppercase text-white/80">@ssubsclubs.id</span>
                         </div>
 
                     </div>
@@ -488,7 +456,7 @@
         </div>
         <div class="border-t border-white/10 py-4 text-center px-8">
             <p class="text-[9px] tracking-[0.4em] text-white/40 uppercase leading-relaxed">
-                &copy; 2026 Farhana Official All Rights .<br class="sm:hidden"> Reserved.
+                &copy; 2026 Ssubsclub Official All Rights .<br class="sm:hidden"> Reserved.
             </p>
         </div>
     </footer>

@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Checkout - Farhana</title>
-    <link rel="icon" type="image/svg+xml" href="{{ asset('farhana.svg') }}">
+    <title>Checkout - Ssubsclub</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('sclublogo.png') }}">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <style>
         :root {
-            --primary:     #2F3526;
+            --primary:     #1E1E24;
             --white:       #FFFFFF;
             --black:       #000000;
-            --olive-tint:  #6B705C;
-            --light-gray:  #E9E9E9;
+            --olive-tint:  #9A8C73;
+            --light-gray:  #F4F3EF;
             --bg:          #F5F5F3;
         }
 
@@ -795,8 +795,8 @@
     </a>
     <div class="header-logo">
         <a href="{{ route('home') }}">
-            <img src="{{ Storage::url('LOGO-FARHANA-NEW-TRANSPARENT_WHITE.png') }}"
-                 alt="Farhana"
+            <img src="{{ Storage::url('sclublogo.png') }}"
+                 alt="Ssubsclub"
                  class="h-14 md:h-20 w-auto object-contain">
         </a>
     </div>
@@ -938,11 +938,49 @@
                         @endforeach
                     </div>
 
+                    {{-- Loyalty Points --}}
+                    @if(Auth::user()->points > 0)
+                    <div style="margin-top: 16px; background: rgba(255,255,255,0.06); padding: 14px 18px; border-radius: 12px; margin-bottom: 16px;">
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                            <input type="checkbox" id="use_points_checkbox" style="accent-color: #fff; width: 16px; height: 16px;">
+                            <span style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: bold;">Gunakan Poin Loyalty</span>
+                        </label>
+                        <div id="points_input_container" style="display: none; margin-top: 12px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between;">
+                                <span style="font-size: 9px; color: rgba(255,255,255,0.5);">Tersedia: <strong>{{ Auth::user()->points }} Poin</strong></span>
+                                <input type="number" id="redeem_points_input" name="redeem_points" value="0" min="0" max="{{ Auth::user()->points }}" 
+                                    style="width: 70px; background: rgba(255,255,255,0.15); border: none; border-radius: 6px; padding: 6px 8px; color: #fff; font-size: 11px; text-align: center; font-weight: bold;">
+                            </div>
+                            <p style="font-size: 8px; color: rgba(255,255,255,0.4); margin-top: 6px; text-transform: uppercase; letter-spacing: 0.05em;">1 Poin = Rp 1.000 Diskon</p>
+                        </div>
+                    </div>
+                    @endif
+
+                    {{-- Voucher Code --}}
+                    <div style="background: rgba(255,255,255,0.06); padding: 14px 18px; border-radius: 12px; margin-bottom: 16px;">
+                        <label class="form-lbl" style="color: rgba(255,255,255,0.5); font-size: 9px; margin-bottom: 8px; display: block; text-transform: uppercase; letter-spacing: 0.1em;">Kode Voucher Promo</label>
+                        <div style="display: flex; gap: 8px;">
+                            <input type="text" id="voucher_code_input" name="voucher_code" placeholder="DISKON50K"
+                                style="flex: 1; background: rgba(255,255,255,0.15); border: none; border-radius: 6px; padding: 8px 12px; color: #fff; font-size: 10px; text-transform: uppercase; font-weight: bold;">
+                            <button type="button" id="btn_apply_voucher" 
+                                style="background: #fff; color: #000; border: none; border-radius: 6px; padding: 0 12px; font-size: 9px; font-weight: 800; text-transform: uppercase; cursor: pointer; transition: background 0.2s;">Cek</button>
+                        </div>
+                        <p id="voucher_message" style="font-size: 8px; margin-top: 6px; display: none; text-transform: uppercase; font-weight: bold;"></p>
+                    </div>
+
                     <div class="totals-divider"></div>
 
                     <div class="totals-row" style="margin-top:16px;">
                         <span>Subtotal</span>
                         <span>Rp {{ number_format($totalAmount, 0, ',', '.') }}</span>
+                    </div>
+                    <div class="totals-row" id="points_discount_row" style="display: none;">
+                        <span>Diskon Poin</span>
+                        <span id="points_discount_display" style="color: #34d399;">- Rp 0</span>
+                    </div>
+                    <div class="totals-row" id="voucher_discount_row" style="display: none;">
+                        <span>Diskon Voucher</span>
+                        <span id="voucher_discount_display" style="color: #34d399;">- Rp 0</span>
                     </div>
                     <div class="totals-row">
                         <span>Shipping</span>
@@ -1349,14 +1387,26 @@ $(document).ready(function () {
         });
     }
 
+    // ── Discount & Total Recalculation ───────────────────
+    let pointsDiscountValue = 0;
+    let voucherDiscountValue = 0;
+
+    function recalculateGrandTotal() {
+        const cost = parseInt($('#hidden_shipping_cost').val() || 0);
+        const discount = pointsDiscountValue + voucherDiscountValue;
+        const grandTotal = Math.max(0, subtotal + cost - discount);
+        $('#grand_total_display').text('Rp ' + grandTotal.toLocaleString('id-ID'));
+    }
+
     // ── Pick courier ──────────────────────────────────────
     $(document).on('change', 'input[name="shipping_option"]', function () {
         const cost = parseInt($(this).val());
         $('#shipping_cost_display')
             .text('Rp ' + cost.toLocaleString('id-ID'))
             .css({ fontStyle: 'normal', color: 'rgba(255,255,255,.85)', fontSize: '11px' });
-        $('#grand_total_display').text('Rp ' + (subtotal + cost).toLocaleString('id-ID'));
         $('#hidden_shipping_cost').val(cost);
+        recalculateGrandTotal();
+        
         $('#hidden_courier_name').val($(this).data('courier'));
         $('#hidden_service_code').val($(this).data('service-code'));
 
@@ -1365,6 +1415,80 @@ $(document).ready(function () {
         $(this).closest('label').find('.courier-card').addClass('selected');
         $(this).closest('label').find('.radio-fill').css('opacity', 1);
         checkFormValidity();
+    });
+
+    // ── Points Checkbox & Input handler ───────────────────
+    $('#use_points_checkbox').on('change', function() {
+        const checked = $(this).is(':checked');
+        if (checked) {
+            $('#points_input_container').slideDown(200);
+            updatePointsDiscount();
+        } else {
+            $('#points_input_container').slideUp(200);
+            $('#redeem_points_input').val(0);
+            pointsDiscountValue = 0;
+            $('#points_discount_row').hide();
+            recalculateGrandTotal();
+        }
+    });
+
+    $('#redeem_points_input').on('input', function() {
+        let val = parseInt($(this).val() || 0);
+        const maxPoints = parseInt($(this).attr('max'));
+        if (val < 0) val = 0;
+        if (val > maxPoints) val = maxPoints;
+        $(this).val(val);
+        updatePointsDiscount();
+    });
+
+    function updatePointsDiscount() {
+        const points = parseInt($('#redeem_points_input').val() || 0);
+        const rate = 1000; // 1 Poin = Rp 1.000
+        pointsDiscountValue = points * rate;
+
+        if (pointsDiscountValue > 0) {
+            $('#points_discount_display').text('- Rp ' + pointsDiscountValue.toLocaleString('id-ID'));
+            $('#points_discount_row').show();
+        } else {
+            $('#points_discount_row').hide();
+        }
+        recalculateGrandTotal();
+    }
+
+    // ── Voucher Code handler ──────────────────────────────
+    $('#btn_apply_voucher').on('click', function() {
+        const code = $('#voucher_code_input').val().trim();
+        const msgEl = $('#voucher_message');
+
+        if (!code) {
+            msgEl.text('Silakan masukkan kode voucher.').css('color', '#fca5a5').show();
+            return;
+        }
+
+        msgEl.text('Memverifikasi...').css('color', 'rgba(255,255,255,0.5)').show();
+
+        $.post("{{ route('api.check-voucher') }}", {
+            _token: CSRF,
+            code: code,
+            amount: subtotal
+        }, function(res) {
+            if (res.success) {
+                voucherDiscountValue = parseInt(res.discount);
+                msgEl.text(res.message).css('color', '#34d399').show();
+                $('#voucher_discount_display').text('- Rp ' + voucherDiscountValue.toLocaleString('id-ID'));
+                $('#voucher_discount_row').show();
+            } else {
+                voucherDiscountValue = 0;
+                msgEl.text(res.message).css('color', '#fca5a5').show();
+                $('#voucher_discount_row').hide();
+            }
+            recalculateGrandTotal();
+        }).fail(function() {
+            voucherDiscountValue = 0;
+            msgEl.text('Gagal memverifikasi voucher.').css('color', '#fca5a5').show();
+            $('#voucher_discount_row').hide();
+            recalculateGrandTotal();
+        });
     });
 
     // ── Pick payment ──────────────────────────────────────

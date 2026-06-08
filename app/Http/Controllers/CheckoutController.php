@@ -103,6 +103,8 @@ class CheckoutController extends Controller
             'payment_method'   => 'required|string',
             'receiver_city'    => 'nullable|string|max:100',
             'receiver_zip'     => 'nullable|string|max:10',
+            'redeem_points'    => 'nullable|integer|min:0',
+            'voucher_code'     => 'nullable|string',
         ]);
 
         $isBuyNow = $request->boolean('buy_now_mode');
@@ -112,16 +114,45 @@ class CheckoutController extends Controller
 
         if (empty($cart)) return redirect()->route('home');
 
+        $user = Auth::user();
+
         try {
-            $order = DB::transaction(function () use ($request, $cart) {
+            $order = DB::transaction(function () use ($request, $cart, $user) {
 
                 $totalAmount = array_sum(
                     array_map(fn($item) => $item['price'] * $item['quantity'], $cart)
                 );
-                $grandTotal = $totalAmount + (int) $request->shipping_cost;
+
+                // 1. Process Points Discount
+                $pointsRedeemed = (int) $request->input('redeem_points', 0);
+                $pointsDiscount = 0;
+                if ($pointsRedeemed > 0) {
+                    $pointsRate = (int) \App\Models\Setting::get('loyalty_point_value_rate', 1000);
+                    if ($pointsRedeemed > $user->points) {
+                        throw new \Exception("Poin loyalty Anda tidak mencukupi.");
+                    }
+                    $pointsDiscount = $pointsRedeemed * $pointsRate;
+                }
+
+                // 2. Process Voucher Discount
+                $voucherDiscount = 0;
+                $voucherCode = strtoupper($request->input('voucher_code'));
+                $voucher = null;
+                if (!empty($voucherCode)) {
+                    $voucher = \App\Models\Voucher::where('code', $voucherCode)->where('is_active', true)->first();
+                    if ($voucher) {
+                        if (!$voucher->isValidFor($totalAmount)) {
+                            throw new \Exception("Voucher tidak memenuhi syarat minimal belanja.");
+                        }
+                        $voucherDiscount = $voucher->getDiscountAmount($totalAmount);
+                    }
+                }
+
+                $discount = $pointsDiscount + $voucherDiscount;
+                $grandTotal = max(0, $totalAmount + (int) $request->shipping_cost - $discount);
 
                 $order = Order::create([
-                    'user_id'          => Auth::id(),
+                    'user_id'          => $user->id,
                     'total_amount'     => $totalAmount,
                     'shipping_cost'    => $request->shipping_cost,
                     'grand_total'      => $grandTotal,
@@ -136,7 +167,16 @@ class CheckoutController extends Controller
                     'receiver_city'    => $request->receiver_city,
                     'receiver_zip'     => $request->receiver_zip,
                     'payment_deadline' => now()->addHours(2),
+                    'points_redeemed'  => $pointsRedeemed,
+                    'points_discount'  => $pointsDiscount,
+                    'voucher_code'     => $voucher ? $voucher->code : null,
+                    'voucher_discount' => $voucherDiscount,
                 ]);
+
+                // Deduct points immediately (locked)
+                if ($pointsRedeemed > 0) {
+                    $user->adjustPoints(-$pointsRedeemed, 'redeem', "Redeem poin untuk pesanan #{$order->order_number}", $order->id);
+                }
 
                 foreach ($cart as $variantId => $details) {
                     $variant    = ProductVariant::with('product')
@@ -185,6 +225,16 @@ class CheckoutController extends Controller
                     'quantity' => 1,
                     'name'     => 'Ongkir - ' . $request->courier_name,
                 ];
+                
+                // Add discount item for Midtrans if discount applies
+                if ($discount > 0) {
+                    $itemDetails[] = [
+                        'id'       => 'DISCOUNT',
+                        'price'    => -(int)$discount,
+                        'quantity' => 1,
+                        'name'     => 'Diskon Poin & Voucher',
+                    ];
+                }
 
                 $payload = [
                     'transaction_details' => [
@@ -194,7 +244,7 @@ class CheckoutController extends Controller
                     'customer_details' => [
                         'first_name' => $request->receiver_name,
                         'phone'      => $request->receiver_phone,
-                        'email'      => Auth::user()->email,
+                        'email'      => $user->email,
                     ],
                     'item_details' => $itemDetails,
                     'expiry'       => [
@@ -238,7 +288,7 @@ class CheckoutController extends Controller
         }
 
         if (now()->gt($order->payment_deadline)) {
-            $this->restoreStockAndCancel($order);
+            $order->cancelOrder();
             return redirect()->route('home')->with('error', 'Waktu pembayaran telah habis.');
         }
 
@@ -263,7 +313,7 @@ class CheckoutController extends Controller
                       ->where('status', 'pending')
                       ->firstOrFail();
 
-        $this->restoreStockAndCancel($order);
+        $order->cancelOrder();
 
         return redirect()->route('home')->with('success', 'Pesanan berhasil dibatalkan.');
     }
@@ -319,9 +369,9 @@ class CheckoutController extends Controller
                 if (!$order->is_preorder) {
                     $this->generateAwb($order);
                 }
-                $order->update(['status' => 'success']);
+                $order->markAsPaid();
             } elseif ($status === 'cancelled' && $order->status !== 'cancelled') {
-                $this->restoreStockAndCancel($order);
+                $order->cancelOrder();
             } else {
                 $order->update(['status' => $status]);
             }
@@ -332,6 +382,41 @@ class CheckoutController extends Controller
         }
 
         return response()->json(['message' => 'OK']);
+    }
+
+    public function checkVoucher(Request $request)
+    {
+        $request->validate([
+            'code' => 'required|string',
+            'amount' => 'required|numeric',
+        ]);
+
+        $voucher = \App\Models\Voucher::where('code', strtoupper($request->code))
+            ->where('is_active', true)
+            ->first();
+
+        if (!$voucher) {
+            return response()->json(['success' => false, 'message' => 'Voucher tidak ditemukan atau tidak aktif.']);
+        }
+
+        if ($voucher->expires_at && $voucher->expires_at->isPast()) {
+            return response()->json(['success' => false, 'message' => 'Voucher sudah kedaluwarsa.']);
+        }
+
+        if ($request->amount < $voucher->min_spend) {
+            return response()->json(['success' => false, 'message' => 'Minimal belanja tidak terpenuhi. Minimal Rp ' . number_format($voucher->min_spend, 0, ',', '.')]);
+        }
+
+        $discount = $voucher->getDiscountAmount($request->amount);
+
+        return response()->json([
+            'success' => true,
+            'code' => $voucher->code,
+            'type' => $voucher->type,
+            'value' => $voucher->value,
+            'discount' => (int) $discount,
+            'message' => 'Voucher berhasil diterapkan! Diskon Rp ' . number_format($discount, 0, ',', '.')
+        ]);
     }
 
     // ── Private helpers ───────────────────────────────────────
@@ -416,6 +501,11 @@ class CheckoutController extends Controller
 
         DB::transaction(function () use ($order) {
             $order->update(['status' => 'cancelled']);
+
+            // Refund points
+            if ($order->points_redeemed > 0 && $order->user) {
+                $order->user->adjustPoints($order->points_redeemed, 'refund', "Refund poin dari pembatalan pesanan #{$order->order_number}", $order->id);
+            }
 
             if ($order->is_preorder) return;
 

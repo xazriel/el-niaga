@@ -117,7 +117,7 @@
 
     @php
         $steps = [
-            ['01', 'Browse',   'Temukan koleksi Farhana yang sesuai dengan kebutuhan dan kenyamanan Anda.'],
+            ['01', 'Browse',   'Temukan koleksi Ssubsclub yang sesuai dengan kebutuhan dan kenyamanan Anda.'],
             ['02', 'Secure',   'Lengkapi detail pengiriman dengan benar sebelum melanjutkan pesanan.'],
             ['03', 'Payment',  'Selesaikan pembayaran melalui metode pembayaran yang tersedia.'],
             ['04', 'Receive',  'Pesanan akan segera kami proses dan kirimkan ke alamat tujuan Anda.'],
@@ -144,7 +144,7 @@
     <div class="payment-info-wrapper">
         <h3 class="payment-info-title">PAYMENT INFORMATION</h3>
         <div class="payment-text">
-            <p>Farhana menerima pembayaran melalui:</p>
+            <p>Ssubsclub menerima pembayaran melalui:</p>
             <ul class="payment-list-simple">
                 <li>Transfer Bank</li>
                 <li>Virtual Account</li>

@@ -49,10 +49,23 @@ class OrderController extends Controller
             'tracking_number' => 'nullable|string|max:100',
         ]);
 
-        $order->update([
-            'status' => $request->status,
-            'tracking_number' => $request->tracking_number ?? $order->tracking_number,
-        ]);
+        $newStatus = $request->status;
+        $oldStatus = $order->status;
+        $paidStatuses = ['success', 'paid', 'shipped', 'completed'];
+
+        if ($newStatus === 'cancelled') {
+            $order->cancelOrder();
+        } elseif (in_array($newStatus, $paidStatuses) && !in_array($oldStatus, $paidStatuses)) {
+            $order->markAsPaid();
+            if ($request->filled('tracking_number')) {
+                $order->update(['tracking_number' => $request->tracking_number]);
+            }
+        } else {
+            $order->update([
+                'status' => $newStatus,
+                'tracking_number' => $request->tracking_number ?? $order->tracking_number,
+            ]);
+        }
 
         return back()->with('success', 'Order status updated successfully!');
     }

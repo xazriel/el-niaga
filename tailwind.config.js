@@ -17,11 +17,11 @@ export default {
             },
             colors: {
                 brand: {
-                    primary: '#2F3526',
+                    primary: '#1E1E24',
                     white: '#FFFFFF',
                     black: '#000000',
-                    olive: '#6B705C',
-                    light: '#E9E9E9',
+                    olive: '#9A8C73',
+                    light: '#F4F3EF',
                 }
             }
         },

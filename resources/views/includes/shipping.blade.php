@@ -87,7 +87,7 @@
                 <li><span class="sh-bullet"></span>Pesanan diproses setelah pembayaran terkonfirmasi</li>
                 <li><span class="sh-bullet"></span>Resi akan diinformasikan maksimal H+1 setelah pengiriman</li>
                 <li><span class="sh-bullet"></span>Pengiriman dilakukan melalui jasa ekspedisi terpercaya</li>
-                <li><span class="sh-bullet"></span>Untuk pengiriman internasional, silakan hubungi Customer Service Farhana</li>
+                <li><span class="sh-bullet"></span>Untuk pengiriman internasional, silakan hubungi Customer Service Ssubsclub</li>
             </ul>
         </div>
 

@@ -13,8 +13,8 @@
             {{-- LOGO & TAHUN (Hidden di Mobile agar tampilan putih bisa naik) --}}
             <div class="hidden lg:block relative z-10">
                 <a href="/" class="block">
-                    <img src="{{ Storage::url('LOGO-FARHANA-NEW-TRANSPARENT.png') }}"
-                         alt="Farhana"
+                    <img src="{{ asset('sclublogo.png') }}"
+                         alt="Ssubsclub"
                          class="h-40 w-auto object-contain brightness-0 invert opacity-95 -ml-12 -mt-2">
                 </a>
                 <p class="text-[#6B705C] text-[10px] tracking-[0.4em] uppercase mt-0 ml-1">Est. MMXXVI</p>
@@ -52,7 +52,7 @@
                             <h3 class="text-3xl font-extralight text-[#2F3526] tracking-tight leading-tight uppercase">
                                 Register
                             </h3>
-                            <p class="text-[9px] font-bold tracking-[0.3em] uppercase text-gray-400">Join Farhana Official</p>
+                            <p class="text-[9px] font-bold tracking-[0.3em] uppercase text-gray-400">Join Ssubsclub Official</p>
                         </div>
 
                         <form method="POST" action="{{ route('register') }}" class="space-y-8">
