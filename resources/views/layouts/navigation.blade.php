@@ -16,7 +16,6 @@
 
             {{-- MENU NAVIGATION DESKTOP --}}
             <div class="hidden sm:flex space-x-10 items-center justify-center flex-1">
-                <a href="{{ route('home') }}" class="text-[10px] font-bold uppercase tracking-widest text-gray-600 hover:text-black transition">Home</a>
                 <a href="{{ route('products.index') }}" class="text-[10px] font-bold uppercase tracking-widest text-gray-600 hover:text-black transition">Produk</a>
                 <a href="{{ route('articles.index') }}" class="text-[10px] font-bold uppercase tracking-widest text-gray-600 hover:text-black transition">Artikel</a>
                 <a href="{{ route('about-us') }}" class="text-[10px] font-bold uppercase tracking-widest text-gray-600 hover:text-black transition">Tentang Kami</a>
@@ -99,11 +98,11 @@
     @if(!$showAdminDrawer)
     <div :class="{'block': open, 'hidden': !open}" class="hidden sm:hidden bg-white border-t border-gray-100">
         <div class="space-y-1 pb-3 pt-2 px-4 border-b border-gray-100">
-            <x-responsive-nav-link :href="route('home')" :active="request()->routeIs('home')">{{ __('Home') }}</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('products.index')" :active="request()->routeIs('products.index')">{{ __('Produk') }}</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('articles.index')" :active="request()->routeIs('articles.index')">{{ __('Artikel') }}</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('about-us')" :active="request()->routeIs('about-us')">{{ __('Tentang Kami') }}</x-responsive-nav-link>
         </div>
+
         <div class="pt-4 pb-3">
             @auth
                 <div class="px-4 flex justify-between items-center mb-4">

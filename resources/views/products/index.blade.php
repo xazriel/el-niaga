@@ -8,11 +8,11 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #FFFFFF; color: #111111; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #FFFFFF; color: #111111; }
         .nav-link { font-size: 0.7rem; letter-spacing: 0.2em; transition: all 0.3s ease; }
         .price-original { font-size: 10px; color: #c0c0c0; text-decoration: line-through; letter-spacing: 0.1em; }
         .price-normal, .price-sale { font-size: 12px; font-weight: 500; letter-spacing: 0.12em; }
-        .category-btn.active { font-weight: 700; border-bottom: 2px solid #2F3526; color: #2F3526; }
+        .category-btn.active { font-weight: 700; border-bottom: 2px solid #10B981; color: #10B981; }
     </style>
 </head>
 <body class="antialiased bg-white text-gray-900">
@@ -31,7 +31,7 @@
             {{-- MENU NAVIGATION --}}
             <div class="hidden md:flex space-x-10 items-center">
                 <a href="{{ route('home') }}" class="nav-link font-bold hover:text-gray-400 uppercase text-[11px] tracking-widest">Home</a>
-                <a href="{{ route('products.index') }}" class="nav-link font-bold hover:text-gray-400 uppercase text-[11px] tracking-widest" style="color: #2F3526; border-bottom: 1px solid #2F3526; padding-bottom: 2px;">Produk</a>
+                <a href="{{ route('products.index') }}" class="nav-link font-bold hover:text-gray-400 uppercase text-[11px] tracking-widest" style="color: #10B981; border-bottom: 1px solid #10B981; padding-bottom: 2px;">Produk</a>
                 <a href="{{ route('articles.index') }}" class="nav-link font-bold hover:text-gray-400 uppercase text-[11px] tracking-widest">Artikel</a>
                 <a href="{{ route('home') }}#about" class="nav-link font-bold hover:text-gray-400 uppercase text-[11px] tracking-widest">Tentang Kami</a>
             </div>
@@ -62,7 +62,7 @@
         
         {{-- Section title --}}
         <div class="text-center mb-16">
-            <span class="text-[9px] uppercase tracking-[0.4em] text-brand-olive font-black block mb-2">Ssubsclub Boutique</span>
+            <span class="text-[9px] uppercase tracking-[0.4em] text-brand-olive font-black block mb-2">Ssubsclub</span>
             <h1 class="text-4xl font-light tracking-wide uppercase">Koleksi Produk</h1>
         </div>
 
@@ -72,12 +72,12 @@
             {{-- Categories --}}
             <div class="flex flex-wrap gap-6 items-center">
                 <a href="{{ route('products.index', array_merge(request()->query(), ['category' => ''])) }}" 
-                    class="category-btn text-[10px] uppercase tracking-[0.2em] pb-1 hover:text-[#2F3526] transition {{ !request('category') ? 'active' : '' }}">
+                    class="category-btn text-[10px] uppercase tracking-[0.2em] pb-1 hover:text-[#10B981] transition {{ !request('category') ? 'active' : '' }}">
                     All Collection
                 </a>
                 @foreach($categories as $cat)
                     <a href="{{ route('products.index', array_merge(request()->query(), ['category' => $cat->slug])) }}" 
-                        class="category-btn text-[10px] uppercase tracking-[0.2em] pb-1 hover:text-[#2F3526] transition {{ request('category') === $cat->slug ? 'active' : '' }}">
+                        class="category-btn text-[10px] uppercase tracking-[0.2em] pb-1 hover:text-[#10B981] transition {{ request('category') === $cat->slug ? 'active' : '' }}">
                         {{ $cat->name }}
                     </a>
                 @endforeach
@@ -91,7 +91,7 @@
 
                 <div class="relative w-full sm:w-64">
                     <input type="text" name="search" value="{{ request('search') }}" placeholder="CARI PRODUK..."
-                        class="w-full bg-gray-50 border border-gray-200 rounded-full px-5 py-2.5 text-[9px] tracking-widest uppercase focus:outline-none focus:ring-1 focus:ring-[#2F3526]">
+                        class="w-full bg-gray-50 border border-gray-200 rounded-full px-5 py-2.5 text-[9px] tracking-widest uppercase focus:outline-none focus:ring-1 focus:ring-[#10B981]">
                 </div>
 
                 <select name="sort" onchange="this.form.submit()"
@@ -116,7 +116,7 @@
                             </div>
                         @endif
                         @if($product->custom_tag)
-                            <div class="absolute top-3 right-3 z-10 bg-[#2F3526] text-white text-[8px] font-bold tracking-widest uppercase px-2 py-1 select-none rounded">
+                            <div class="absolute top-3 right-3 z-10 bg-[#10B981] text-white text-[8px] font-bold tracking-widest uppercase px-2 py-1 select-none rounded">
                                 {{ $product->custom_tag }}
                             </div>
                         @endif
@@ -157,7 +157,7 @@
     </main>
 
     {{-- Footer similar to welcome page --}}
-    <footer class="bg-[#2F3526] text-white mt-32 py-12 text-center text-[10px] tracking-widest uppercase">
+    <footer class="bg-[#0B0C0E] text-white mt-32 py-12 text-center text-[10px] tracking-widest uppercase">
         &copy; 2026 Ssubsclub Official. All Rights Reserved.
     </footer>
 

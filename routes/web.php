@@ -21,7 +21,15 @@ use App\Http\Controllers\Customer\CustomerProductCatalogController;
 use App\Http\Controllers\Customer\CustomerArticleController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/', function () {
+    if (auth()->check()) {
+        if (auth()->user()->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
+        return redirect()->route('dashboard');
+    }
+    return redirect()->route('login');
+})->name('home');
 Route::get('/product/{slug}', [HomeController::class, 'show'])->name('product.details');
 
 Route::get('/products',        [CustomerProductCatalogController::class, 'index'])->name('products.index');

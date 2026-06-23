@@ -8,23 +8,33 @@
         <title>{{ config('app.name', 'Ssubsclub Web') }}</title>
         <link rel="icon" type="image/svg+xml" href="{{ asset('sclublogo.png') }}">
 
+        {{-- Google Fonts --}}
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
         <style>
             [x-cloak] { display: none !important; }
 
             *, *::before, *::after {
-                font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+                font-family: 'Plus Jakarta Sans', sans-serif;
+            }
+
+            h1, h2, h3, h4, h5, h6, .brand-font {
+                font-family: 'Plus Jakarta Sans', sans-serif !important;
+                font-weight: 800;
             }
 
             :root {
-                --primary:    #1E1E24;
-                --white:      #FFFFFF;
-                --black:      #000000;
-                --olive-tint: #9A8C73;
-                --light-gray: #F4F3EF;
+                --primary:    #10B981; /* Emerald Green Accent */
+                --white:      #0C0C0E; /* Dark card background */
+                --black:      #FFFFFF; /* White text */
+                --olive-tint: #8E8E9F; /* Grey for labels/muted text */
+                --light-gray: #050506; /* Deepest black for general background */
             }
 
             /* ── Scrollbar ── */
-            ::-webkit-scrollbar       { width: 3px; height: 3px; }
+            ::-webkit-scrollbar       { width: 4px; height: 4px; }
             ::-webkit-scrollbar-track { background: var(--light-gray); }
             ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 99px; }
 
@@ -43,12 +53,12 @@
                 text-decoration: none;
             }
             .nav-link:hover {
-                background: rgba(47,53,38,.07);
+                background: rgba(211,255,82,.08);
                 color: var(--primary);
             }
             .nav-link.active {
                 background: var(--primary);
-                color: var(--white);
+                color: #050506 !important;
             }
 
             /* ── Modal transitions ── */
@@ -72,14 +82,13 @@
             .modal-input {
                 width: 100%;
                 border: none;
-                border-bottom: 1.5px solid var(--light-gray);
+                border-bottom: 1.5px solid var(--olive-tint);
                 padding: 8px 0;
                 font-size: 13px;
                 background: transparent;
                 outline: none;
                 color: var(--black);
                 transition: border-color .2s ease;
-                font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
             }
             .modal-input:focus { border-bottom-color: var(--primary); }
         </style>

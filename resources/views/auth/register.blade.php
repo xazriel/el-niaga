@@ -1,134 +1,133 @@
 <x-guest-layout>
-    {{-- Container utama dipaksa full screen --}}
-    <div class="fixed inset-0 min-h-screen w-full flex flex-col lg:flex-row bg-[#2F3526] lg:bg-[#FDFDFB] overflow-hidden" style="min-width: 100vw;">
+    <style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
-        {{-- SISI KIRI: Branding & Aesthetic Elements --}}
-        <div class="w-full lg:w-1/2 h-16 lg:h-full bg-[#2F3526] flex flex-col justify-between pt-10 px-16 pb-16 relative overflow-hidden shrink-0">
-            
-            {{-- ELEMEN GEOMETRIS (Hanya Desktop) --}}
-            <div class="hidden lg:block absolute top-[35%] -right-20 w-80 h-80 border border-white/[0.03] rounded-full pointer-events-none"></div>
-            <div class="hidden lg:block absolute bottom-20 right-12 w-32 h-32 border border-white/[0.05] rounded-full pointer-events-none"></div>
-            <div class="hidden lg:block absolute left-10 top-1/4 h-1/2 w-[1px] bg-gradient-to-b from-transparent via-white/[0.05] to-transparent pointer-events-none"></div>
+        .font-heavy {
+            font-family: 'Plus Jakarta Sans', sans-serif !important;
+            font-weight: 800;
+        }
+    </style>
 
-            {{-- LOGO & TAHUN (Hidden di Mobile agar tampilan putih bisa naik) --}}
-            <div class="hidden lg:block relative z-10">
-                <a href="/" class="block">
+    {{-- Container utama --}}
+    <div class="fixed inset-0 min-h-screen w-full flex flex-col lg:flex-row bg-[#050506] overflow-hidden" style="min-width: 100vw;">
+        
+        {{-- SISI KIRI (Branding & Visuals) --}}
+        <div class="w-full lg:w-1/2 h-[20vh] lg:h-full bg-[#050506] border-b lg:border-b-0 lg:border-r border-[#1C1C20] flex flex-col justify-between pt-6 lg:pt-12 px-10 lg:px-16 pb-4 lg:pb-16 relative overflow-hidden shrink-0">
+            
+            {{-- BACKGROUND TEXT --}}
+            <div class="absolute inset-0 flex flex-col justify-center items-center pointer-events-none select-none opacity-[0.06]">
+                <div class="text-[12vw] font-black tracking-tighter uppercase leading-none text-white font-heavy select-none">REAL</div>
+                <div class="text-[14vw] font-black tracking-widest uppercase leading-none text-white font-heavy select-none">DOPE</div>
+                <div class="text-[12vw] font-black tracking-tighter uppercase leading-none text-white font-heavy select-none">SHIT</div>
+            </div>
+
+            {{-- LOGO & BRANDING (Hidden/Muted on mobile to save space) --}}
+            <div class="relative z-10 flex flex-row lg:flex-col justify-between lg:justify-start items-center lg:items-start w-full">
+                <a href="{{ route('home') }}" class="block">
                     <img src="{{ asset('sclublogo.png') }}"
                          alt="Ssubsclub"
-                         class="h-40 w-auto object-contain brightness-0 invert opacity-95 -ml-12 -mt-2">
+                         class="h-[60px] lg:h-36 w-auto object-contain brightness-0 invert opacity-95 -ml-4 lg:-ml-10">
                 </a>
-                <p class="text-[#6B705C] text-[10px] tracking-[0.4em] uppercase mt-0 ml-1">Est. MMXXVI</p>
+                <div class="text-left mt-1 lg:mt-2">
+                    <p class="text-[#10B981] text-[9px] lg:text-[10px] tracking-[0.4em] uppercase font-bold">Est. MMXXVI</p>
+                    <p class="text-white/40 text-[7px] lg:text-[8px] tracking-[0.2em] uppercase mt-0.5">GEN-Z STREETWEAR / HIPHOP CULTURE</p>
+                </div>
             </div>
 
-            {{-- QUOTE (Hanya Desktop) --}}
+            {{-- FOOTER BRAND TAG (Desktop Only) --}}
             <div class="hidden lg:block relative z-10">
-                <p class="text-white/30 text-[9px] uppercase tracking-[0.4em] leading-loose max-w-xs ml-1">
-                    "Simplicity is the ultimate sophistication."
+                <p class="text-white/40 text-[9px] uppercase tracking-[0.3em] leading-loose max-w-xs border-l-2 border-[#10B981] pl-3">
+                    SSUBSCLUB® // REAL DOPE SHIT<br>
+                    UNDERGROUND STREET CULTURE INDONESIA
                 </p>
-            </div>
-
-            {{-- Background Curve (Hanya Desktop) --}}
-            <div class="hidden lg:block absolute inset-0 opacity-5 pointer-events-none">
-                <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-                    <path d="M0 100 C 30 0 70 0 100 100" stroke="white" fill="transparent" stroke-width="0.1" />
-                </svg>
             </div>
         </div>
 
-        {{-- SISI KANAN: Form Register --}}
-        {{-- flex-1 memastikan area ini mengisi sisa layar di bawah header hijau mobile --}}
-        <div class="flex-1 w-full lg:w-1/2 flex flex-col bg-[#2F3526] lg:bg-white relative overflow-hidden">
+        {{-- SISI KANAN (Form Card) --}}
+        <div class="w-full lg:w-1/2 h-[80vh] lg:h-full flex flex-col items-center justify-start lg:justify-center p-0 lg:p-8 bg-[#050506] relative">
             
-            {{-- Card Putih --}}
-            {{-- rounded-t-[40px] diletakkan di sini agar tetap melengkung secara statis --}}
-            <div class="flex-1 w-full bg-white rounded-t-[40px] lg:rounded-none shadow-[0_-10px_40px_rgba(0,0,0,0.1)] lg:shadow-none flex flex-col overflow-hidden">
+            <div class="w-full h-full lg:h-auto max-w-none lg:max-w-[390px] py-8 px-10 lg:px-12 bg-[#0C0C0E] border lg:border border-transparent lg:border-[#1C1C20] rounded-t-[40px] lg:rounded-3xl overflow-y-auto no-scrollbar shadow-[0_-10px_40px_rgba(0,0,0,0.5)] lg:shadow-2xl">
                 
-                {{-- Container Scrollable (Hanya bagian ini yang scroll) --}}
-                <div class="flex-1 overflow-y-auto px-8 lg:px-0 py-10">
-                    <div class="w-full max-w-[380px] mx-auto">
-                        
-                        {{-- Header Register --}}
-                        <div class="flex flex-col items-start space-y-2 mb-10">
-                            <h3 class="text-3xl font-extralight text-[#2F3526] tracking-tight leading-tight uppercase">
-                                Register
-                            </h3>
-                            <p class="text-[9px] font-bold tracking-[0.3em] uppercase text-gray-400">Join Ssubsclub Official</p>
-                        </div>
+                {{-- Header Register --}}
+                <div class="flex flex-col items-start space-y-2 mb-6 lg:mb-8">
+                    <h3 class="text-3xl font-black text-white tracking-tighter uppercase leading-tight font-heavy">
+                        REGISTER
+                    </h3>
+                    <p class="text-[9px] font-bold tracking-[0.3em] uppercase text-[#10B981]">Join the Ssubsclub collective</p>
+                </div>
 
-                        <form method="POST" action="{{ route('register') }}" class="space-y-8">
-                            @csrf
+                <form method="POST" action="{{ route('register') }}" class="space-y-5 lg:space-y-6">
+                    @csrf
 
-                            {{-- Name --}}
-                            <div class="border-b border-gray-100 pb-2 focus-within:border-[#2F3526] transition-colors duration-500">
-                                <label class="block text-[9px] font-bold tracking-[0.2em] uppercase text-gray-400 mb-1">Full Name</label>
-                                <input type="text" name="name" :value="old('name')" required autofocus 
-                                       class="w-full border-none bg-transparent p-0 focus:ring-0 text-[11px] tracking-wide text-gray-800 placeholder-gray-200 placeholder:text-[10px]"
-                                       placeholder="YOUR FULL NAME">
-                                <x-input-error :messages="$errors->get('name')" class="mt-2" />
-                            </div>
-
-                            {{-- Email --}}
-                            <div class="border-b border-gray-100 pb-2 focus-within:border-[#2F3526] transition-colors duration-500">
-                                <label class="block text-[9px] font-bold tracking-[0.2em] uppercase text-gray-400 mb-1">Email Address</label>
-                                <input type="email" name="email" :value="old('email')" required 
-                                       class="w-full border-none bg-transparent p-0 focus:ring-0 text-sm tracking-wide text-gray-800 placeholder-gray-200 placeholder:text-[10px]"
-                                       placeholder="USERNAME@GMAIL.COM">
-                                <x-input-error :messages="$errors->get('email')" class="mt-2" />
-                            </div>
-
-                            {{-- Password dengan Show/Hide --}}
-                            <div class="border-b border-gray-100 pb-2 focus-within:border-[#2F3526] transition-colors duration-500" x-data="{ show: false }">
-                                <label class="block text-[9px] font-bold tracking-[0.2em] uppercase text-gray-400 mb-1">Password</label>
-                                <div class="relative">
-                                    <input :type="show ? 'text' : 'password'" name="password" required 
-                                           class="w-full border-none bg-transparent p-0 pr-10 focus:ring-0 text-sm tracking-wide text-gray-800 placeholder-gray-200"
-                                           placeholder="••••••••">
-                                    <button type="button" @click="show = !show" class="absolute right-0 top-1/2 -translate-y-1/2 text-gray-300 hover:text-[#2F3526] transition-colors focus:outline-none">
-                                        <svg x-show="!show" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                        </svg>
-                                        <svg x-show="show" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="display: none;">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
-                                        </svg>
-                                    </button>
-                                </div>
-                                <x-input-error :messages="$errors->get('password')" class="mt-2" />
-                            </div>
-
-                            {{-- Confirm Password dengan Show/Hide --}}
-                            <div class="border-b border-gray-100 pb-2 focus-within:border-[#2F3526] transition-colors duration-500" x-data="{ show: false }">
-                                <label class="block text-[9px] font-bold tracking-[0.2em] uppercase text-gray-400 mb-1">Confirm Password</label>
-                                <div class="relative">
-                                    <input :type="show ? 'text' : 'password'" name="password_confirmation" required 
-                                           class="w-full border-none bg-transparent p-0 pr-10 focus:ring-0 text-sm tracking-wide text-gray-800 placeholder-gray-200"
-                                           placeholder="••••••••">
-                                    <button type="button" @click="show = !show" class="absolute right-0 top-1/2 -translate-y-1/2 text-gray-300 hover:text-[#2F3526] transition-colors focus:outline-none">
-                                        <svg x-show="!show" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                        </svg>
-                                        <svg x-show="show" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="display: none;">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
-                                        </svg>
-                                    </button>
-                                </div>
-                                <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-                            </div>
-
-                            {{-- Button Register --}}
-                            <button type="submit" class="w-full py-5 bg-[#2F3526] text-white text-[10px] font-bold tracking-[0.5em] uppercase hover:bg-[#1a1f16] transition-all shadow-lg active:scale-[0.98]">
-                                Create Account
-                            </button>
-
-                            {{-- Link Login (Padding bottom dikurangi) --}}
-                            <p class="text-center text-[10px] tracking-[0.2em] text-gray-400 uppercase mt-2 pb-6">
-                                Already have an account? <a href="{{ route('login') }}" class="text-[#2F3526] font-bold border-b border-[#2F3526]/20 ml-1">Log In</a>
-                            </p>
-                        </form>
+                    {{-- Name --}}
+                    <div class="border-b border-[#1C1C20] pb-2 focus-within:border-[#10B981] transition-colors duration-500">
+                        <label class="block text-[9px] font-bold tracking-[0.2em] uppercase text-gray-400 mb-1">Full Name</label>
+                        <input type="text" name="name" :value="old('name')" required autofocus 
+                               class="w-full border-none bg-transparent p-0 focus:ring-0 text-sm tracking-wide text-white placeholder-gray-700"
+                               placeholder="YOUR FULL NAME">
+                        <x-input-error :messages="$errors->get('name')" class="mt-2" />
                     </div>
-                </div> {{-- End Scrollable Container --}}
 
+                    {{-- Email --}}
+                    <div class="border-b border-[#1C1C20] pb-2 focus-within:border-[#10B981] transition-colors duration-500">
+                        <label class="block text-[9px] font-bold tracking-[0.2em] uppercase text-gray-400 mb-1">Email Address</label>
+                        <input type="email" name="email" :value="old('email')" required 
+                               class="w-full border-none bg-transparent p-0 focus:ring-0 text-sm tracking-wide text-white placeholder-gray-700"
+                               placeholder="username@gmail.com">
+                        <x-input-error :messages="$errors->get('email')" class="mt-2" />
+                    </div>
+
+                    {{-- Password --}}
+                    <div class="border-b border-[#1C1C20] pb-2 focus-within:border-[#10B981] transition-colors duration-500" x-data="{ show: false }">
+                        <label class="block text-[9px] font-bold tracking-[0.2em] uppercase text-gray-400 mb-1">Password</label>
+                        <div class="relative">
+                            <input :type="show ? 'text' : 'password'" name="password" required 
+                                   class="w-full border-none bg-transparent p-0 pr-10 focus:ring-0 text-sm tracking-wide text-white placeholder-gray-700"
+                                   placeholder="••••••••">
+                            <button type="button" @click="show = !show" class="absolute right-0 top-1/2 -translate-y-1/2 text-gray-600 hover:text-[#10B981] transition-colors focus:outline-none">
+                                <svg x-show="!show" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                                <svg x-show="show" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="display: none;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
+                                </svg>
+                            </button>
+                        </div>
+                        <x-input-error :messages="$errors->get('password')" class="mt-2" />
+                    </div>
+
+                    {{-- Confirm Password --}}
+                    <div class="border-b border-[#1C1C20] pb-2 focus-within:border-[#10B981] transition-colors duration-500" x-data="{ show: false }">
+                        <label class="block text-[9px] font-bold tracking-[0.2em] uppercase text-gray-400 mb-1">Confirm Password</label>
+                        <div class="relative">
+                            <input :type="show ? 'text' : 'password'" name="password_confirmation" required 
+                                   class="w-full border-none bg-transparent p-0 pr-10 focus:ring-0 text-sm tracking-wide text-white placeholder-gray-700"
+                                   placeholder="••••••••">
+                            <button type="button" @click="show = !show" class="absolute right-0 top-1/2 -translate-y-1/2 text-gray-600 hover:text-[#10B981] transition-colors focus:outline-none">
+                                <svg x-show="!show" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                                <svg x-show="show" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="display: none;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
+                                </svg>
+                            </button>
+                        </div>
+                        <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+                    </div>
+
+                    {{-- Button Register --}}
+                    <button type="submit" class="w-full py-5 bg-[#10B981] text-[#050506] text-[11px] font-black tracking-[0.5em] uppercase hover:bg-[#059669] transition-all hover:scale-[1.02] shadow-[0_4px_20px_rgba(16,185,129,0.15)] active:scale-[0.98] rounded-xl lg:rounded-xl font-heavy">
+                        CREATE ACCOUNT
+                    </button>
+
+                    {{-- Link Login --}}
+                    <p class="text-center text-[10px] tracking-[0.2em] text-gray-500 uppercase mt-2 pb-4">
+                        Already have an account? <a href="{{ route('login') }}" class="text-[#10B981] font-black border-b border-[#10B981]/20 ml-1">Log In</a>
+                    </p>
+                </form>
             </div>
         </div>
     </div>

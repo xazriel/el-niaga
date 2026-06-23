@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
-    <meta name="theme-color" content="#2F3526">
+    <meta name="theme-color" content="#10B981">
     <title>Keranjang — Ssubsclub</title>
     <link rel="icon" type="image/svg+xml" href="{{ asset('sclublogo.png') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         :root {
-            --primary:  #2F3526;
-            --olive:    #6B705C;
-            --gray:     #E9E9E9;
+            --primary:  #10B981;
+            --olive:    #8E8E9F;
+            --gray:     #F3F4F6;
             --white:    #FFFFFF;
-            --black:    #000000;
-            --p10:      rgba(47,53,38,.10);
-            --p20:      rgba(47,53,38,.20);
-            --o60:      rgba(107,112,92,.60);
-            --w80:      rgba(255,255,255,.80);
-            --w12:      rgba(255,255,255,.12);
+            --black:    #0C0C0E;
+            --p10:      rgba(16, 185, 129, .10);
+            --p20:      rgba(16, 185, 129, .20);
+            --o60:      rgba(142, 142, 159, .60);
+            --w80:      rgba(255, 255, 255, .80);
+            --w12:      rgba(255, 255, 255, .12);
             --red:      #C0392B;
             --t:        .25s ease;
         }
@@ -26,7 +26,7 @@
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0 }
         html { scroll-behavior: smooth; -webkit-text-size-adjust: 100% }
         body {
-            font-family: Helvetica, Arial, sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             background: var(--white);
             color: var(--black);
             -webkit-font-smoothing: antialiased;
@@ -310,7 +310,7 @@
         .btn-shop:hover { background: var(--white); color: var(--primary) }
 
         /* ── FOOTER ── */
-        footer { background: var(--primary); color: var(--white); padding: 1.25rem }
+        footer { background: #0B0C0E; color: var(--white); padding: 1.25rem }
         .f-copy {
             text-align: center; font-size: 9px; letter-spacing: .3em;
             text-transform: uppercase; color: rgba(255,255,255,.4);

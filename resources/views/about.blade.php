@@ -7,7 +7,7 @@
     <link rel="icon" type="image/svg+xml" href="{{ asset('sclublogo.png') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
-        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #FFFFFF; color: #111111; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #FFFFFF; color: #111111; }
         .nav-link { font-size: 0.7rem; letter-spacing: 0.2em; transition: all 0.3s ease; }
     </style>
 </head>
@@ -29,7 +29,7 @@
                 <a href="{{ route('home') }}" class="nav-link font-bold hover:text-gray-400 uppercase text-[11px] tracking-widest">Home</a>
                 <a href="{{ route('products.index') }}" class="nav-link font-bold hover:text-gray-400 uppercase text-[11px] tracking-widest">Produk</a>
                 <a href="{{ route('articles.index') }}" class="nav-link font-bold hover:text-gray-400 uppercase text-[11px] tracking-widest">Artikel</a>
-                <a href="{{ route('about-us') }}" class="nav-link font-bold hover:text-gray-400 uppercase text-[11px] tracking-widest" style="color: #1E1E24; border-bottom: 1px solid #1E1E24; padding-bottom: 2px;">Tentang Kami</a>
+                <a href="{{ route('about-us') }}" class="nav-link font-bold hover:text-gray-400 uppercase text-[11px] tracking-widest" style="color: #10B981; border-bottom: 1px solid #10B981; padding-bottom: 2px;">Tentang Kami</a>
             </div>
 
             {{-- RIGHT ICONS --}}
@@ -61,28 +61,27 @@
             <h1 class="text-4xl font-light tracking-wide uppercase">Tentang Kami</h1>
         </div>
 
-        <div class="prose prose-lg max-w-none text-[13px] text-gray-700 leading-loose tracking-wide space-y-8 text-center">
+        <div class="prose prose-lg max-w-none text-[13px] text-gray-700 leading-loose tracking-wide space-y-8 text-center uppercase">
             <p>
-                Ssubsclub hadir melalui kesederhanaan yang terasa tenang, anggun, dan bermakna. 
-                Kami percaya bahwa modesty bukan sekadar cara berpakaian, tetapi juga cara membawa diri dengan iman, ketenangan, dan keindahan yang tidak berlebihan.
+                Ssubsclub lahir dari kegelisahan jalanan dan gairah subkultur pemuda perkotaan. Kami bukan sekadar brand pakaian, melainkan sebuah kolektif pergerakan yang merayakan kebebasan mengekspresikan diri melalui streetwear berkualitas tinggi dengan sentuhan estetika hip-hop, underground culture, dan dinamisme generasi Z.
             </p>
             <p>
-                Setiap koleksi dirancang dengan perhatian pada detail, kenyamanan, dan siluet yang elegan untuk menemani perempuan muslimah dalam setiap langkahnya. Kami memadukan bahan-bahan premium berkualitas tinggi dengan jahitan yang rapi, memastikan setiap helai pakaian mencerminkan kualitas terbaik.
+                Setiap drop dirancang secara presisi dan diproduksi dalam jumlah sangat terbatas (limited batch) untuk menjaga keunikan identitas Anda. Kami memadukan bahan-bahan berat berkualitas tinggi dengan detail konstruksi pakaian yang kokoh, memastikan setiap helai produk siap menemani Anda menaklukkan kerasnya aspal jalanan kota.
             </p>
             
             <div class="py-12">
-                <span class="block text-2xl font-light text-[#1E1E24] italic">"Luxury in Modesty. Elegance with Iman."</span>
+                <span class="block text-2xl font-light text-[#10B981] italic font-black tracking-widest">"REAL DOPE SHIT // RAW STREET CULTURE INDONESIA"</span>
             </div>
 
             <p>
-                Melalui komitmen ini, Ssubsclub terus menginspirasi muslimah modern untuk tampil percaya diri tanpa harus mengesampingkan syariat. Kami percaya bahwa keanggunan sejati terpancar dari dalam hati yang damai.
+                Bergabunglah bersama kami di perbatasan antara mode kelas atas dan kultur bawah tanah. Ssubsclub tidak diciptakan untuk mengikuti arus tren yang cepat mati; kami di sini untuk menetapkan standar baru tentang bagaimana streetwear premium seharusnya direpresentasikan.
             </p>
         </div>
 
     </main>
 
     {{-- Footer --}}
-    <footer class="bg-[#1E1E24] text-white mt-32 py-12 text-center text-[10px] tracking-widest uppercase">
+    <footer class="bg-[#0B0C0E] text-white mt-32 py-12 text-center text-[10px] tracking-widest uppercase">
         &copy; 2026 Ssubsclub Official. All Rights Reserved.
     </footer>
 

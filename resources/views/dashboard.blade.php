@@ -3,25 +3,25 @@
         [x-cloak] { display: none !important; }
 
         * { 
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
             -webkit-font-smoothing: antialiased;
         }
 
         :root {
-            --primary:    #1E1E24;
-            --white:      #FFFFFF;
-            --black:      #000000;
-            --olive-tint: #9A8C73;
-            --light-gray: #F4F3EF;
-            --p8:  rgba(30,30,36,.05);
-            --p15: rgba(30,30,36,.12);
+            --primary:    #10B981; /* Emerald Green Accent */
+            --white:      #0C0C0E; /* Dark card background */
+            --black:      #FFFFFF; /* White text */
+            --olive-tint: #8E8E9F; /* Grey for labels/muted text */
+            --light-gray: #050506; /* Deepest black for general background */
+            --p8:  rgba(16, 185, 129, .08);
+            --p15: rgba(16, 185, 129, .15);
         }
 
-        body { background-color: var(--white); color: var(--black); }
+        body { background-color: var(--light-gray); color: var(--black); }
 
         .custom-scrollbar::-webkit-scrollbar       { width: 2px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--olive-tint); border-radius: 99px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 99px; }
 
         .tab-btn {
             position: relative;
@@ -47,7 +47,7 @@
 
         .tab-btn.active { 
             background: var(--primary); 
-            color: var(--white); 
+            color: #050506 !important; 
         }
 
         .tab-btn:not(.active) { 
@@ -63,25 +63,27 @@
         }
 
         .order-card {
-            border: 1px solid var(--light-gray);
+            border: 1px solid #1C1C20;
             border-radius: 28px;
             background: var(--white);
             padding: 32px;
             transition: all .4s cubic-bezier(0.22, 1, 0.36, 1);
         }
         .order-card:hover {
-            border-color: transparent;
-            box-shadow: 0 20px 40px rgba(47,53,38,.06);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(0,0,0,.5);
             transform: translateY(-2px);
         }
 
         .address-card {
             border-radius: 32px;
             background: var(--white);
+            border: 1px solid #1C1C20;
             transition: all .4s cubic-bezier(0.22, 1, 0.36, 1);
         }
         .address-card:hover {
-            box-shadow: 0 24px 48px rgba(47,53,38,.08);
+            border-color: var(--primary);
+            box-shadow: 0 24px 48px rgba(0,0,0,.5);
             transform: translateY(-4px);
         }
 
@@ -94,7 +96,7 @@
 
         .btn-primary {
             background: var(--primary);
-            color: var(--white);
+            color: #050506 !important;
             border-radius: 99px;
             transition: all .3s ease;
             display: inline-flex; align-items: center; justify-content: center;
@@ -102,7 +104,8 @@
         .btn-primary:hover { opacity: 0.9; transform: scale(1.02); }
 
         .modal-backdrop {
-            background: transparent;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(4px);
         }
 
         /* Tracking modal premium styles */
@@ -112,15 +115,15 @@
             font-size: 9px; font-weight: 800;
             letter-spacing: .15em; text-transform: uppercase;
         }
-        .track-status-badge.delivered { background:#dcfce7; color:#15803d; }
-        .track-status-badge.on-process { background:#1c1c1c; color:#fff; }
+        .track-status-badge.delivered { background:#15803d; color:#fff; }
+        .track-status-badge.on-process { background:var(--primary); color:#050506; }
 
         .track-ping {
             width: 8px; height: 8px; border-radius: 50%;
             display: inline-block; margin-right: 6px;
         }
-        .track-ping.ping { background: #facc15; animation: ping .9s cubic-bezier(0,0,.2,1) infinite; }
-        .track-ping.solid { background: #22c55e; }
+        .track-ping.ping { background: #050506; animation: ping .9s cubic-bezier(0,0,.2,1) infinite; }
+        .track-ping.solid { background: #fff; }
         @keyframes ping {
             0%,100%{opacity:1;transform:scale(1)}
             50%{opacity:.6;transform:scale(1.3)}
@@ -128,27 +131,27 @@
 
         .track-info-grid {
             display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
-            padding: 24px 0; border-top: 1px solid #F3F4F6;
+            padding: 24px 0; border-top: 1px solid #1C1C20;
         }
         .track-info-label { font-size: 9px; font-weight:700; letter-spacing:.15em; text-transform:uppercase; color:#9ca3af; margin-bottom:4px; }
-        .track-info-val   { font-size: 14px; font-weight:700; color:#111; }
+        .track-info-val   { font-size: 14px; font-weight:700; color:#fff; }
         .track-info-sub   { font-size: 11px; color:#6b7280; margin-top:2px; }
 
         .track-timeline-wrap { position: relative; padding-left: 28px; }
         .track-timeline-line {
             position: absolute; left: 8px; top: 6px; bottom: 6px;
             width: 2px;
-            background: linear-gradient(to bottom, #1c1c1c, #e5e7eb, #f3f4f6);
+            background: linear-gradient(to bottom, var(--primary), #1c1c1c, #2c2c2f);
         }
         .track-dot-wrap  { position: absolute; left: -20px; top: 2px; }
         .track-dot-active {
             width: 16px; height: 16px; border-radius: 50%;
-            background: #1c1c1c; border: 3px solid #d1d5db;
+            background: var(--primary); border: 3px solid #1C1C20;
             display:flex;align-items:center;justify-content:center;
         }
         .track-dot-idle {
             width: 10px; height: 10px; border-radius: 50%;
-            background: #d1d5db; margin: 3px;
+            background: #2c2c2f; margin: 3px;
         }
 
         @keyframes fadeUp {
@@ -161,7 +164,7 @@
 
         .spinner {
             width: 24px; height: 24px;
-            border: 2px solid var(--light-gray);
+            border: 2px solid #1C1C20;
             border-top-color: var(--primary);
             border-radius: 50%;
             animation: spin .8s linear infinite;
@@ -170,7 +173,7 @@
     </style>
 
     {{-- ── WRAPPER dengan x-data di sini, BUKAN di dalam div ── --}}
-    <div class="min-h-screen" style="background: var(--white);" x-data="trackingSystem()">
+    <div class="min-h-screen" style="background: var(--light-gray);" x-data="trackingSystem()">
 
         {{-- ── KONTEN UTAMA ── --}}
         <div class="max-w-6xl mx-auto px-8 py-24">
@@ -180,13 +183,13 @@
                 <div class="space-y-6">
                     <nav>
                         <ol class="flex items-center gap-3 text-[10px] uppercase tracking-[.3em]" style="color: var(--olive-tint);">
-                            <li><a href="{{ route('home') }}" class="hover:text-black transition-colors">Home</a></li>
+                            <li><a href="{{ route('products.index') }}" class="hover:text-white transition-colors">Shop</a></li>
                             <li class="opacity-30">/</li>
                             <li style="color: var(--primary); font-weight: 700;">Account</li>
                         </ol>
                     </nav>
                     <h1 class="text-4xl md:text-4xl font-light tracking-tight" style="color: var(--primary);">
-                        Hello, <span class="font-light text-black">{{ explode(' ', auth()->user()->name)[0] }}</span>
+                        Hello, <span class="font-light text-white">{{ explode(' ', auth()->user()->name)[0] }}</span>
                     </h1>
                 </div>
             </div>
@@ -381,7 +384,7 @@
 
                         {{-- Points card --}}
                         <div class="rounded-[2rem] p-10 mb-12 flex flex-col md:flex-row justify-between items-start md:items-center gap-8 shadow-sm" 
-                             style="background: linear-gradient(135deg, #2F3526 0%, #464F39 100%); color: var(--white);">
+                             style="background: linear-gradient(135deg, #0C0C0E 0%, #151518 100%); border: 1.5px solid var(--primary); color: var(--black);">
                             <div class="space-y-4">
                                 <span class="text-[9px] font-black uppercase tracking-[0.3em] opacity-75">Saldo Poin Anda</span>
                                 <div class="flex items-baseline gap-2">
@@ -426,10 +429,10 @@
                                             
                                             <div class="space-y-4 pl-4 pr-4">
                                                 <div class="flex justify-between items-start">
-                                                    <span class="inline-block text-[8px] font-black uppercase tracking-widest px-3 py-1 bg-[#6B705C]/10 text-[#2F3526] rounded-full">
+                                                    <span class="inline-block text-[8px] font-black uppercase tracking-widest px-3 py-1 bg-[#10B981]/10 text-[#10B981] rounded-full">
                                                         Voucher Poin
                                                     </span>
-                                                    <span class="text-xs font-mono font-bold tracking-widest text-[#2F3526]">
+                                                    <span class="text-xs font-mono font-bold tracking-widest text-[#10B981]">
                                                         {{ $voucher->code }}
                                                     </span>
                                                 </div>
@@ -444,11 +447,11 @@
                                                     </h5>
                                                     <p class="text-[10px] text-gray-500 tracking-wider">
                                                         Minimal belanja Rp {{ number_format($voucher->min_spend, 0, ',', '.') }}
-                                                    </p>
+                                                     </p>
                                                     @if($voucher->expires_at)
-                                                        <p class="text-[9px] text-red-500 font-medium tracking-wide">
+                                                         <p class="text-[9px] text-red-500 font-medium tracking-wide">
                                                             Berlaku s/d {{ $voucher->expires_at->format('d M Y') }}
-                                                        </p>
+                                                         </p>
                                                     @endif
                                                 </div>
                                             </div>
@@ -458,7 +461,7 @@
                                                     <svg class="w-3.5 h-3.5 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
                                                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                                                     </svg>
-                                                    <span class="text-[11px] font-black tracking-widest uppercase text-[#2F3526]">{{ $voucher->points_cost }} Poin</span>
+                                                    <span class="text-[11px] font-black tracking-widest uppercase text-[#10B981]">{{ $voucher->points_cost }} Poin</span>
                                                 </div>
                                                 
                                                 @if(auth()->user()->points >= $voucher->points_cost)
@@ -520,7 +523,7 @@
                                                         {{ $transaction->description }}
                                                         @if($transaction->order)
                                                             <a href="{{ route('profile.orders.detail', $transaction->order->order_number) }}" 
-                                                               class="text-[9px] text-[#2F3526] font-bold underline ml-1 uppercase tracking-widest">
+                                                               class="text-[9px] text-[#10B981] font-bold underline ml-1 uppercase tracking-widest">
                                                                 Lihat Pesanan
                                                             </a>
                                                         @endif
@@ -599,12 +602,12 @@
                     <div x-show="!loading && trackingData" class="space-y-6">
 
                         {{-- Status Card --}}
-                        <div class="rounded-3xl p-6" style="background:#F9F9F8;">
+                        <div class="rounded-3xl p-6" style="background:#121215; border: 1px solid #1C1C20;">
                             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                                 <div>
                                     <p class="text-[9px] uppercase tracking-widest text-gray-400 font-bold mb-1">Status Saat Ini</p>
                                     <p class="text-base font-bold leading-snug" style="color:var(--primary);" x-text="trackingData?.status"></p>
-                                    <p class="text-[11px] mt-1 text-gray-500" x-text="trackingData?.last"></p>
+                                    <p class="text-[11px] mt-1 text-gray-400" x-text="trackingData?.last"></p>
                                 </div>
                                 <div class="flex-shrink-0">
                                     <span :class="trackingData?.podStatus === 'DELIVERED'
@@ -633,7 +636,7 @@
                                 <div x-show="trackingData?.service">
                                     <p class="track-info-label">Layanan</p>
                                     <p class="track-info-val">
-                                        <span style="background:#f3f4f6;padding:2px 8px;border-radius:4px;font-size:11px;font-style:italic;margin-right:4px;">JNE</span>
+                                        <span style="background:#1c1c20;padding:2px 8px;border-radius:4px;font-size:11px;font-style:italic;margin-right:4px;color:#fff;">JNE</span>
                                         <span x-text="trackingData?.service"></span>
                                     </p>
                                 </div>
@@ -684,14 +687,9 @@
                                     </div>
                                 </template>
                             </div>
-                        </div>
-
-                    </div>
-
-                    {{-- Error --}}
-                    <div x-show="!loading && !trackingData" class="py-16 text-center space-y-4">
-                        <div style="width:64px;height:64px;background:#f9fafb;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto;">
-                            <svg style="width:32px;height:32px;color:#d1d5db" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                        <div x-show="!loading && !trackingData" class="py-16 text-center space-y-4">
+                        <div style="width:64px;height:64px;background:#121215;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto;border: 1px solid #1C1C20;">
+                            <svg style="width:32px;height:32px;color:#55555f" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
                         </div>
                         <p class="text-[11px] font-bold uppercase tracking-widest text-gray-400"
                            x-text="errorMessage || 'Data tidak ditemukan'"></p>
@@ -700,7 +698,7 @@
                 </div>{{-- end modal body --}}
 
                 {{-- ── Modal Footer ── --}}
-                <div class="px-8 py-5 flex-shrink-0" style="border-top: 1px solid #F3F4F6;">
+                <div class="px-8 py-5 flex-shrink-0" style="border-top: 1px solid #1C1C20;">
                     <button @click="modalOpen = false"
                             class="btn-primary w-full py-4 text-[10px] font-bold uppercase tracking-widest">
                         Tutup

@@ -12,15 +12,15 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Helvetica', 'Arial', ...defaultTheme.fontFamily.sans],
-                helvetica: ['Helvetica', 'Arial', 'sans-serif'],
+                sans: ['Plus Jakarta Sans', ...defaultTheme.fontFamily.sans],
+                helvetica: ['Plus Jakarta Sans', 'sans-serif'],
             },
             colors: {
                 brand: {
-                    primary: '#1E1E24',
+                    primary: '#10B981',
                     white: '#FFFFFF',
                     black: '#000000',
-                    olive: '#9A8C73',
+                    olive: '#8E8E9F',
                     light: '#F4F3EF',
                 }
             }
